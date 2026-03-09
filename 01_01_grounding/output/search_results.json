@@ -1,726 +1,359 @@
 {
-  "sourceFile": "/Users/overment/playground/devs/01_01_grounding/notes/crypto.md",
-  "model": "gpt-5.4",
-  "sourceHash": "77f9f11488f95cf87bf90af42729684b52c9dd8e2bcf7e4fde758f6c46f722da",
-  "dedupeHash": "ca563b6908434e28ec339589d3ccdbefe1b7f3f5196a09bac453e8b07ddd4d3e",
+  "sourceFile": "/Users/ext101538/oss/theimowski/4th-devs/01_01_grounding/notes/jh.md",
+  "model": "openai/gpt-4.1:online",
+  "sourceHash": "53b13e19fe1e54c6e693d67b30a13fbd26bd79e8b6603ed30dc9a06fbd1e6700",
+  "dedupeHash": "b865b5890ef45a3b0804e6afba426f09621cf9efb0f0d52decc9eaa8348b0989",
   "resultsByCanonical": {
-    "Bitcoin: A Peer-to-Peer Electronic Cash System whitepaper": {
-      "canonical": "Bitcoin: A Peer-to-Peer Electronic Cash System whitepaper",
-      "summary": "\"Bitcoin: A Peer-to-Peer Electronic Cash System\" is the original Bitcoin whitepaper, authored under the pseudonym Satoshi Nakamoto and published on October 31, 2008. The paper introduced Bitcoin as a peer-to-peer electronic cash system designed to let online payments move directly between parties without a financial institution, using a proof-of-work blockchain to address double-spending.",
+    "Jeremy Howard": {
+      "canonical": "Jeremy Howard",
+      "summary": "Jeremy Howard (born November 13, 1973 in London) is an Australian data scientist, entrepreneur, educator, and researcher. He co‑founded fast.ai, a nonprofit deep learning research group dedicated to democratizing artificial intelligence. He developed the ULMFiT algorithm, significantly advancing transfer learning in NLP, and served as President and Chief Scientist at Kaggle after top‑ranking in its machine learning competitions. He also founded Enlitic, FastMail, Optimal Decisions Group, and in December 2023, he launched Answer.AI — an AI R&D lab focused on turning foundational research into practical products.",
       "keyPoints": [
-        "The whitepaper’s author is listed as Satoshi Nakamoto, a pseudonymous name associated with Bitcoin’s creator.",
-        "Multiple sources identify the publication date as October 31, 2008, when the paper was shared publicly on a cryptography mailing list.",
-        "The paper is commonly described as 9 pages long and foundational to Bitcoin and later blockchain-based systems.",
-        "Its core contribution was proposing a decentralized ledger and proof-of-work mechanism so transactions could be verified without a trusted third party."
+        "Born November 13, 1973 in London; educated at the University of Melbourne in philosophy before shifting to data science and entrepreneurship ([en.wikipedia.org](https://en.wikipedia.org/wiki/Jeremy_Howard_%28entrepreneur%29?utm_source=openai)).",
+        "Co‑founded fast.ai in October 2016, offering a free MOOC ‘Practical Deep Learning for Coders’ and the fastai software library built on PyTorch ([en.wikipedia.org](https://en.wikipedia.org/wiki/Fast.ai?utm_source=openai)).",
+        "Developed the ULMFiT algorithm, pioneering modern NLP transfer learning and underpinning large language models such as ChatGPT and Google Gemini ([en.wikipedia.org](https://en.wikipedia.org/wiki/Jeremy_Howard_%28entrepreneur%29?utm_source=openai)).",
+        "Served as President and Chief Scientist at Kaggle after winning top global ranking in its competitions, and founded companies including Enlitic (deep learning in medicine), FastMail, and Optimal Decisions Group; in December 2023 launched Answer.AI with a $10M investment ([fast.ai](https://www.fast.ai/about.html?utm_source=openai))."
       ],
       "sources": [
         {
-          "title": "Bitcoin: A Peer-to-Peer Electronic Cash System | Satoshi Nakamoto Institute",
-          "url": "https://nakamotoinstitute.org/library/bitcoin/"
+          "title": "About – fast.ai",
+          "url": "https://www.fast.ai/about.html"
         },
         {
-          "title": "Bitcoin Whitepaper - A Peer-to-Peer Electronic Cash System | Satoshi Nakamoto",
-          "url": "https://btcpaper.org/"
+          "title": "Jeremy Howard (entrepreneur) – Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Jeremy_Howard_(entrepreneur)"
         },
         {
-          "title": "Bitcoin whitepaper | bitFlyer",
-          "url": "https://bitflyer.com/en-eu/s/glossary/bitcoin-whitepaper"
-        },
-        {
-          "title": "Bitcoin Whitepaper",
-          "url": "https://www.bitstamp.net/learn/crypto-101/bitcoin-whitepaper/"
-        },
-        {
-          "title": "Satoshi Nakamoto",
-          "url": "https://en.wikipedia.org/wiki/Satoshi_Nakamoto"
+          "title": "Launching Answer.AI – fast.ai blog",
+          "url": "https://www.fast.ai/posts/2023-12-12-launch.html"
         }
       ]
     },
-    "Bitcoin created in 2008 by Satoshi Nakamoto": {
-      "canonical": "Bitcoin created in 2008 by Satoshi Nakamoto",
-      "summary": "Bitcoin was proposed by the pseudonymous Satoshi Nakamoto in 2008, not fully launched that year. The key 2008 milestone was publication of the white paper, “Bitcoin: A Peer-to-Peer Electronic Cash System,” on October 31, 2008. Bitcoin’s operational launch followed in 2009, when the genesis block was created on January 3, 2009 and Bitcoin v0.1 was released on January 9, 2009.",
+    "Jeremy Howard co-founder of fast.ai and deep learning accessibility": {
+      "canonical": "Jeremy Howard co-founder of fast.ai and deep learning accessibility",
+      "summary": "Jeremy Howard is an Australian data scientist, entrepreneur, educator, and co‑founder of fast.ai—a nonprofit research institute launched in October 2016 with Rachel Thomas dedicated to democratizing deep learning. He developed the ULMFiT approach, taught accessible deep‑learning courses, and created the popular fastai library to make deep learning approachable for a broad audience.",
       "keyPoints": [
-        "The Bitcoin white paper is dated October 31, 2008 and is attributed to Satoshi Nakamoto, establishing 2008 as the year Bitcoin was introduced publicly as a concept.",
-        "Bitcoin.org was registered on August 18, 2008, before the white paper was published, showing the project infrastructure was being set up in 2008.",
-        "Bitcoin’s genesis block was established on January 3, 2009, which is widely treated as the start of the live Bitcoin network rather than its 2008 conceptual origin.",
-        "Bitcoin v0.1 was released on January 9, 2009, and the first recorded Bitcoin transaction between Satoshi Nakamoto and Hal Finney occurred on January 12, 2009."
+        "Jeremy Howard co‑founded fast.ai in October 2016 with Rachel Thomas to \"democratize deep learning\" through free courses, research, tools, and community ([en.wikipedia.org](https://en.wikipedia.org/wiki/Fast.ai?utm_source=openai)).",
+        "He developed ULMFiT, a transfer‑learning method foundational to modern language models like ChatGPT and Google Gemini ([fast.ai](https://www.fast.ai/about.html?utm_source=openai)).",
+        "Fast.ai’s Practical Deep Learning for Coders is a widely used free MOOC that enables learners with only basic Python to build deep‑learning models ([en.wikipedia.org](https://en.wikipedia.org/wiki/Fast.ai?utm_source=openai)).",
+        "He also created the fastai library, an open‑source, high‑level deep‑learning framework built atop PyTorch, designed for ease of use and accessibility ([fast.ai](https://www.fast.ai/about.html?utm_source=openai))."
       ],
       "sources": [
         {
-          "title": "Bitcoin | Definition, Mining, & Facts | Britannica Money",
-          "url": "https://www.britannica.com/topic/Bitcoin"
+          "title": "About – fast.ai",
+          "url": "https://www.fast.ai/about.html"
         },
         {
-          "title": "Satoshi Nakamoto | Satoshi Nakamoto Institute",
-          "url": "https://nakamotoinstitute.org/authors/satoshi-nakamoto/"
+          "title": "Fast.ai (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Fast.ai"
         },
         {
-          "title": "Bitcoin.org is 10 Years Old!",
-          "url": "https://bitcoin.org/en/posts/ten-year-anniversary"
-        },
-        {
-          "title": "2009 - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/2009"
-        },
-        {
-          "title": "Category:History - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/Category:History"
+          "title": "Jeremy Howard (entrepreneur) (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Jeremy_Howard_(entrepreneur)"
         }
       ]
     },
-    "Bitcoin as decentralized digital currency without central banks or intermediaries": {
-      "canonical": "Bitcoin as decentralized digital currency without central banks or intermediaries",
-      "summary": "Bitcoin is a decentralized digital currency designed to let payments move directly between users on a peer-to-peer network rather than through a central bank or financial institution. The original Bitcoin whitepaper describes it as 'a peer-to-peer electronic cash system,' and bitcoin.org explains that transaction processing and the issuance of new bitcoins are handled collectively by the network, with no central authority or bank controlling the system.",
+    "fast.ai": {
+      "canonical": "fast.ai",
+      "summary": "fast.ai is an organization that offers practical deep learning courses designed to make advanced AI concepts accessible to learners with minimal technical background. Their most well-known course, \"Practical Deep Learning for Coders,\" emphasizes hands-on coding and rapid prototyping, using the fastai library built on top of PyTorch. The content is frequently updated to reflect advances in AI, and the courses are offered free of charge. The fast.ai approach focuses on practical skills, inclusivity, and breaking down barriers to AI education.",
       "keyPoints": [
-        "The Bitcoin whitepaper frames the core idea as electronic payments sent 'directly from one party to another without going through a financial institution.'",
-        "Bitcoin.org states that Bitcoin 'uses peer-to-peer technology to operate with no central authority or banks,' meaning control is distributed across network participants rather than concentrated in a central intermediary.",
-        "Bitcoin is open-source and publicly auditable; bitcoin.org says its design is public, nobody owns or controls Bitcoin, and anyone can take part in the network.",
-        "In practice, Bitcoin's decentralization applies to the base network, while some wallet services may still rely on third-party servers for convenience, as shown by wallet descriptions on bitcoin.org."
+        "fast.ai provides free, practical deep learning courses accessible to beginners.",
+        "The flagship course, 'Practical Deep Learning for Coders,' teaches using the fastai library and PyTorch.",
+        "Course material emphasizes hands-on projects and rapid prototyping, rather than just theory.",
+        "fast.ai aims to make AI education accessible to a diverse audience by lowering technical barriers."
       ],
       "sources": [
         {
-          "title": "Bitcoin: A Peer-to-Peer Electronic Cash System",
-          "url": "https://bitcoin.org/bitcoin.pdf"
+          "title": "fast.ai – Practical Deep Learning for Coders",
+          "url": "https://course.fast.ai/"
         },
         {
-          "title": "Bitcoin - Open source P2P money",
-          "url": "https://bitcoin.org/whitepaper.pdf"
+          "title": "Fast.ai: The Fastest (and Most Fun) Way to Learn Deep Learning",
+          "url": "https://www.fast.ai/"
         },
         {
-          "title": "Bitcoin - Open source P2P money",
-          "url": "https://bitcoin.org/en/contact-us"
-        },
-        {
-          "title": "Electrum - Desktop - Windows - Choose your wallet - Bitcoin",
-          "url": "https://bitcoin.org/en/wallets/desktop/windows/electrum/"
+          "title": "fast.ai Courses Overview",
+          "url": "https://www.fast.ai/about/#courses"
         }
       ]
     },
-    "Bitcoin blockchain throughput around 7 transactions per second": {
-      "canonical": "Bitcoin blockchain throughput around 7 transactions per second",
-      "summary": "Search results support the concept that Bitcoin’s base-layer throughput is commonly approximated at about 7 transactions per second, but this is a simplified theoretical estimate rather than a fixed live rate. The estimate comes from Bitcoin’s roughly 10-minute block interval and historical 1 MB block-size limit, divided by an assumed average transaction size; depending on the transaction-size assumption, cited estimates range from about 3 TPS in practice to about 6.6-7 TPS theoretically.",
+    "Education at Melbourne Grammar and University of Melbourne": {
+      "canonical": "Education at Melbourne Grammar and University of Melbourne",
+      "summary": "Melbourne Grammar School (MGS) is a leading independent Anglican boys’ school with a strong tradition in humanities, particularly Philosophy and Religious Studies, taught by distinguished educators. Many of its alumni (“Old Melburnians”) go on to study at the University of Melbourne (UniMelb), which has produced numerous notable figures across fields from politics to science and the arts.",
       "keyPoints": [
-        "The Bitcoin Wiki Scalability FAQ gives a simple formula: TPS = block size / average transaction size / 600 seconds, and shows an example of 6.6 TPS using 1,000,000 bytes, 250-byte transactions, and 10-minute blocks.",
-        "The same FAQ says there was \"general agreement\" Bitcoin could handle about 3 TPS with the average transaction sizes observed at that time, while both older and newer estimates placed the pre-SegWit theoretical rate at about 7 TPS.",
-        "Bitcoin Wiki’s Block page states the network targets an average of 6 blocks per hour, i.e. about one block every 10 minutes, which is a core input to the throughput estimate.",
-        "A separate Bitcoin Wiki Scalability page explicitly states that the Bitcoin network was restricted to a sustained rate of 7 TPS due to the protocol’s 1 MB block-size restriction, reinforcing that the figure refers to base-layer capacity assumptions rather than guaranteed real-world throughput."
+        "Melbourne Grammar emphasizes humanities, with subjects like philosophy taught via a structured curriculum that explores ethical frameworks, critical thinking, and historiographical perspectives ([mgs.vic.edu.au](https://www.mgs.vic.edu.au/learning/our-approach/teaching-and-learning/humanities-and-social-sciences?utm_source=openai)).",
+        "Staff such as Justin Glenn (MGS alumnus and Head of Philosophy and Religious Studies since 2018) and Felicity McCutcheon (former Head) reflect the school’s notable expertise in philosophy education ([mgs.vic.edu.au](https://www.mgs.vic.edu.au/about/our-people/staff-stories/justin-glenn?utm_source=openai)).",
+        "Many Melbourne Grammar students enroll at the University of Melbourne; the university itself has a distinguished alumni network including former Prime Ministers (e.g. Julia Gillard), Nobel laureates (e.g. Peter Doherty, Elizabeth Blackburn), and cultural icons like Cate Blanchett and Ronny Chieng ([unimelb.edu.au](https://www.unimelb.edu.au/alumni/stay-connected/global-community/notable-alumni?utm_source=openai)).",
+        "One example of a pathway intertwining both institutions is Will Flintoft (MGS OM 2021), who studied Mathematics and Philosophy at Harvard, and was awarded a Rhodes Scholarship for Oxford in 2026—highlighting the academic and philosophical strengths fostered at Melbourne Grammar that align with university-level excellence ([linkedin.com](https://www.linkedin.com/posts/melbourne-grammar-school_melbournegrammarschool-melbournegrammar-activity-7374636613643137025-MYI2?utm_source=openai))."
       ],
       "sources": [
         {
-          "title": "Scalability FAQ - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/Scalability_FAQ"
+          "title": "Humanities and Social Sciences | Melbourne Grammar School",
+          "url": "source unavailable"
         },
         {
-          "title": "Block - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/Block"
+          "title": "Justin Glenn | Melbourne Grammar School staff story",
+          "url": "source unavailable"
         },
         {
-          "title": "Scalability - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/Scalability"
+          "title": "Dr Felicity McCutcheon | Melbourne Grammar School staff story",
+          "url": "source unavailable"
         },
         {
-          "title": "Confirmation - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/Confirmation"
+          "title": "Notable alumni – University of Melbourne",
+          "url": "source unavailable"
+        },
+        {
+          "title": "100 Notable Alumni of University of Melbourne [Sorted List]",
+          "url": "source unavailable"
+        },
+        {
+          "title": "UniMelb Notable Alumni - Melbourne Famous Graduates",
+          "url": "source unavailable"
+        },
+        {
+          "title": "#melbournegrammarschool post about Will Flintoft Rhodes Scholar",
+          "url": "source unavailable"
         }
       ]
     },
-    "Visa throughput around 24,000 transactions per second": {
-      "canonical": "Visa throughput around 24,000 transactions per second",
-      "summary": "The claim that Visa handles around 24,000 transactions per second is historically grounded but outdated as a description of Visa’s current network capacity. Older Visa materials state that VisaNet was capable of handling more than 24,000 transaction messages per second, while newer official Visa sources report substantially higher figures: more than 65,000 transactions per second in several sources, 76,000 transaction messages per second on a current merchant-facing page, and up to 83,000 transactions per second in a 2025 corporate article.",
+    "Birth in London and move to Melbourne in 1976": {
+      "canonical": "Birth in London and move to Melbourne in 1976",
+      "summary": "The biographical concept “born in London and moved to Melbourne in 1976” is confirmed for Briony Behets, an English-born Australian actress. She was born in London in 1951 and settled in Melbourne after relocating to Australia, where she became active in theatre and television throughout the 1970s.",
       "keyPoints": [
-        "An official Visa technology booklet states Visa’s payments processing network was capable of handling more than 24,000 transaction messages per second, supporting the origin of the 24,000 TPS figure.",
-        "Visa’s 2016 Form 10-K says VisaNet is capable of handling more than 65,000 transactions per second, showing that official capacity figures increased well beyond 24,000.",
-        "A current Visa merchant page says VisaNet can process more than 76,000 transaction messages per second, indicating Visa now publicly cites a higher throughput figure.",
-        "A 2025 Visa corporate article says the network processes up to 83,000 transaction messages per second worldwide, suggesting Visa’s latest public figure is higher still."
+        "Briony Behets was born in London, United Kingdom on 21 July 1951 and studied at the Guildhall School of Music and Drama in London before traveling overseas ([en.wikipedia.org](https://en.wikipedia.org/wiki/Briony_Behets?utm_source=openai)).",
+        "After moving to Australia, she lived in Melbourne and became known as an actress in television soap operas during the 1970s and 1980s; notably, she received an AFI Award nomination for her role in The Trespassers (1976) ([en.wikipedia.org](https://en.wikipedia.org/wiki/Briony_Behets?utm_source=openai))."
       ],
       "sources": [
         {
-          "title": "The technology behind Visa",
-          "url": "https://usa.visa.com/dam/VCOM/download/corporate/media/visanet-technology/visa-net-booklet.pdf"
-        },
-        {
-          "title": "Visa 2016 Form 10-K",
-          "url": "https://investor.visa.com/files/doc_financials/2016/Q4/Visa-2016-Form-10K.pdf"
-        },
-        {
-          "title": "Grow your business. Accept Visa payments.",
-          "url": "https://usa.visa.com/run-your-business/accept-visa-payments.html"
-        },
-        {
-          "title": "The heart of Visa: inside the engine of global commerce",
-          "url": "https://corporate.visa.com/en/sites/visa-perspectives/security-trust/inside-visa-global-commerce-engine.html.html"
+          "title": "Briony Behets – Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Briony_Behets"
         }
       ]
     },
-    "Hash-linked blocks forming an immutable chain": {
-      "canonical": "Hash-linked blocks forming an immutable chain",
-      "summary": "A hash-linked block chain is the core data structure behind blockchain systems: each block stores its own data plus the cryptographic hash of the previous block, so blocks are ordered and tamper-evident. If data in an earlier block is changed, its hash changes, which breaks the link recorded in the next block and causes a cascading mismatch through later blocks. In practice, this makes the history effectively immutable only when combined with network replication and a consensus mechanism that rejects rewritten histories.",
+    "ULMFiT helped pave the way for modern language models like GPT": {
+      "canonical": "ULMFiT helped pave the way for modern language models like GPT",
+      "summary": "ULMFiT (Universal Language Model Fine‑Tuning), introduced in early 2018 by Jeremy Howard and Sebastian Ruder, pioneered the use of transfer learning in NLP through a pre‑training then fine‑tuning paradigm. Built on an AWD‑LSTM architecture, it introduced techniques like discriminative fine‑tuning, slanted triangular learning rates, and gradual unfreezing to enable efficient task adaptation with limited labeled data. This paradigm laid foundational groundwork for later transformer‑based models like GPT and BERT to adopt and scale pre‑training and fine‑tuning approaches, establishing a standard training methodology in modern language modeling.",
       "keyPoints": [
-        "NIST defines blockchain blocks as cryptographically linked to the previous block, making the ledger tamper-evident rather than silently editable.",
-        "IBM explains that a block typically includes a timestamp and data from the previous block in its hash, preserving the sequence and timing of transactions.",
-        "Because a block's hash depends on its contents, modifying an old block changes its hash and invalidates the stored previous-hash reference in every following block.",
-        "Immutability is not absolute from hashing alone; it depends on the wider system, especially distributed copies of the ledger and consensus rules that make replacing historical blocks difficult."
+        "Introduced in January 2018, ULMFiT was among the first effective demonstrations of transfer learning in NLP, significantly reducing error rates (18–24%) across text classification tasks and matching performance of models trained on 100× more data with only 100 labeled examples ([arxiv.org](https://arxiv.org/abs/1801.06146?utm_source=openai)).",
+        "ULMFiT’s architecture used AWD‑LSTM and novel fine‑tuning techniques (discriminative fine‑tuning, slanted triangular learning rates, gradual unfreezing) to mitigate catastrophic forgetting and enable efficient adaptation to downstream tasks ([medium.com](https://medium.com/%40mukul.mschauhan/a-tale-of-three-models-how-transformers-bert-and-ulmfit-took-nlp-by-storm-58080f1459b6?utm_source=openai)).",
+        "Its success popularized the pre‑train then fine‑tune paradigm in NLP, inspiring and paving the way for transformer‑based models like GPT and BERT to adopt similar approaches at much larger scales ([home.mlops.community](https://home.mlops.community/public/blogs/pretraining-breaking-down-the-modern-llm-training-pipeline?utm_source=openai)).",
+        "Some analysis even considers ULMFiT as the first true large‑language‑model (LLM), predating GPT‑1 by several months and qualifying as an early example of a next‑word‑predictor adaptable across tasks ([getcoai.com](https://getcoai.com/news/ulmfit-not-gpt-1-was-the-first-true-llm-according-to-new-analysis/?utm_source=openai))."
       ],
       "sources": [
         {
-          "title": "Blockchain | NIST",
-          "url": "https://www.nist.gov/blockchain"
+          "title": "Universal Language Model Fine‑tuning for Text Classification (arXiv 2018)",
+          "url": "https://arxiv.org/abs/1801.06146"
         },
         {
-          "title": "blockchain - Glossary | CSRC",
-          "url": "https://csrc.nist.gov/glossary/term/blockchain"
+          "title": "A Tale of Three Models: How Transformers, BERT, and ULMFiT Took NLP by Storm",
+          "url": "https://medium.com/@mukul.mschauhan/a-tale-of-three-models-how-transformers-bert-and-ulmfit-took-nlp-by-storm-58080f1459b6"
         },
         {
-          "title": "What Is Blockchain? | IBM",
-          "url": "https://www.ibm.com/think/topics/blockchain"
+          "title": "Transfer Learning in NLP (overview including ULMFiT and GPT)",
+          "url": "https://sijunhe.github.io/2019/01/20/transfer-learning-in-nlp.html"
         },
         {
-          "title": "Blockchain",
-          "url": "https://en.wikipedia.org/wiki/Blockchain"
+          "title": "The Dawn of Transfer Learning in NLP: Breaking Barriers with ULMFiT",
+          "url": "https://medium.com/@faheemgurkani/the-dawn-of-transfer-learning-in-nlp-breaking-barriers-with-ulmfit-7044c7ddaf4e"
         },
         {
-          "title": "Draft NISTIR 8202",
-          "url": "https://csrc.nist.gov/CSRC/media/Publications/nistir/8202/draft/documents/nistir8202-draft.pdf"
+          "title": "The Roots of Pretraining: ULMFiT and InstructGPT (MLOps Community)",
+          "url": "https://home.mlops.community/public/blogs/pretraining-breaking-down-the-modern-llm-training-pipeline"
+        },
+        {
+          "title": "ULMFiT, not GPT‑1, was the first true LLM according to new analysis",
+          "url": "https://getcoai.com/news/ulmfit-not-gpt-1-was-the-first-true-llm-according-to-new-analysis/"
         }
       ]
     },
-    "Bitcoin block subsidy started at 50 BTC and halves about every four years": {
-      "canonical": "Bitcoin block subsidy started at 50 BTC and halves about every four years",
-      "summary": "Bitcoin’s block subsidy began at 50 BTC per block and is programmed to halve every 210,000 blocks, which is approximately every four years given Bitcoin’s ~10-minute block target. This schedule is encoded in Bitcoin’s protocol rules and is the basis for Bitcoin’s declining issuance toward a supply cap of just under 21 million BTC.",
+    "ULMFiT pioneered transfer learning and fine-tuning in NLP": {
+      "canonical": "ULMFiT pioneered transfer learning and fine-tuning in NLP",
+      "summary": "ULMFiT (Universal Language Model Fine-tuning), introduced by Jeremy Howard and Sebastian Ruder in their 2018 ACL paper “Universal Language Model Fine-tuning for Text Classification,” pioneered the use of transfer learning with fine-tuning for NLP tasks. It adapted techniques from computer vision—pretraining a language model on a large general corpus, then fine-tuning it for downstream tasks—to NLP, significantly improving performance even on small datasets. The approach introduced key innovations like discriminative fine-tuning, slanted triangular learning rates, and gradual unfreezing to mitigate catastrophic forgetting.",
       "keyPoints": [
-        "The subsidy formula is height-based: `(50 * 100000000) >> (height / 210000)`, meaning the starting subsidy was 50 BTC and each 210,000-block interval cuts it in half.",
-        "The first halving occurred at block 210,000 on November 28, 2012, reducing the block subsidy from 50 BTC to 25 BTC.",
-        "Bitcoin Wiki’s protocol documentation lists subsequent halvings at blocks 420,000 and 630,000, reducing the subsidy to 12.5 BTC and then 6.25 BTC, confirming the repeating 210,000-block cadence.",
-        "Because blocks are targeted to arrive about every 10 minutes, 210,000 blocks works out to roughly four years, and the long-run issuance converges to slightly less than 21 million BTC."
+        "ULMFiT was one of the first successful transfer learning frameworks in NLP, showing that pretraining a language model on a general corpus then fine‑tuning it on downstream tasks yields strong results ([arxiv.org](https://arxiv.org/abs/1801.06146?utm_source=openai)).",
+        "It demonstrated significant performance gains (18–24% error reduction on multiple text classification tasks) and strong sample efficiency, achieving performance comparable to training from scratch with 100× more labeled data ([arxiv.org](https://arxiv.org/abs/1801.06146?utm_source=openai)).",
+        "ULMFiT introduced practical fine‑tuning strategies—discriminative fine‑tuning, slanted triangular learning rates, and gradual unfreezing—to prevent catastrophic forgetting during adaptation ([medium.com](https://medium.com/%40mukul.mschauhan/a-tale-of-three-models-how-transformers-bert-and-ulmfit-took-nlp-by-storm-58080f1459b6?utm_source=openai)).",
+        "It paved the way for widespread adoption of transfer‑learning paradigms in NLP, influencing subsequent models like ELMo, GPT, and especially Transformer‑based models such as BERT ([mbrenndoerfer.com](https://mbrenndoerfer.com/writing/elmo-ulmfit-transfer-learning-natural-language-processing?utm_source=openai))."
       ],
       "sources": [
         {
-          "title": "Protocol rules - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/Protocol_rules"
+          "title": "Universal Language Model Fine‑tuning for Text Classification (ACL 2018)",
+          "url": "https://arxiv.org/abs/1801.06146"
         },
         {
-          "title": "Halving day 2012 - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/Halving_day_2012"
+          "title": "A Tale of Three Models: How Transformers, BERT, and ULMFiT Took NLP by Storm",
+          "url": "https://medium.com/@mukul.mschauhan/a-tale-of-three-models-how-transformers-bert-and-ulmfit-took-nlp-by-storm-58080f1459b6"
         },
         {
-          "title": "Controlled supply - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/Controlled_supply"
+          "title": "Universal Language Model Fine‑tuning (ULMFiT) – emergentmind.com",
+          "url": "https://www.emergentmind.com/topics/universal-language-model-fine-tuning-ulmfit"
         },
         {
-          "title": "Block - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/Block"
-        },
-        {
-          "title": "BIP 0042 - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/BIP_0042"
+          "title": "ULMFiT introduced fundamental fine‑tuning techniques for NLP",
+          "url": "https://salildabholkar.github.io/summaries/2018/06/10/universal-language-model-fine-tuning/"
         }
       ]
     },
-    "Bitcoin Proof of Work consensus mechanism": {
-      "canonical": "Bitcoin Proof of Work consensus mechanism",
-      "summary": "Bitcoin uses a Proof of Work (PoW) consensus mechanism in which miners repeatedly hash block headers, varying a nonce and related fields, until they find a hash below the network’s current target. Nodes independently verify that proof and accept the valid chain with the most cumulative work, which helps order transactions, makes past blocks costly to rewrite, and keeps block production near one block about every 10 minutes through periodic difficulty adjustment.",
+    "ULMFiT (Universal Language Model Fine-tuning)": {
+      "canonical": "ULMFiT (Universal Language Model Fine-tuning)",
+      "summary": "ULMFiT (Universal Language Model Fine-tuning) is a transfer learning approach for natural language processing (NLP) introduced in 2018. It is designed to effectively adapt a pre-trained language model, trained on a large corpus such as Wikipedia, to a variety of downstream text classification tasks using fine-tuning. ULMFiT dramatically improved performance on many text classification benchmarks and showcased the benefits of transfer learning in NLP. The approach comprises three phases: pretraining an AWD-LSTM language model on a general dataset, fine-tuning the model on the target task’s text, and then fine-tuning for the specific downstream task, with techniques such as discriminative fine-tuning and gradual unfreezing to enable robust adaptation.",
       "keyPoints": [
-        "Bitcoin’s PoW is based on Hashcash and uses SHA-256; a block is valid only if its hash is less than the current target, making proof creation computationally expensive but verification easy.",
-        "The network adjusts mining difficulty to maintain a roughly 10-minute block interval; Bitcoin documentation and wiki sources describe this as an automatic retargeting process tied to the amount of total hash power on the network.",
-        "Each block commits to the previous block’s hash, so changing an older block requires redoing that block’s work and the work of all successor blocks, which is the core anti-tampering property of the blockchain.",
-        "Bitcoin nodes ultimately follow the most-work fully validated chain, not just any longest chain by block count; full nodes still enforce all consensus rules when validating blocks and transactions."
+        "ULMFiT introduced a three-stage transfer learning method for NLP: pretraining, target task fine-tuning, and classifier fine-tuning.",
+        "It uses techniques like discriminative fine-tuning and gradual unfreezing to adapt pre-trained models effectively with fewer labeled examples.",
+        "ULMFiT signified a breakthrough in NLP by achieving state-of-the-art results on multiple text classification benchmarks with minimal task-specific data."
       ],
       "sources": [
         {
-          "title": "Proof of work - Bitcoin Wiki",
-          "url": "https://en.bitcoin.it/wiki/Proof_of_work"
+          "title": "Universal Language Model Fine-tuning for Text Classification (ULMFiT)",
+          "url": "https://arxiv.org/abs/1801.06146"
         },
         {
-          "title": "Developer Guides — Bitcoin",
-          "url": "https://developer.bitcoin.org/devguide/"
+          "title": "What is ULMFiT and Why It Matters in NLP",
+          "url": "https://machinelearningmastery.com/ulmfit-universal-language-model-fine-tuning-for-text-classification/"
         },
         {
-          "title": "Getting Started — Bitcoin",
-          "url": "https://developer.bitcoin.org/index.html"
+          "title": "Explained: ULMFiT for NLP transfer learning",
+          "url": "https://ruder.io/ulmfit/"
         },
         {
-          "title": "Bitcoin Core Validation",
-          "url": "https://bitcoin.org/en/bitcoin-core/features/validation"
-        },
-        {
-          "title": "getblockchaininfo — Bitcoin",
-          "url": "https://developer.bitcoin.org/reference/rpc/getblockchaininfo.html"
+          "title": "ULMFiT: State-of-the-art Transfer Learning for NLP",
+          "url": "https://fastai.github.io/2018/04/16/ulmfit/"
         }
       ]
     },
-    "Miners compete to solve cryptographic puzzles": {
-      "canonical": "Miners compete to solve cryptographic puzzles",
-      "summary": "In Bitcoin, miners do compete to solve a cryptographic proof-of-work puzzle, but the puzzle is not solving arbitrary math problems. They repeatedly hash block data with different nonce values until they find a SHA-256 hash that meets the network’s current difficulty target; the first valid block is broadcast, verified by other nodes, and added to the chain. This mechanism helps order transactions, makes rewriting history expensive, and lets the network reach consensus without a central authority.",
+    "simplifies implementation of complex neural networks": {
+      "canonical": "simplifies implementation of complex neural networks",
+      "summary": "Fastai is a deep learning library built atop PyTorch that significantly simplifies the implementation of complex neural network models. It achieves this through a layered API providing high‐, mid‐, and low‐level abstractions, enabling rapid prototyping with minimal code while retaining flexibility for custom, advanced architectures.",
       "keyPoints": [
-        "Satoshi Nakamoto’s white paper describes Bitcoin’s proof-of-work as scanning for a value that, when hashed with SHA-256, produces a hash with the required number of leading zero bits.",
-        "The white paper says each node collects transactions into a block and works on finding a difficult proof-of-work; when a node finds one, it broadcasts the block and other nodes accept it if the transactions are valid.",
-        "Bitcoin.org’s glossary explains that mining is used to confirm transactions and increase security, and that mining is a specialized, competitive market where rewards are tied to how much computation is performed.",
-        "The same glossary states that hash rate measures the Bitcoin network’s processing power; for example, 10 TH/s means 10 trillion hash calculations per second."
+        "Layered API: Fastai offers high‑level abstractions (e.g., DataBlock, Learner, callbacks) that reduce boilerplate and simplify training pipelines, yet allows low‑level customization when needed ([geeksforgeeks.org](https://www.geeksforgeeks.org/unveiling-the-power-of-fastai-a-deep-dive-into-the-versatile-deep-learning-library/?utm_source=openai)).",
+        "Domain‑specific APIs: It supplies ready‑to‑use APIs for computer vision, NLP, tabular data, and recommendation systems, streamlining development across varied applications ([geeksforgeeks.org](https://www.geeksforgeeks.org/unveiling-the-power-of-fastai-a-deep-dive-into-the-versatile-deep-learning-library/?utm_source=openai)).",
+        "Architectural primitives: Fastai provides building blocks like SequentialEx, MergeLayer, XResNet, and U‑Net abstractions, enabling easy assembly of modern network architectures and rapid experimentation ([mdpi.com](https://www.mdpi.com/2078-2489/11/2/108?utm_source=openai)).",
+        "Transfer learning & optimization tools: Fastai integrates features like learning‑rate finder, transfer learning support, callbacks, schedulers, and pre‑trained models to accelerate training workflows and optimize performance ([medium.com](https://medium.com/%40serverwalainfra/introduction-to-fastai-why-use-it-for-deep-learning-7be66a9468a1?utm_source=openai))."
       ],
       "sources": [
         {
-          "title": "Bitcoin: A Peer-to-Peer Electronic Cash System",
-          "url": "https://bitcoin.org/bitcoin.pdf"
+          "title": "FastAI: A Deep Dive",
+          "url": "source"
         },
         {
-          "title": "Vocabulary - Bitcoin",
-          "url": "https://bitcoin.org/en/vocabulary"
-        },
-        {
-          "title": "Developer Guide - Bitcoin",
-          "url": "https://developer.bitcoin.org/devguide/block_chain.html"
+          "title": "A Layered API for Deep Learning",
+          "url": "source"
         }
       ]
     },
-    "Block reward for adding the next block": {
-      "canonical": "Block reward for adding the next block",
-      "summary": "In Bitcoin, miners compete to find a valid proof-of-work for the next block. The miner whose block is accepted by the network appends that block to the blockchain and can claim the block reward through the block’s coinbase transaction. That reward consists of newly created bitcoin (the block subsidy) plus any transaction fees included in the block.",
+    "layered API for deep learning": {
+      "canonical": "layered API for deep learning",
+      "summary": "The concept “layered API for deep learning” as implemented in fastai refers to a carefully structured hierarchy of abstractions—from high-level, easy-to-use interfaces down to low-level customizable components. This design enables users ranging from beginners to researchers to build, extend, and experiment with deep learning models efficiently and flexibly.",
       "keyPoints": [
-        "Bitcoin mining is a competitive proof-of-work process: miners must find a block that satisfies strict cryptographic rules before the network will accept it.",
-        "The successful miner claims the reward in the block’s coinbase transaction; Bitcoin documentation describes mining rewards as newly created bitcoins together with transaction fees.",
-        "Bitcoin.org explains that mining acts like a competitive lottery, helping enforce blockchain ordering and making it hard for any one participant to add blocks consecutively or rewrite history.",
-        "Bitcoin targets an average of about one new block every 10 minutes by automatically adjusting mining difficulty as more or fewer miners participate."
+        "fastai’s layered API comprises three levels: a high-level application layer (e.g., `Learner`, `DataLoaders`) offering concise, sensible defaults for tasks like vision or text; a mid-level API providing core components such as callbacks, optimizers, and data-processing primitives; and a low-level foundation built on composable abstractions like type-dispatch, semantic tensors, and transform pipelines ([fast.ai](https://www.fast.ai/posts/2020-02-13-fastai-A-Layered-API-for-Deep-Learning.html?utm_source=openai)).",
+        "This architecture balances ease of use with hackability: beginners can train state-of-the-art models in just a few lines of code, while advanced users can peel back layers to customize or replace internals without rewriting everything ([mdpi.com](https://www.mdpi.com/2078-2489/11/2/108?utm_source=openai)).",
+        "Key features enabled by this design include: an intelligent `Learner` class that automatically selects loss functions and handles training/validation data; a two-way callback system allowing custom behavior at any point during training; a data block API for constructing data pipelines flexibly; and low-level primitives like type-dispatch and semantic tensor handling for deep customization ([fast.ai](https://www.fast.ai/posts/2020-02-13-fastai-A-Layered-API-for-Deep-Learning.html?utm_source=openai)).",
+        "The layered API reflects fastai’s mission to be both user-friendly and deeply extensible, combining the productivity of high-level frameworks with the transparency and composability valued by researchers ([mdpi.com](https://www.mdpi.com/2078-2489/11/2/108?utm_source=openai))."
       ],
       "sources": [
         {
-          "title": "How does Bitcoin work? - Bitcoin",
-          "url": "https://bitcoin.org/en/how-it-works"
+          "title": "fastai A Layered API for Deep Learning – fast\\.ai",
+          "url": "https://www.fast.ai/posts/2020-02-13-fastai-A-Layered-API-for-Deep-Learning.html"
         },
         {
-          "title": "Mining — Bitcoin Developer Guide",
-          "url": "https://developer.bitcoin.org/devguide/mining.html"
+          "title": "Fastai: A Layered API for Deep Learning (MDPI Information journal)",
+          "url": "https://www.mdpi.com/2078-2489/11/2/108"
         },
         {
-          "title": "Vocabulary - Bitcoin",
-          "url": "https://bitcoin.org/en/vocabulary"
-        },
-        {
-          "title": "Bitcoin: A Peer-to-Peer Electronic Cash System",
-          "url": "https://bitcoin.org/bitcoin.pdf"
+          "title": "Introduction to FastAI – GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/deep-learning/introduction-to-fastai/"
         }
       ]
     },
-    "Ethereum proposed by Vitalik Buterin in 2013 and launched in 2015": {
-      "canonical": "Ethereum proposed by Vitalik Buterin in 2013 and launched in 2015",
-      "summary": "Search results support the core claim with a small date nuance: Vitalik Buterin first drafted Ethereum’s concept in late 2013, while the public whitepaper and broader public announcement appeared in early 2014. Ethereum’s mainnet officially launched on July 30, 2015, when the Frontier release created the genesis block. In short, it is accurate to say Ethereum was conceived/proposed by Buterin in 2013 and launched in 2015.",
+    "fastai library": {
+      "canonical": "fastai library",
+      "summary": "fastai is an open‑source deep learning library built atop PyTorch that employs a layered API design—high‑level for ease of use, mid‑level for customization, and low‑level for full flexibility—enabling both rapid prototyping and advanced experimentation.",
       "keyPoints": [
-        "Vitalik Buterin wrote the initial draft of the Ethereum whitepaper in November 2013, according to the Ethereum Foundation blog.",
-        "Ethereum’s introductory whitepaper was published before launch and describes the project as an open platform for decentralized applications and smart contracts.",
-        "The Ethereum network officially launched on July 30, 2015, with the Frontier mainnet release and mining of the genesis block.",
-        "Ethereum development between proposal and launch included public fundraising in 2014 and multiple proof-of-concept releases before mainnet."
+        "Layered architecture: high‑level APIs for vision, text, tabular, and recommendation tasks; mid‑level components like Learner, DataLoaders, and Callbacks; low‑level primitives including Transforms, semantic tensors, and type‑dispatch mechanisms ([fast.ai](https://www.fast.ai/posts/2020-02-13-fastai-A-Layered-API-for-Deep-Learning.html?utm_source=openai))",
+        "High‑level API supports rapid model training using sensible defaults (e.g., Learner class auto‑selects loss, manages optimizer and data) while still allowing full access to PyTorch under the hood ([fast.ai](https://www.fast.ai/posts/2020-02-13-fastai-A-Layered-API-for-Deep-Learning.html?utm_source=openai))",
+        "Mid‑level APIs enable powerful customization: fastai features a two‑way callback system, a flexible DataLoaders/DataBlock API, and composable layer constructs like SequentialEx and MergeLayer for modern architectures ([fast.ai](https://www.fast.ai/posts/2020-02-13-fastai-A-Layered-API-for-Deep-Learning.html?utm_source=openai))",
+        "Low‑level APIs offer functional building blocks including GPU‑optimized augmentations, transform pipelines with reversible `Transform` objects, type‑dispatch system, and convenience tools like the `L` collection and patch decorators ([fast.ai](https://www.fast.ai/posts/2020-02-13-fastai-A-Layered-API-for-Deep-Learning.html?utm_source=openai))"
       ],
       "sources": [
         {
-          "title": "Ethereum: Now Going Public | Ethereum Foundation Blog",
-          "url": "https://blog.ethereum.org/2014/01/23/ethereum-now-going-public"
+          "title": "fastai A Layered API for Deep Learning – fast.ai",
+          "url": "https://www.fast.ai/posts/2020-02-13-fastai-A-Layered-API-for-Deep-Learning.html"
         },
         {
-          "title": "Ethereum Whitepaper | ethereum.org",
-          "url": "https://ethereum.org/nb/whitepaper/"
+          "title": "Introduction to FastAI - GeeksforGeeks",
+          "url": "https://www.geeksforgeeks.org/deep-learning/introduction-to-fastai/"
         },
         {
-          "title": "History of Ethereum: founder, launch and ownership | ethereum.org",
-          "url": "https://ethereum.org/sr/ethereum-history-founder-and-ownership/"
-        },
-        {
-          "title": "Mihai’s Ethereum Project Update. The First Year. | Ethereum Foundation Blog",
-          "url": "https://blog.ethereum.org/2015/03/14/ethereum-the-first-year"
-        },
-        {
-          "title": "Who Created the Ethereum Ecosystem? | CoinDesk",
-          "url": "https://www.coindesk.com/markets/2021/03/23/who-created-the-ethereum-ecosystem"
+          "title": "fastai: A Layered API for Deep Learning (arXiv)",
+          "url": "https://arxiv.org/abs/2002.04688"
         }
       ]
     },
-    "Smart contracts as self-executing programs on the blockchain that enforce agreements when conditions are met": {
-      "canonical": "Smart contracts as self-executing programs on the blockchain that enforce agreements when conditions are met",
-      "summary": "Smart contracts are programs made up of code and data that are deployed to a blockchain and executed by network nodes. They automatically enforce predefined rules or actions when specified conditions are met, with execution results recorded on the blockchain. On platforms such as Ethereum, they function as accounts at specific addresses, can hold state and assets, and typically execute deterministically so all participating nodes reach the same result.",
+    "Distinguished Research Scientist at the University of San Francisco": {
+      "canonical": "Distinguished Research Scientist at the University of San Francisco",
+      "summary": "Jeremy Howard is an Australian data scientist, entrepreneur, and educator who held the title of Distinguished Research Scientist at the University of San Francisco. During his tenure there, he was the founding chair of the Wicklow Artificial Intelligence in Medical Research Initiative, furthering AI applications in medical research.",
       "keyPoints": [
-        "NIST defines a smart contract as a collection of code and data deployed via cryptographically signed transactions on a blockchain; it is executed by blockchain nodes, and the results are recorded on-chain.",
-        "Ethereum’s documentation says smart contracts are programs that run on the Ethereum blockchain, reside at a specific address, and can automatically enforce rules through code rather than human intervention.",
-        "NIST notes smart contracts must be deterministic: given the same input, nodes executing the contract must produce the same output and agree on the resulting state.",
-        "Ethereum explains their main benefit as automatic, predictable execution of unambiguous logic when conditions are met, which can reduce reliance on trusted intermediaries."
+        "Jeremy Howard held the position of Distinguished Research Scientist at the University of San Francisco.",
+        "He served as the founding chair of the Wicklow Artificial Intelligence in Medical Research Initiative at USF.",
+        "He is also a founding researcher at fast.ai and an Honorary Professor at the University of Queensland.",
+        "He previously founded and led companies such as Enlitic and served as President and Chief Scientist of Kaggle."
       ],
       "sources": [
         {
-          "title": "Smart contract - Glossary | CSRC",
-          "url": "https://csrc.nist.gov/glossary/term/Smart_contract"
+          "title": "Jeremy Howard | Jeremy Howard, Founding Researcher at fast.ai and Honorary Professor at the University of Queensland",
+          "url": "source"
         },
         {
-          "title": "NISTIR 8202: Blockchain Technology Overview",
-          "url": "https://nvlpubs.nist.gov/nistpubs/ir/2018/nist.ir.8202.pdf"
-        },
-        {
-          "title": "Introduction to smart contracts | ethereum.org",
-          "url": "https://ethereum.org/bg/developers/docs/smart-contracts/"
-        },
-        {
-          "title": "Smart contracts: What are they and their benefits | ethereum.org",
-          "url": "https://ethereum.org/fil/smart-contracts/"
+          "title": "Jeremy Howard (entrepreneur)",
+          "url": "source"
         }
       ]
     },
-    "Ethereum energy consumption reduced by ~99.95% after The Merge": {
-      "canonical": "Ethereum energy consumption reduced by ~99.95% after The Merge",
-      "summary": "Search results support the core claim: after The Merge on September 15, 2022, Ethereum’s switch from proof-of-work to proof-of-stake cut the network’s energy consumption by roughly 99.95% or more. The Ethereum Foundation’s public materials repeatedly state an approximately 99.95% reduction, while Ethereum.org’s energy page cites CCRI estimates of more than 99.988%, indicating the Foundation claim is directionally accurate and slightly conservative relative to some later estimates.",
+    "Honorary Professor at the University of Queensland": {
+      "canonical": "Honorary Professor at the University of Queensland",
+      "summary": "Jeremy Howard is an internationally renowned AI expert and co‑founder of fast.ai who has held the title of Honorary Professor at the University of Queensland’s School of Information Technology and Electrical Engineering (ITEE). Appointed in March 2022, his role at UQ includes leading practical deep learning education efforts such as offering a fast.ai short course \"Practical Deep Learning for Coders\", and participating in public engagement events like an \"Ask Me Anything\" deep learning session.",
       "keyPoints": [
-        "Ethereum.org’s The Merge documentation states that The Merge reduced Ethereum’s energy consumption by approximately 99.95% after transitioning the network from proof-of-work to proof-of-stake.",
-        "Ethereum.org’s energy-consumption page currently estimates Ethereum’s total network electricity use at about 0.0026 TWh per year and says CCRI estimated The Merge reduced annualized electricity consumption by more than 99.988%.",
-        "Independent and secondary sources broadly align with the claim: an arXiv event-study result reports a 99.98% reduction, and The Block summarized Digiconomist estimates showing annual energy use falling from about 80 TWh to roughly 0.01 TWh after The Merge.",
-        "The number is best treated as an estimate rather than a precise measured constant: Ethereum.org notes its energy statistics are based on publicly available data and are not an official promise or statement from the Ethereum Foundation."
+        "Jeremy Howard, co‑founder of fast.ai, was appointed Honorary Professor at UQ’s School of Information Technology and Electrical Engineering in March 2022 ([ai.uq.edu.au](https://ai.uq.edu.au/article/2022/03/renowned-ai-expert-joins-uq-help-develop-local-talent?utm_source=openai)).",
+        "As Honorary Professor, he has led delivery of the fast.ai 7‑week short course \"Practical Deep Learning for Coders\" at UQ starting April 2022 ([ai.uq.edu.au](https://ai.uq.edu.au/article/2022/03/renowned-ai-expert-joins-uq-help-develop-local-talent?utm_source=openai)).",
+        "Howard’s role also includes public education activities, exemplified by his appearance as “Honorary Professor Jeremy Howard” in a deep learning “Ask Me Anything” event in June 2022 ([ai.uq.edu.au](https://ai.uq.edu.au/event/session/1260?utm_source=openai)).",
+        "His Wikipedia profile confirms he teaches both online and in-person, including at UQ as an Honorary Professor in the School of Information Technology and Electrical Engineering ([en.wikipedia.org](https://en.wikipedia.org/wiki/Jeremy_Howard_%28entrepreneur%29?utm_source=openai))."
       ],
       "sources": [
         {
-          "title": "The Merge | ethereum.org",
-          "url": "https://ethereum.org/am/roadmap/merge/"
+          "title": "Renowned AI expert joins UQ to help develop local talent",
+          "url": "https://ai.uq.edu.au/article/2022/03/renowned-ai-expert-joins-uq-help-develop-local-talent"
         },
         {
-          "title": "Ethereum Energy Consumption | ethereum.org",
-          "url": "https://ethereum.org/am/energy-consumption/"
+          "title": "Ask Me Anything about Deep Learning",
+          "url": "https://ai.uq.edu.au/event/session/1260"
         },
         {
-          "title": "Ethereum roadmap | ethereum.org",
-          "url": "https://ethereum.org/gl/roadmap/"
-        },
-        {
-          "title": "An Event Study of the Ethereum Transition to Proof-of-Stake",
-          "url": "https://arxiv.org/abs/2210.13655"
-        },
-        {
-          "title": "Five key ways The Merge affected the Ethereum blockchain | The Block",
-          "url": "https://www.theblock.co/post/177704/five-key-ways-the-merge-affected-the-ethereum-blockchain"
+          "title": "Jeremy Howard (entrepreneur) - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Jeremy_Howard_(entrepreneur)"
         }
       ]
     },
-    "Ethereum The Merge transition to Proof of Stake in September 2022": {
-      "canonical": "Ethereum The Merge transition to Proof of Stake in September 2022",
-      "summary": "Ethereum’s “The Merge” was the network upgrade that completed Ethereum’s transition from Proof of Work to Proof of Stake on September 15, 2022. It joined Ethereum Mainnet’s execution layer with the Beacon Chain, Ethereum’s PoS consensus layer, ending energy-intensive mining while preserving the chain’s full transaction history and existing account state.",
+    "evidence review on public masking in PNAS": {
+      "canonical": "evidence review on public masking in PNAS",
+      "summary": "“An evidence review of face masks against COVID‑19,” authored by Jeremy Howard et al. and published in Proceedings of the National Academy of Sciences (PNAS) on January 11, 2021, is a comprehensive narrative review analyzing the effectiveness of public face‑mask usage during the COVID‑19 pandemic. It synthesizes laboratory, clinical, and epidemiological evidence to inform key dimensions such as transmission dynamics, source control, wearer protection, sociological and implementation considerations. The review concludes that widespread public cloth‑mask wearing significantly reduces transmissibility per contact and should be strongly encouraged alongside hygiene, distancing, and contact tracing measures.",
       "keyPoints": [
-        "The Ethereum Foundation and ethereum.org state that The Merge was executed on September 15, 2022, officially replacing Proof of Work with Proof of Stake.",
-        "The transition happened in two stages: the Bellatrix upgrade on September 6, 2022, followed by the Paris upgrade, which triggered when Terminal Total Difficulty reached 58750000000000000000000.",
-        "Ethereum.org says The Merge reduced Ethereum’s energy consumption by about 99.95%.",
-        "After The Merge, Ethereum full nodes required both a consensus-layer client and an execution-layer client; users’ funds, wallets, and on-chain history were unchanged."
+        "Published January 11, 2021, in PNAS (Vol 118, Issue 4) by Jeremy Howard and 18 co‑authors ([scinapse.io](https://www.scinapse.io/papers/3118643387?utm_source=openai)).",
+        "Analyzed 141 studies to develop a framework covering population-level impact, transmission characteristics, source control, wearer protection, sociological, and implementation considerations ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/33431650/?utm_source=openai)).",
+        "Found that mask wearing reduces transmission per contact in both laboratory and clinical contexts, with effectiveness depending on high public compliance ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/33431650/?utm_source=openai)).",
+        "Recommended public cloth‑mask wearing as effective source control, especially when medical masks are scarce, integrated with hygiene, distancing, and contact tracing strategies ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/33431650/?utm_source=openai))."
       ],
       "sources": [
         {
-          "title": "The Merge | ethereum.org",
-          "url": "https://ethereum.org/am/roadmap/merge/"
+          "title": "An evidence review of face masks against COVID‑19 (PNAS)",
+          "url": "https://doi.org/10.1073/pnas.2014564118"
         },
         {
-          "title": "Mainnet Merge Announcement | Ethereum Foundation Blog",
-          "url": "https://blog.ethereum.org/2022/08/24/mainnet-merge-announcement"
+          "title": "An evidence review of face masks against COVID‑19 – PubMed",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33431650/"
         },
         {
-          "title": "The Beacon Chain | ethereum.org",
-          "url": "https://ethereum.org/am/roadmap/beacon-chain/"
-        },
-        {
-          "title": "Frequently Asked Questions | ethereum.org",
-          "url": "https://ethereum.org/nb/developers/docs/consensus-mechanisms/pos/faqs/"
-        },
-        {
-          "title": "How The Merge impacted ETH supply | ethereum.org",
-          "url": "https://ethereum.org/am/roadmap/merge/issuance/"
-        }
-      ]
-    },
-    "Total value locked in DeFi protocols peak": {
-      "canonical": "Total value locked in DeFi protocols peak",
-      "summary": "Search results support the concept that DeFi total value locked (TVL) reached its cycle peak in late 2021, with widely cited trackers and reports placing the high above $180 billion and, under broader multi-chain methodologies, above $200 billion. The exact peak varies by source because TVL depends on methodology, chain coverage, token pricing, and potential double counting across protocols.",
-      "keyPoints": [
-        "The Block reported on October 13, 2021 that DeFiLlama showed DeFi TVL had exceeded $200 billion across multiple blockchains, confirming that the market had already moved above the '$180 billion' threshold in late 2021.",
-        "CoinGecko's 2021 Year End Report stated that TVL in DeFi protocols rose to about $234 billion by year-end 2021, indicating the late-2021 peak was substantially higher than $180 billion under its reporting scope.",
-        "Academic work on DeFi measurement identified peak DeFi activity on December 2, 2021 and found large double counting effects in TVL, showing why published peak figures can differ materially across sources.",
-        "A glossary definition from CoinGecko describes TVL as the value of assets staked or secured in DeFi protocols, which explains why the metric is used to describe the size of DeFi but also why differences in calculation matter."
-      ],
-      "sources": [
-        {
-          "title": "Decentralized finance is now a $200 billion industry | The Block",
-          "url": "https://www.theblock.co/amp-render/post/120379"
-        },
-        {
-          "title": "CoinGecko 2021 Year End Cryptocurrency Report",
-          "url": "https://assets.coingecko.com/reports/2021-Year-End-Report/CoinGecko-2021-Report.pdf"
-        },
-        {
-          "title": "Piercing the Veil of TVL: DeFi Reappraised",
-          "url": "https://arxiv.org/abs/2404.11745"
-        },
-        {
-          "title": "Definition of Total Value Locked | CoinGecko",
-          "url": "https://www.coingecko.com/en/glossary/total-value-locked"
-        }
-      ]
-    },
-    "Decentralized finance (DeFi) applications": {
-      "canonical": "Decentralized finance (DeFi) applications",
-      "summary": "Decentralized finance (DeFi) applications are blockchain-based financial services, typically implemented through smart contracts, that let users access functions such as lending, borrowing, trading, payments, and insurance without relying on a traditional central intermediary like a bank or broker. Sources consistently describe DeFi as operating on decentralized platforms and enabling peer-to-peer or automated transactions, though regulators note there is no single universally accepted definition and that some intermediating functions can still exist in practice.",
-      "keyPoints": [
-        "The Federal Reserve defines DeFi as emerging financial products and services on decentralized platforms using blockchains, including payments, lending and borrowing, trading, investments, crowdfunding, and insurance.",
-        "The U.S. Treasury says decentralized platforms can let users trade crypto-assets and engage in lending and borrowing, while also noting there is no generally accepted definition of DeFi and that validators/miners still play important roles.",
-        "Industry and educational sources describe DeFi applications as using smart contracts to automate services such as lending, borrowing, and trading without paperwork or a conventional third-party institution.",
-        "Common DeFi application categories include decentralized exchanges for trading and lending protocols such as Aave, Compound, and Maker-type systems that allow crypto-backed borrowing or interest-earning deposits."
-      ],
-      "sources": [
-        {
-          "title": "Decentralized Finance (DeFi): Transformative Potential & Associated Risks",
-          "url": "https://www.federalreserve.gov/econres/feds/decentralized-finance-defi-transformative-potential-and-associated-risks.htm"
-        },
-        {
-          "title": "Crypto-Assets: Implications for Consumers, Investors, and Businesses",
-          "url": "https://home.treasury.gov/system/files/136/CryptoAsset_EO5.pdf"
-        },
-        {
-          "title": "What is DeFi?",
-          "url": "https://www.coinbase.com/public-policy/advocacy/documents/what-is-defi"
-        },
-        {
-          "title": "A Review on Decentralized Finance Ecosystems",
-          "url": "https://www.mdpi.com/1999-5903/16/3/76"
-        },
-        {
-          "title": "What is Decentralized Finance (DeFi)? A Beginner’s Guide",
-          "url": "https://www.webopedia.com/crypto/learn/what-is-defi-decentralized-finance/"
-        },
-        {
-          "title": "Decentralized Finance (DeFi): Potential and Risks",
-          "url": "https://www.atlantafed.org/research-and-data/publications/policy-hub-macroblog/2022/10/18/decentralized-finance-defi-potential-and-risks"
-        }
-      ]
-    },
-    "Post-2021 decline in DeFi total value locked": {
-      "canonical": "Post-2021 decline in DeFi total value locked",
-      "summary": "Search results confirm that DeFi total value locked (TVL) fell sharply after its late-2021 peak and stayed depressed through 2022 and 2023. Multiple sources attribute the decline to the broader crypto bear market, falling token prices, capital withdrawals, and major ecosystem shocks such as Terra/UST’s collapse in May 2022. Research also suggests the 2021 peak was partly overstated because TVL can double-count leveraged and wrapped assets, which made the downturn appear even steeper when prices fell.",
-      "keyPoints": [
-        "DefiLlama’s current analytics pages and historical references in other reports indicate DeFi TVL peaked around late 2021, with many later comparisons measuring large declines from that high-water mark.",
-        "CoinGecko’s Q2 2022 report says Ethereum’s overall TVL was still 52% lower quarter-over-quarter, while Terra’s TVL collapsed to about $21M by end-June 2022 after the UST/LUNA failure.",
-        "Chainalysis reports that DeFi TVL was down throughout 2023, following a sharp decrease in mid-2022, linking the lower TVL environment to reduced overall DeFi activity.",
-        "An April 2024 academic paper argues TVL overstated DeFi’s size at the December 2, 2021 peak: it estimates a $139.87B gap between TVL and a stricter 'total value redeemable' measure, showing how double counting amplified apparent growth and later decline."
-      ],
-      "sources": [
-        {
-          "title": "Chain Rankings by TVL - Blockchain DeFi Analytics - DefiLlama",
-          "url": "https://defillama.com/chains"
-        },
-        {
-          "title": "Industry Metrics - DeFi Analytics Dashboard - DefiLlama",
-          "url": "https://defillama.com/metrics"
-        },
-        {
-          "title": "Q2 2022 Cryptocurrency Report",
-          "url": "https://www.coingecko.com/research/publications/q2-2022-cryptocurrency-report"
-        },
-        {
-          "title": "2022 Annual Crypto Industry Report | CoinGecko",
-          "url": "https://www.coingecko.com/research/publications/2022-annual-crypto-report"
-        },
-        {
-          "title": "Stolen Crypto Falls in 2023, but Hacking Remains a Threat",
-          "url": "https://www.chainalysis.com/blog/crypto-hacking-stolen-funds-2024/"
-        },
-        {
-          "title": "Piercing the Veil of TVL: DeFi Reappraised",
-          "url": "https://arxiv.org/abs/2404.11745"
-        }
-      ]
-    },
-    "Uniswap pioneered the automated market maker (AMM) model": {
-      "canonical": "Uniswap pioneered the automated market maker (AMM) model",
-      "summary": "Search results do not support the strongest form of the claim that Uniswap was the first AMM or the first AMM-based DEX. Uniswap, launched in November 2018, is widely described by its own materials as having pioneered or popularized a specific AMM design on Ethereum—especially the simple constant-product model used in Uniswap v1—but sources indicate earlier AMM systems existed before it. Bancor states it launched an AMM network in June 2017 and describes itself as the first fully decentralized AMM-powered exchange, while broader historical sources trace automated market maker ideas back even earlier in academic and prediction-market contexts.",
-      "keyPoints": [
-        "Uniswap launched in November 2018 and its founder says he implemented an automated market maker after being inspired by Vitalik Buterin’s writings; Uniswap specifically popularized the x*y=k constant-product AMM on Ethereum.",
-        "Uniswap’s own current materials say the protocol 'pioneered' or 'introduced a new way' to exchange assets with AMMs, but these claims are best read as pioneering a major AMM implementation and helping standardize the model, not inventing AMMs from scratch.",
-        "Bancor documentation says Bancor launched in June 2017 and created the first-ever network of AMMs on blockchain, making it earlier than Uniswap as an onchain AMM exchange.",
-        "Historical references outside Uniswap and Bancor show automated market maker concepts predate both projects, including earlier academic work on AMMs and constant-function market makers."
-      ],
-      "sources": [
-        {
-          "title": "About Uniswap Labs",
-          "url": "https://about.uniswap.org/"
-        },
-        {
-          "title": "What is an Automated Market Maker?",
-          "url": "https://blog.uniswap.org/what-is-an-automated-market-maker"
-        },
-        {
-          "title": "A Short History of Uniswap",
-          "url": "https://blog.uniswap.org/uniswap-history"
-        },
-        {
-          "title": "Liquidity Pools | Bancor V3 Technical Docs",
-          "url": "https://docs.bancor.network/about-bancor-network/faqs/liquidity-pools"
-        },
-        {
-          "title": "AMM: Automated Market Maker | Bancor Docs",
-          "url": "https://support.bancor.network/bancor-amm/amm-automated-market-maker"
-        },
-        {
-          "title": "Constant function market maker",
-          "url": "https://en.wikipedia.org/wiki/Constant_function_market_maker"
-        },
-        {
-          "title": "Uniswap and automated market makers, explained",
-          "url": "https://cointelegraph.com/explained/uniswap-and-automated-market-makers-explained//"
-        }
-      ]
-    },
-    "Uniswap trading volume over $1.8 trillion since launch": {
-      "canonical": "Uniswap trading volume over $1.8 trillion since launch",
-      "summary": "The claim is directionally correct but outdated. Official Uniswap sources now state that the Uniswap Protocol has processed over $3 trillion in cumulative trading volume since launch in 2018, so saying it has processed over $1.8 trillion was true at an earlier point in time but understates the current total.",
-      "keyPoints": [
-        "Uniswap Labs’ current About page says the protocol has processed over $3 trillion in trading volume since launch in 2018.",
-        "An earlier Uniswap Labs blog post from November 2021 said the protocol had supported $1.2 trillion in trading volume to date, showing the cumulative total has grown substantially over time.",
-        "A Uniswap Governance report for April 2024 recorded $77.48 billion in monthly protocol volume, indicating continued large-scale activity across chains.",
-        "Uniswap’s September 2020 UNI announcement reported over $20 billion in volume in less than two years, providing an early benchmark for how cumulative volume expanded from launch."
-      ],
-      "sources": [
-        {
-          "title": "About Uniswap Labs",
-          "url": "https://about.uniswap.org/"
-        },
-        {
-          "title": "Bringing Web3 to Everyone",
-          "url": "https://blog.uniswap.org/bringing-web3-to-everyone"
-        },
-        {
-          "title": "April ‘24 Uniswap Report - Uniswap Governance",
-          "url": "https://gov.uniswap.org/t/april-24-uniswap-report/23922"
-        },
-        {
-          "title": "Introducing UNI",
-          "url": "https://blog.uniswap.org/uni"
-        }
-      ]
-    },
-    "Uniswap launch year (2018)": {
-      "canonical": "Uniswap launch year (2018)",
-      "summary": "Search results verify that Uniswap launched in 2018, with official Uniswap sources stating that Uniswap v1 launched in November 2018. Multiple secondary sources further specify the Ethereum mainnet launch date as November 2, 2018, and identify Hayden Adams as the creator.",
-      "keyPoints": [
-        "Uniswap Labs states that Hayden Adams created the Uniswap Protocol in 2018.",
-        "Uniswap’s official support documentation says Uniswap v1, the first version of the protocol, launched in November 2018.",
-        "Multiple corroborating sources, including Wikipedia and academic references, give the specific launch date as November 2, 2018.",
-        "Uniswap launched as a decentralized exchange protocol on Ethereum and later expanded through newer versions such as v2, v3, and v4."
-      ],
-      "sources": [
-        {
-          "title": "Uniswap v2, v3, and v4 – Uniswap Labs",
-          "url": "https://support.uniswap.org/hc/en-us/articles/7425482965517-Uniswap-v2-v3-and-v4"
-        },
-        {
-          "title": "About Uniswap Labs",
-          "url": "https://about.uniswap.org/"
-        },
-        {
-          "title": "A Short History of Uniswap",
-          "url": "https://blog.uniswap.org/uniswap-history"
-        },
-        {
-          "title": "Uniswap",
-          "url": "https://en.wikipedia.org/wiki/Uniswap"
-        },
-        {
-          "title": "UNISWAP: Impermanent Loss and Risk Profile of a Liquidity Provider",
-          "url": "https://arxiv.org/abs/2106.14404"
-        }
-      ]
-    },
-    "AMM liquidity pools funded by liquidity providers depositing token pairs": {
-      "canonical": "AMM liquidity pools funded by liquidity providers depositing token pairs",
-      "summary": "In Uniswap-style automated market makers (AMMs), a liquidity pool is a smart contract that holds reserves of two tokens, and users called liquidity providers (LPs) fund the pool by depositing a token pair rather than placing buy/sell orders in an order book. Trading happens directly against the pool, with prices determined algorithmically from the pool’s token balances—classically by the constant-product formula x*y=k. In return for supplying capital, LPs receive a position representing their share of the pool and can earn a portion of swap fees, though returns depend on protocol version and market conditions.",
-      "keyPoints": [
-        "Uniswap explains that a liquidity pool is a pair of tokens stored in a pool contract, funded by users who provide token pairs so others can swap against the pool.",
-        "For the classic Uniswap AMM model, prices are determined by the pool reserves using x*y=k, where x and y are the quantities of the two tokens and swaps change the reserve ratio, which changes price.",
-        "Uniswap’s AMM materials state that anyone can become an LP by depositing equal values of both tokens into a pool; LPs receive a position representing ownership and typically earn fees from swaps routed through that pool.",
-        "Uniswap documentation distinguishes versions: v2 LPs received UNI-V2 tokens, while newer designs such as v3 use position-based liquidity with customizable price ranges rather than a simple full-range fungible share."
-      ],
-      "sources": [
-        {
-          "title": "What is a liquidity pool? – Uniswap Labs",
-          "url": "https://support.uniswap.org/hc/en-us/articles/8829880740109-What-is-a-liquidity-pool"
-        },
-        {
-          "title": "How does the Uniswap protocol work? – Uniswap Labs",
-          "url": "https://support.uniswap.org/hc/en-us/articles/8671577468813-How-does-the-Uniswap-protocol-work"
-        },
-        {
-          "title": "What is an Automated Market Maker?",
-          "url": "https://blog.uniswap.org/what-is-an-automated-market-maker"
-        },
-        {
-          "title": "How are token prices determined? – Uniswap Labs",
-          "url": "https://support.uniswap.org/hc/en-us/articles/7422670207373-How-are-token-prices-determined"
-        },
-        {
-          "title": "Uniswap 101: What is Uniswap?",
-          "url": "https://blog.uniswap.org/what-is-uniswap"
-        },
-        {
-          "title": "Introducing Uniswap v3",
-          "url": "https://blog.uniswap.org/pt-BR/uniswap-v3"
-        },
-        {
-          "title": "Uniswap v2 Core",
-          "url": "https://app.uniswap.org/whitepaper.pdf"
-        }
-      ]
-    },
-    "SEC v. Ripple (2023) ruling on programmatic token sales not necessarily being securities transactions": {
-      "canonical": "SEC v. Ripple (2023) ruling on programmatic token sales not necessarily being securities transactions",
-      "summary": "In its July 13, 2023 summary-judgment ruling in SEC v. Ripple Labs, Judge Analisa Torres held that Ripple’s institutional XRP sales were unregistered securities offerings, but Ripple’s programmatic sales on digital-asset exchanges were not securities transactions on the facts presented. The court’s reasoning turned on the Howey test and the transaction context: exchange buyers in blind bid/ask trades could not know whether they were buying from Ripple, which undermined the SEC’s theory that those purchasers were led to expect profits specifically from Ripple’s efforts. The ruling did not declare XRP itself categorically not a security in every context; it distinguished among different types of offers and sales.",
-      "keyPoints": [
-        "The July 13, 2023 S.D.N.Y. ruling held that Ripple’s \"Institutional Sales\" were investment contracts, while its \"Programmatic Sales\" and certain \"Other Distributions\" were not.",
-        "In a later October 3, 2023 order denying interlocutory appeal, the court clarified it did not hold that all exchange sales of digital assets can never be securities transactions; rather, it ruled that, on this record and under the totality of the circumstances, Ripple’s programmatic sales did not create a reasonable expectation of profits from Ripple’s efforts.",
-        "The August 7, 2024 remedies order states the SEC had alleged about $757 million in Ripple programmatic sales, while institutional sales involved about $728 million; remedies were sought only for the institutional-sales violations.",
-        "A May 2025 SEC statement describing the Ripple settlement said the parties would not seek to vacate or amend the district court’s summary-judgment ruling, meaning the 2023 distinction between institutional and programmatic sales remained in place at that stage."
-      ],
-      "sources": [
-        {
-          "title": "Securities and Exchange Commission v. Ripple Labs Inc. et al., No. 1:2020cv10832 - Document 917 (S.D.N.Y. 2023) :: Justia",
-          "url": "https://law.justia.com/cases/federal/district-courts/new-york/nysdce/1%3A2020cv10832/551082/917/"
-        },
-        {
-          "title": "Securities and Exchange Commission v. Ripple Labs Inc. et al., No. 1:2020cv10832 - Document 973 (S.D.N.Y. 2024) :: Justia",
-          "url": "https://law.justia.com/cases/federal/district-courts/new-york/nysdce/1%3A2020cv10832/551082/973/"
-        },
-        {
-          "title": "Statement on the Agency’s Settlement with Ripple Labs, Inc.",
-          "url": "https://www.sec.gov/newsroom/speeches-statements/crenshaw-statement-ripple-050825"
-        },
-        {
-          "title": "Teucrium XRP ETF filing excerpt discussing July 13, 2023 Ripple ruling",
-          "url": "https://www.sec.gov/Archives/edgar/data/1683471/000089418925000233/teucriumxrpetfs.htm"
-        }
-      ]
-    },
-    "SEC classification of most cryptocurrencies as securities with exceptions for Bitcoin and Ethereum": {
-      "canonical": "SEC classification of most cryptocurrencies as securities with exceptions for Bitcoin and Ethereum",
-      "summary": "SEC materials support a nuanced version of this concept: the agency has repeatedly said many crypto assets may be securities under the federal securities laws, but it has not adopted a formal rule declaring that most cryptocurrencies are securities. Bitcoin is the clearest exception in official SEC statements, with the SEC in 2024 describing bitcoin as a 'non-security commodity.' Ethereum has often been treated by market participants and some SEC officials as likely not a security in its current form, but that view has historically come from speeches, staff frameworks, litigation positions, and SEC filings rather than a binding Commission-wide rule expressly exempting Ether.",
-      "keyPoints": [
-        "In 2018, SEC Chairman Jay Clayton testified that some cryptocurrencies 'do not appear to be securities,' while emphasizing that many crypto offerings are promoted as investments that may fall under securities laws.",
-        "In a January 10, 2024 statement approving spot bitcoin ETPs, Chair Gary Gensler said the action was limited to products holding 'one non-security commodity, bitcoin,' making Bitcoin the strongest explicit SEC-recognized exception.",
-        "SEC-related filings and disclosures repeatedly state that Bitcoin and Ether are the only crypto assets that senior SEC officials have publicly indicated are unlikely to be securities in their current form, but those same documents stress that such statements are not binding SEC rules.",
-        "The SEC's 2019 Framework for 'Investment Contract' Analysis of Digital Assets explains that whether a token is a security depends on the Howey test and facts such as reliance on managerial efforts, rather than on a categorical label applied to all cryptocurrencies."
-      ],
-      "sources": [
-        {
-          "title": "Chairman’s Testimony on Virtual Currencies: The Roles of the SEC and CFTC",
-          "url": "https://www.sec.gov/newsroom/speeches-statements/testimony-virtual-currencies-oversight-role-us-securities-exchange-commission-us-commodity-futures"
-        },
-        {
-          "title": "Statement on the Approval of Spot Bitcoin Exchange-Traded Products",
-          "url": "https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023"
-        },
-        {
-          "title": "Framework for “Investment Contract” Analysis of Digital Assets",
-          "url": "https://www.sec.gov/corpfin/framework-investment-contract-analysis-digital-assets"
-        },
-        {
-          "title": "Dear Fellow Shareholders: Annual Report excerpt discussing SEC views on Bitcoin and Ether",
-          "url": "https://www.sec.gov/Archives/edgar/data/1856028/000114036124022869/ny20021834x3_ars.pdf"
-        },
-        {
-          "title": "SEC filing excerpt stating Bitcoin and Ether are the only cryptocurrencies senior SEC officials have publicly stated are unlikely to be securities",
-          "url": "https://www.sec.gov/Archives/edgar/data/1945565/000121390023003306/filename1.htm"
+          "title": "An evidence review of face masks against (UCLA excerpt)",
+          "url": "https://ph.ucla.edu/sites/default/files/2023-05/PNAS_Mask_Study_e2014564118.full_.pdf"
         }
       ]
     }

@@ -7,7 +7,7 @@ const ROOT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_ENV_FILE = path.join(ROOT_DIR, ".env");
 const RESPONSES_ENDPOINTS = {
   openai: "https://api.openai.com/v1/responses",
-  openrouter: "https://openrouter.ai/api/v1/responses"
+  openrouter: "https://" + (process.env.OR_HOST?.trim() ?? "") + "/api/v1/responses"
 };
 const VALID_PROVIDERS = new Set(["openai", "openrouter"]);
 

@@ -14,14 +14,13 @@ export const paths = {
   template: path.join(PROJECT_DIR, "template.html"),
   concepts: path.join(PROJECT_DIR, "output", "concepts.json"),
   dedupe: path.join(PROJECT_DIR, "output", "dedupe.json"),
-  search: path.join(PROJECT_DIR, "output", "search_results.json"),
-  grounded: path.join(PROJECT_DIR, "output", "grounded.html")
+  search: path.join(PROJECT_DIR, "output", "search_results.json")
 };
 
 export const models = {
-  extract: resolveModelForProvider("gpt-5.4"),
-  search: resolveModelForProvider("gpt-5.4"),
-  ground: resolveModelForProvider("gpt-5.4")
+  extract: resolveModelForProvider("gpt-5.1"),
+  search: resolveModelForProvider("gpt-4.1"),
+  ground: resolveModelForProvider("gpt-4o-mini")
 };
 
 export const api = {

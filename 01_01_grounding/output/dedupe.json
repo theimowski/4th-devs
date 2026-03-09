@@ -1,203 +1,133 @@
 {
-  "sourceFile": "/Users/overment/playground/devs/01_01_grounding/notes/crypto.md",
-  "model": "openai/gpt-5.4",
-  "sourceHash": "77f9f11488f95cf87bf90af42729684b52c9dd8e2bcf7e4fde758f6c46f722da",
-  "conceptsHash": "c04c37da3fe0aceba05b1fcbcde6f5f768d55d7894166357c6309e0f0d7d30a5",
-  "paragraphCount": 13,
-  "conceptCount": 30,
-  "dedupeHash": "ca563b6908434e28ec339589d3ccdbefe1b7f3f5196a09bac453e8b07ddd4d3e",
+  "sourceFile": "/Users/ext101538/oss/theimowski/4th-devs/01_01_grounding/notes/jh.md",
+  "model": "openai/gpt-5.1",
+  "sourceHash": "53b13e19fe1e54c6e693d67b30a13fbd26bd79e8b6603ed30dc9a06fbd1e6700",
+  "conceptsHash": "671fa76bdb56b05a33326c9bd033f792ff75c70d9b905185d1b3b3af8dc8b705",
+  "paragraphCount": 11,
+  "conceptCount": 18,
+  "dedupeHash": "b865b5890ef45a3b0804e6afba426f09621cf9efb0f0d52decc9eaa8348b0989",
   "groups": [
     {
-      "canonical": "Bitcoin: A Peer-to-Peer Electronic Cash System whitepaper",
+      "canonical": "Jeremy Howard",
+      "ids": [
+        0,
+        2
+      ],
+      "aliases": [
+        "Jeremy Howard"
+      ],
+      "rationale": "Both entries are the same named individual (Jeremy Howard) with identical surface forms and entity category; they differ only in search query and paragraph context."
+    },
+    {
+      "canonical": "Jeremy Howard co-founder of fast.ai and deep learning accessibility",
       "ids": [
         1
       ],
-      "aliases": [
-        "Bitcoin whitepaper \"Bitcoin: A Peer-to-Peer Electronic Cash System\""
-      ],
-      "rationale": "Unique reference to a specific document title; no strict paraphrase match in the list."
-    },
-    {
-      "canonical": "Bitcoin created in 2008 by Satoshi Nakamoto",
-      "ids": [
-        2
-      ],
       "aliases": [],
-      "rationale": "Distinct historical claim about Bitcoin's origin and creator; not a strict paraphrase of any other item."
+      "rationale": "Unique biographical claim about Jeremy Howard’s role and impact; no other claim with the same meaning and category."
     },
     {
-      "canonical": "Bitcoin as decentralized digital currency without central banks or intermediaries",
+      "canonical": "fast.ai",
       "ids": [
         3
       ],
       "aliases": [],
-      "rationale": "Distinct characterization claim about Bitcoin's nature; no same-category paraphrase present."
+      "rationale": "Refers to the fast.ai organization/project; distinct from the fastai software library despite close relation."
     },
     {
-      "canonical": "Bitcoin blockchain throughput around 7 transactions per second",
+      "canonical": "Education at Melbourne Grammar and University of Melbourne",
+      "ids": [
+        4
+      ],
+      "aliases": [],
+      "rationale": "Specific education-history claim; no other claim with identical content and category."
+    },
+    {
+      "canonical": "Birth in London and move to Melbourne in 1976",
       "ids": [
         5
       ],
       "aliases": [],
-      "rationale": "Distinct metric about Bitcoin throughput; not equivalent to any other metric."
+      "rationale": "Specific biographical place/time claim; no matching paraphrased claim elsewhere."
     },
     {
-      "canonical": "Visa throughput around 24,000 transactions per second",
-      "ids": [
-        6
-      ],
-      "aliases": [],
-      "rationale": "Distinct metric about Visa throughput; no strict paraphrase counterpart."
-    },
-    {
-      "canonical": "Hash-linked blocks forming an immutable chain",
-      "ids": [
-        7
-      ],
-      "aliases": [],
-      "rationale": "Distinct definition of blockchain structure; not a strict paraphrase of another definition."
-    },
-    {
-      "canonical": "Bitcoin block subsidy started at 50 BTC and halves about every four years",
+      "canonical": "ULMFiT helped pave the way for modern language models like GPT",
       "ids": [
         9
       ],
       "aliases": [],
-      "rationale": "Distinct quantitative issuance metric; no equivalent metric in the list."
+      "rationale": "Influence-on-later-models claim; distinct from technical claims about what ULMFiT pioneered."
     },
     {
-      "canonical": "Bitcoin Proof of Work consensus mechanism",
+      "canonical": "ULMFiT pioneered transfer learning and fine-tuning in NLP",
       "ids": [
         10
       ],
       "aliases": [],
-      "rationale": "Distinct method naming Bitcoin's consensus mechanism; not the same claim as mining-process descriptions."
+      "rationale": "Technical historical claim about ULMFiT’s role; not a paraphrase of its influence on GPT models."
     },
     {
-      "canonical": "Miners compete to solve cryptographic puzzles",
+      "canonical": "ULMFiT (Universal Language Model Fine-tuning)",
       "ids": [
         11
       ],
-      "aliases": [],
-      "rationale": "Distinct method describing miner behavior; related to Proof of Work but not a strict paraphrase."
+      "aliases": [
+        "ULMFiT",
+        "Universal Language Model Fine-tuning"
+      ],
+      "rationale": "Term/algorithm name with abbreviation and expansion; both surface forms denote the same term in the same category."
     },
     {
-      "canonical": "Block reward for adding the next block",
+      "canonical": "simplifies implementation of complex neural networks",
       "ids": [
         12
       ],
       "aliases": [],
-      "rationale": "Distinct claim about block addition and rewards; not equivalent to subsidy schedule or mining method entries."
+      "rationale": "Claim about the benefit of an API; no other claim with the same meaning and category."
     },
     {
-      "canonical": "Ethereum proposed by Vitalik Buterin in 2013 and launched in 2015",
+      "canonical": "layered API for deep learning",
+      "ids": [
+        13
+      ],
+      "aliases": [],
+      "rationale": "Method/design description; not a paraphrase of simplification or other concepts."
+    },
+    {
+      "canonical": "fastai library",
       "ids": [
         14
       ],
-      "aliases": [],
-      "rationale": "Distinct historical claim about Ethereum's proposal and launch dates; no strict paraphrase match."
+      "aliases": [
+        "fastai Library"
+      ],
+      "rationale": "Refers specifically to the fastai software library entity, distinct from the broader fast.ai organization."
     },
     {
-      "canonical": "Smart contracts as self-executing programs on the blockchain that enforce agreements when conditions are met",
+      "canonical": "Distinguished Research Scientist at the University of San Francisco",
       "ids": [
         15
       ],
       "aliases": [],
-      "rationale": "Distinct definition of smart contracts; no equivalent definition present."
+      "rationale": "Single biographical position claim; no strict paraphrase elsewhere."
     },
     {
-      "canonical": "Ethereum energy consumption reduced by ~99.95% after The Merge",
+      "canonical": "Honorary Professor at the University of Queensland",
       "ids": [
         16
       ],
-      "aliases": [
-        "Ethereum energy consumption reduced by ~99.95% after The Merge (Ethereum Foundation claim)"
-      ],
-      "rationale": "Distinct result about post-Merge energy reduction; not the same as the Merge event itself."
+      "aliases": [],
+      "rationale": "Single academic title/affiliation claim; no strict paraphrase elsewhere."
     },
     {
-      "canonical": "Ethereum The Merge transition to Proof of Stake in September 2022",
+      "canonical": "evidence review on public masking in PNAS",
       "ids": [
         17
       ],
       "aliases": [
-        "Ethereum 'The Merge' transition to Proof of Stake (September 2022)"
+        "influential evidence review published in PNAS"
       ],
-      "rationale": "Distinct claim about a dated protocol transition; related to but not the same as its energy-consumption result."
-    },
-    {
-      "canonical": "Total value locked in DeFi protocols peak",
-      "ids": [
-        20
-      ],
-      "aliases": [
-        "Total value locked (TVL) in DeFi protocols peak"
-      ],
-      "rationale": "Distinct metric about DeFi TVL peak; not a paraphrase of the later decline result."
-    },
-    {
-      "canonical": "Decentralized finance (DeFi) applications",
-      "ids": [
-        21
-      ],
-      "aliases": [],
-      "rationale": "Distinct definition of DeFi applications; no strict paraphrase equivalent."
-    },
-    {
-      "canonical": "Post-2021 decline in DeFi total value locked",
-      "ids": [
-        22
-      ],
-      "aliases": [],
-      "rationale": "Distinct result describing a decline in TVL; not equivalent to the TVL peak metric."
-    },
-    {
-      "canonical": "Uniswap pioneered the automated market maker (AMM) model",
-      "ids": [
-        23
-      ],
-      "aliases": [],
-      "rationale": "Distinct historical claim about Uniswap's role in AMMs; no strict paraphrase present."
-    },
-    {
-      "canonical": "Uniswap trading volume over $1.8 trillion since launch",
-      "ids": [
-        24
-      ],
-      "aliases": [],
-      "rationale": "Distinct cumulative volume metric; not equivalent to launch year or AMM mechanism items."
-    },
-    {
-      "canonical": "Uniswap launch year (2018)",
-      "ids": [
-        25
-      ],
-      "aliases": [],
-      "rationale": "Distinct historical claim about Uniswap's launch timing; no strict paraphrase match."
-    },
-    {
-      "canonical": "AMM liquidity pools funded by liquidity providers depositing token pairs",
-      "ids": [
-        26
-      ],
-      "aliases": [],
-      "rationale": "Distinct definition of the AMM liquidity-pool mechanism; not the same as claims about Uniswap history or volume."
-    },
-    {
-      "canonical": "SEC v. Ripple (2023) ruling on programmatic token sales not necessarily being securities transactions",
-      "ids": [
-        28
-      ],
-      "aliases": [],
-      "rationale": "Distinct legal result tied to a specific case; not equivalent to broader SEC classification claims."
-    },
-    {
-      "canonical": "SEC classification of most cryptocurrencies as securities with exceptions for Bitcoin and Ethereum",
-      "ids": [
-        29
-      ],
-      "aliases": [],
-      "rationale": "Distinct regulatory claim about SEC classification; related to but not a strict paraphrase of the Ripple ruling."
+      "rationale": "Single reference to a specific published evidence review; no parallel reference with the same meaning."
     }
   ]
 }

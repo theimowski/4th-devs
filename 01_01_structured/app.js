@@ -6,7 +6,7 @@ import {
 } from "../config.js";
 import { extractResponseText } from "./helpers.js";
 
-const MODEL = resolveModelForProvider("gpt-5.4");
+const MODEL = resolveModelForProvider("gpt-4.1-mini");
 
 async function extractPerson(text) {
   const response = await fetch(RESPONSES_API_ENDPOINT, {
@@ -58,24 +58,29 @@ const personSchema = {
         type: ["string", "null"],
         description: "Job title or profession. Use null if not mentioned."
       },
+      maritalStatus: {
+        type: ["string", "null"],
+        description: "Marital status (e.g., single, married). Use null if not mentioned."
+      },
       skills: {
         type: "array",
         items: { type: "string" },
         description: "List of skills, technologies, or competencies. Empty array if none mentioned."
       }
     },
-    required: ["name", "age", "occupation", "skills"],
+    required: ["name", "age", "occupation", "maritalStatus", "skills"],
     additionalProperties: false
   }
 };
 
 async function main() {
-  const text = "John is 30 years old and works as a software engineer. He is skilled in JavaScript, Python, and React.";
+  const text = "John is 30 years old and works as a software engineer. He is skilled in JavaScript, Python, and React. He has a partner and two children.";
   const person = await extractPerson(text);
 
   console.log("Name:", person.name ?? "unknown");
   console.log("Age:", person.age ?? "unknown");
   console.log("Occupation:", person.occupation ?? "unknown");
+  console.log("Marital Status:", person.maritalStatus ?? "unknown");
   console.log("Skills:", person.skills.length ? person.skills.join(", ") : "none");
 }
 

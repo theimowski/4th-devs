@@ -6,7 +6,7 @@ import {
 } from "../config.js";
 import { extractResponseText, toMessage } from "./helpers.js";
 
-const MODEL = resolveModelForProvider("gpt-5.2");
+const MODEL = resolveModelForProvider("gpt-4.1-mini");
 
 async function chat(input, history = []) {
   const response = await fetch(RESPONSES_API_ENDPOINT, {
@@ -59,7 +59,9 @@ async function main() {
       content: firstAnswer.text
     }
   ];
-  const secondAnswer = await chat(secondQuestion, secondQuestionContext);
+  //const secondAnswer = await chat(secondQuestion, secondQuestionContext);
+  // ! no context
+  const secondAnswer = await chat(secondQuestion);
 
   console.log("Q:", firstQuestion);
   console.log("A:", firstAnswer.text, `(${firstAnswer.reasoningTokens} reasoning tokens)`);

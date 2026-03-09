@@ -1,0 +1,8 @@
+
+> lesson1:structured
+> node ./01_01_structured/app.js
+
+Name: John
+Age: 30
+Occupation: software engineer
+Skills: JavaScript, Python, React

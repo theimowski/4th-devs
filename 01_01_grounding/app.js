@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import path from "node:path";
 
 import { paths, cli } from "./src/config.js";
 import { splitParagraphs } from "./src/utils/text.js";
@@ -13,6 +14,9 @@ const main = async () => {
   const sourceFile = await resolveMarkdownPath(paths.notes, cli.inputFile);
   const markdown = await readFile(sourceFile, "utf8");
   const paragraphs = splitParagraphs(markdown);
+
+  const baseName = path.basename(sourceFile, ".md");
+  const groundedPath = path.join(paths.output, `grounded-${baseName}.html`);
 
   console.log(`\n📄 Source: ${sourceFile}`);
   console.log(`   Paragraphs: ${paragraphs.length}\n`);
@@ -30,9 +34,9 @@ const main = async () => {
   console.log(`   Results: ${Object.keys(searchData.resultsByCanonical).length}\n`);
 
   console.log("4. Generating HTML...");
-  if (cli.force || !existsSync(paths.grounded)) {
-    await generateAndApplyTemplate(markdown, conceptsData, dedupeData, searchData);
-    console.log(`   Created: ${paths.grounded}\n`);
+  if (cli.force || !existsSync(groundedPath)) {
+    await generateAndApplyTemplate(markdown, conceptsData, dedupeData, searchData, groundedPath);
+    console.log(`   Created: ${groundedPath}\n`);
   } else {
     console.log(`   Skipped (exists, use --force to regenerate)\n`);
   }
@@ -41,7 +45,7 @@ const main = async () => {
   console.log(`   ${paths.concepts}`);
   console.log(`   ${paths.dedupe}`);
   console.log(`   ${paths.search}`);
-  console.log(`   ${paths.grounded}`);
+  console.log(`   ${groundedPath}`);
 };
 
 main().catch((error) => {

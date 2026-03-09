@@ -121,7 +121,8 @@ export const generateAndApplyTemplate = async (
   markdown,
   conceptsData,
   dedupeData,
-  searchData
+  searchData,
+  groundedPath
 ) => {
   const groundingItems = buildGroundingItems(
     conceptsData,
@@ -173,7 +174,7 @@ export const generateAndApplyTemplate = async (
   const filled = template.replace("<!--CONTENT-->", htmlChunk);
 
   await ensureDir(paths.output);
-  await writeFile(paths.grounded, filled, "utf8");
+  await writeFile(groundedPath, filled, "utf8");
 
-  return paths.grounded;
+  return groundedPath;
 };

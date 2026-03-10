@@ -50,5 +50,56 @@ export const tools = [
       additionalProperties: false
     },
     strict: true
+  },
+  {
+    type: "function",
+    name: "get_people_closest_plant_location",
+    description: "Calculates the closest power plant for each person based on their last known location using the Haversine formula.",
+    parameters: {
+      type: "object",
+      properties: {
+        people_with_locations: {
+          type: "array",
+          description: "List of people with their locations array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              surname: { type: "string" },
+              locations: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    lat: { type: "number" },
+                    lon: { type: "number" }
+                  },
+                  required: ["lat", "lon"]
+                }
+              }
+            },
+            required: ["name", "surname", "locations"],
+            additionalProperties: true
+          }
+        },
+        power_plants_with_locations: {
+          type: "array",
+          description: "List of power plants with their coordinates",
+          items: {
+            type: "object",
+            properties: {
+              code: { type: "string" },
+              lat: { type: "number" },
+              lon: { type: "number" }
+            },
+            required: ["code", "lat", "lon"],
+            additionalProperties: true
+          }
+        }
+      },
+      required: ["people_with_locations", "power_plants_with_locations"],
+      additionalProperties: false
+    },
+    strict: true
   }
 ];

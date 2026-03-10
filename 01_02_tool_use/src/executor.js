@@ -10,7 +10,7 @@ const logQuery = (query) => {
 
 const logResult = (text) => console.log(`\nA: ${text}`);
 
-const executeToolCalls = async (toolCalls, handlers) => {
+export const executeToolCalls = async (toolCalls, handlers) => {
   console.log(`\nTool calls: ${toolCalls.length}`);
 
   return Promise.all(

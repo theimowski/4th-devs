@@ -35,43 +35,49 @@ Data to process:
 `;
 
 // 3. Main Process Query Loop
-let conversation = [{ role: "user", content: "Please find the closest power plant for each candidate using the provided data and your tools." }];
+const candidatesJsonPath = path.join(__dirname, 'candidates.json');
 
-console.log("Starting tool-use loop...");
+if (fs.existsSync(candidatesJsonPath)) {
+  console.log("candidates.json already exists. Skipping tool-use loop.");
+} else {
+  let conversation = [{ role: "user", content: "Please find the closest power plant for each candidate using the provided data and your tools." }];
 
-for (let round = 0; round < MAX_ROUNDS; round++) {
-  console.log(`\n--- Round ${round + 1} ---`);
-  const response = await chat({ 
-    model: MODEL, 
-    input: conversation, 
-    tools, 
-    instructions 
-  });
+  console.log("Starting tool-use loop...");
 
-  const toolCalls = extractToolCalls(response);
+  for (let round = 0; round < MAX_ROUNDS; round++) {
+    console.log(`\n--- Round ${round + 1} ---`);
+    const response = await chat({ 
+      model: MODEL, 
+      input: conversation, 
+      tools, 
+      instructions 
+    });
 
-  if (toolCalls.length === 0) {
-    const text = extractText(response);
-    console.log("Final response received.");
-    
-    // Attempt to parse JSON from response text
-    try {
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
-      const finalJson = JSON.parse(jsonMatch ? jsonMatch[0] : text);
-      fs.writeFileSync(path.join(__dirname, 'candidates.json'), JSON.stringify(finalJson, null, 2));
-      console.log("Results saved to candidates.json");
-    } catch (e) {
-      console.error("Failed to parse final JSON result:", e.message);
-      fs.writeFileSync(path.join(__dirname, 'candidates.json'), text);
+    const toolCalls = extractToolCalls(response);
+
+    if (toolCalls.length === 0) {
+      const text = extractText(response);
+      console.log("Final response received.");
+      
+      // Attempt to parse JSON from response text
+      try {
+        const jsonMatch = text.match(/\[[\s\S]*\]/);
+        const finalJson = JSON.parse(jsonMatch ? jsonMatch[0] : text);
+        fs.writeFileSync(candidatesJsonPath, JSON.stringify(finalJson, null, 2));
+        console.log("Results saved to candidates.json");
+      } catch (e) {
+        console.error("Failed to parse final JSON result:", e.message);
+        fs.writeFileSync(candidatesJsonPath, text);
+      }
+      break;
     }
-    break;
+
+    const toolResults = await executeToolCalls(toolCalls, handlers);
+
+    conversation = [
+      ...conversation,
+      ...toolCalls,
+      ...toolResults
+    ];
   }
-
-  const toolResults = await executeToolCalls(toolCalls, handlers);
-
-  conversation = [
-    ...conversation,
-    ...toolCalls,
-    ...toolResults
-  ];
 }

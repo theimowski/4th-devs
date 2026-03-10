@@ -81,3 +81,13 @@ if (fs.existsSync(candidatesJsonPath)) {
     ];
   }
 }
+
+// 4. Print closest candidate
+if (fs.existsSync(candidatesJsonPath)) {
+  const finalCandidates = JSON.parse(fs.readFileSync(candidatesJsonPath, 'utf-8'));
+  if (Array.isArray(finalCandidates) && finalCandidates.length > 0) {
+    const closest = finalCandidates.reduce((min, p) => p.distance < min.distance ? p : min, finalCandidates[0]);
+    console.log("\nCandidate with smallest distance:");
+    console.log(JSON.stringify(closest, null, 2));
+  }
+}

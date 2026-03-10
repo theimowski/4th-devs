@@ -11,11 +11,11 @@ const config = {
 };
 
 const queries = [
-  // List files
-  "What files are in the sandbox?",
-
   // Create a file
   "Create a file called hello.txt with content: 'Hello, World!'",
+
+  // List files
+  "What files are in the sandbox?",
 
   // Read a file
   "Read the hello.txt file",
@@ -29,15 +29,32 @@ const queries = [
   // Write file in subdirectory
   "Create a file docs/readme.txt with content: 'Documentation folder'",
 
+  // No 'copy' tool - will use more tools in a sequence?
+  "Copy hello.txt to docs/hello_copy.txt",
+
   // List subdirectory
   "List files in the docs directory",
 
   // Delete a file
   "Delete the hello.txt file",
 
+  // Delete a file
+  "Delete the hello.json file",
+
   // Security test - path traversal blocked
   "Try to read ../config.js"
 ];
+
+const waitForKey = () => new Promise(resolve => {
+  console.log("\nPress any key to continue to the next query...");
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+  process.stdin.once("data", () => {
+    process.stdin.setRawMode(false);
+    process.stdin.pause();
+    resolve();
+  });
+});
 
 const main = async () => {
   await initializeSandbox();
@@ -45,6 +62,7 @@ const main = async () => {
 
   for (const query of queries) {
     await processQuery(query, config);
+    await waitForKey();
   }
 };
 

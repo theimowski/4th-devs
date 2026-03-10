@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import config from './config.js';
 import { fetchHubFile } from './utils.js';
 import { chat, extractToolCalls, extractText } from '../../01_02_tool_use/src/api.js';
 import { tools, handlers } from './src/tools/index.js';
@@ -59,7 +60,6 @@ if (fs.existsSync(candidatesJsonPath)) {
       const text = extractText(response);
       console.log("Final response received.");
       
-      // Attempt to parse JSON from response text
       try {
         const jsonMatch = text.match(/\[[\s\S]*\]/);
         const finalJson = JSON.parse(jsonMatch ? jsonMatch[0] : text);
@@ -82,12 +82,59 @@ if (fs.existsSync(candidatesJsonPath)) {
   }
 }
 
-// 4. Print closest candidate
+// 4. Process closest candidate and call accesslevel API
 if (fs.existsSync(candidatesJsonPath)) {
   const finalCandidates = JSON.parse(fs.readFileSync(candidatesJsonPath, 'utf-8'));
   if (Array.isArray(finalCandidates) && finalCandidates.length > 0) {
     const closest = finalCandidates.reduce((min, p) => p.distance < min.distance ? p : min, finalCandidates[0]);
     console.log("\nCandidate with smallest distance:");
     console.log(JSON.stringify(closest, null, 2));
+
+    console.log(`\nCalling accesslevel API for ${closest.name} ${closest.surname}...`);
+    try {
+      const response = await fetch('https://hub.ag3nts.org/api/accesslevel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          apikey: config.API_KEY,
+          name: closest.name,
+          surname: closest.surname,
+          birthYear: 1993
+        })
+      });
+
+      const data = await response.json();
+      console.log('Access Level Response:', JSON.stringify(data, null, 2));
+
+      const finalAnswer = {
+        name: closest.name,
+        surname: closest.surname,
+        accessLevel: data.accessLevel,
+        powerPlant: closest.powerPlant
+      };
+
+      console.log('\nFinal Answer Object:');
+      console.log(JSON.stringify(finalAnswer, null, 2));
+
+      // 5. Verification
+      console.log('\nSending verification to https://hub.ag3nts.org/verify...');
+      const verifyResponse = await fetch('https://hub.ag3nts.org/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apikey: config.API_KEY,
+          task: "findhim",
+          answer: finalAnswer
+        })
+      });
+
+      const verifyData = await verifyResponse.json();
+      console.log(`Verification Status: ${verifyResponse.status}`);
+      console.log('Verification Response:', JSON.stringify(verifyData, null, 2));
+    } catch (error) {
+      console.error('Failed to call accesslevel API:', error.message);
+    }
   }
 }

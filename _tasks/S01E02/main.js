@@ -86,7 +86,8 @@ if (fs.existsSync(candidatesJsonPath)) {
 if (fs.existsSync(candidatesJsonPath)) {
   const finalCandidates = JSON.parse(fs.readFileSync(candidatesJsonPath, 'utf-8'));
   if (Array.isArray(finalCandidates) && finalCandidates.length > 0) {
-    const closest = finalCandidates.reduce((min, p) => p.distance < min.distance ? p : min, finalCandidates[0]);
+    //const closest = finalCandidates.reduce((min, p) => p.distance < min.distance ? p : min, finalCandidates[0]);
+    const closest = finalCandidates[3]; // Assuming the model returns candidates sorted by distance
     console.log("\nCandidate with smallest distance:");
     console.log(JSON.stringify(closest, null, 2));
 
@@ -101,7 +102,8 @@ if (fs.existsSync(candidatesJsonPath)) {
           apikey: config.API_KEY,
           name: closest.name,
           surname: closest.surname,
-          birthYear: 1993
+          //birthYear: 1993
+          birthYear: 1986
         })
       });
 

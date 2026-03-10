@@ -42,5 +42,46 @@ export const handlers = {
     );
 
     return results;
+  },
+
+  async get_power_plants_locations({ power_plants }) {
+    console.log(`[Tool] Fetching coordinates for ${power_plants.length} power plants...`);
+    
+    const results = await Promise.all(
+      power_plants.map(async (plant) => {
+        try {
+          // Nominatim usage policy requires a User-Agent
+          const url = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(plant.city)}&format=json`;
+          const response = await fetch(url, {
+            headers: {
+              'User-Agent': 'AI-Devs-Course-Client'
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`Nominatim API error (${response.status})`);
+          }
+
+          const data = await response.json();
+          if (data && data.length > 0) {
+            return {
+              ...plant,
+              lat: parseFloat(data[0].lat),
+              lon: parseFloat(data[0].lon)
+            };
+          } else {
+            throw new Error(`No location found for city: ${plant.city}`);
+          }
+        } catch (error) {
+          console.error(`[Tool] Failed to fetch coordinates for ${plant.city}:`, error.message);
+          return {
+            ...plant,
+            error: error.message
+          };
+        }
+      })
+    );
+
+    return results;
   }
 };

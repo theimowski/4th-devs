@@ -24,5 +24,31 @@ export const tools = [
       additionalProperties: false
     },
     strict: true
+  },
+  {
+    type: "function",
+    name: "get_power_plants_locations",
+    description: "Enriches a list of power plants with their geographical coordinates (lat, lon)",
+    parameters: {
+      type: "object",
+      properties: {
+        power_plants: {
+          type: "array",
+          description: "List of power plants to get coordinates for",
+          items: {
+            type: "object",
+            properties: {
+              city: { type: "string", description: "City name of the power plant" },
+              code: { type: "string", description: "Code for the power plant" }
+            },
+            required: ["city", "code"],
+            additionalProperties: false
+          }
+        }
+      },
+      required: ["power_plants"],
+      additionalProperties: false
+    },
+    strict: true
   }
 ];

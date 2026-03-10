@@ -55,10 +55,16 @@ export const handlers = {
           if (!response.ok) throw new Error(`Nominatim error (${response.status})`);
           const data = await response.json();
           if (data && data.length > 0) {
+            let selected = data[0];
+            if (data.length > 1) {
+              const preferred = data.find(item => item.display_name.includes('gmina Krokowa'));
+              if (preferred) selected = preferred;
+            }
+
             return { 
               ...plant, 
-              lat: Math.round(parseFloat(data[0].lat) * 1000) / 1000, 
-              lon: Math.round(parseFloat(data[0].lon) * 1000) / 1000 
+              lat: Math.round(parseFloat(selected.lat) * 1000) / 1000, 
+              lon: Math.round(parseFloat(selected.lon) * 1000) / 1000 
             };
           }
           throw new Error(`No location for ${plant.city}`);

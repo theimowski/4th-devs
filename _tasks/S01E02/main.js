@@ -20,7 +20,7 @@ if (!fs.existsSync(resultsPath)) {
 const candidates = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
 
 // 2. Configure Model and Tools
-const MODEL = "gpt-5-mini";
+const MODEL = "gpt-5";
 const MAX_ROUNDS = 10;
 
 const instructions = `You are a specialized agent tasked with finding the closest power plant for a list of candidates.

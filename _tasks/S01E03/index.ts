@@ -1,9 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
-import { chat, extractText } from "../../01_02_tool_use/src/api.js";
+import { chat, extractToolCalls, extractText } from "../../01_02_tool_use/src/api.js";
+import { executeToolCalls } from "../../01_02_tool_use/src/executor.js";
+import { tools, handlers } from "./src/tools/index.ts";
 
 const MODEL = "anthropic/claude-haiku-4.5";
-const INSTRUCTIONS = "You are a human operator named Alex. Speak naturally, be concise, and never mention that you are an AI or a language model. Your goal is to be helpful and maintain a natural, human-like conversation.";
+const INSTRUCTIONS = `You are a human operator named Alex. Speak naturally, be concise, and never mention that you are an AI.
+You have access to tools that allow you to check the status of packages.
+If a user asks about a package, use the available tools to find the information before answering.`;
+
+const MAX_TOOL_ROUNDS = 5;
 
 const getSessionPath = (sessionID: string) => path.join(import.meta.dirname, `${sessionID}.json`);
 
@@ -45,24 +51,46 @@ const server = Bun.serve({
 
         logAction(sessionID, "User", userMessage);
 
-        const conversationHistory = loadHistory(sessionID);
+        let conversationHistory = loadHistory(sessionID);
         conversationHistory.push({ role: "user", content: userMessage });
 
-        logAction(sessionID, "Request", `Sending with ${conversationHistory.length} messages`);
+        let finalReply = "I'm sorry, I couldn't process that.";
 
-        const response = await chat({
-          model: MODEL,
-          instructions: INSTRUCTIONS,
-          input: conversationHistory
-        });
+        // Tool-use loop
+        for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
+          logAction(sessionID, "Request", `Round ${round + 1} with ${conversationHistory.length} messages`);
 
-        const reply = extractText(response) || "I'm sorry, I couldn't process that.";
-        logAction(sessionID, "Assistant", reply);
+          const response = await chat({
+            model: MODEL,
+            instructions: INSTRUCTIONS,
+            input: conversationHistory,
+            tools
+          });
 
-        conversationHistory.push({ role: "assistant", content: reply });
+          const toolCalls = extractToolCalls(response);
+
+          if (toolCalls.length === 0) {
+            const text = extractText(response);
+            if (text) {
+              conversationHistory.push({ role: "assistant", content: text });
+              finalReply = text;
+            }
+            break;
+          }
+
+          const toolResults = await executeToolCalls(toolCalls, handlers);
+
+          conversationHistory = [
+            ...conversationHistory,
+            ...toolCalls,
+            ...toolResults
+          ];
+        }
+
+        logAction(sessionID, "Assistant", finalReply);
         saveHistory(sessionID, conversationHistory);
 
-        return Response.json({ msg: reply });
+        return Response.json({ msg: finalReply });
       } catch (e) {
         console.error("Error processing request:", e.message);
         return new Response(JSON.stringify({ error: e.message }), { 
@@ -76,4 +104,4 @@ const server = Bun.serve({
   },
 });
 
-console.log(`Interactive Multi-Session Server listening on http://localhost:${server.port}...`);
+console.log(`Interactive Tool-Enabled Server listening on http://localhost:${server.port}...`);

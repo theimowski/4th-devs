@@ -15,5 +15,30 @@ export const tools = [
       additionalProperties: false
     },
     strict: true
+  },
+  {
+    type: "function",
+    name: "redirect_package",
+    description: "Redirect a package to a new destination. Requires a security code.",
+    parameters: {
+      type: "object",
+      properties: {
+        packageID: {
+          type: "string",
+          description: "The unique ID of the package to redirect"
+        },
+        destination: {
+          type: "string",
+          description: "The destination code (e.g., PWR3847PL)"
+        },
+        code: {
+          type: "string",
+          description: "The security code required for redirection"
+        }
+      },
+      required: ["packageID", "destination", "code"],
+      additionalProperties: false
+    },
+    strict: true
   }
 ];

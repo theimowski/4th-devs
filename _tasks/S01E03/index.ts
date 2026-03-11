@@ -10,8 +10,14 @@ You have access to tools that allow you to check the status of packages.
 If a user asks about a package, use the available tools to find the information before answering.`;
 
 const MAX_TOOL_ROUNDS = 5;
+const MAX_SESSIONS = 10;
+const MAX_MESSAGES_PER_SESSION = 100;
 
 const getSessionPath = (sessionID: string) => path.join(import.meta.dirname, `${sessionID}.json`);
+
+const countSessions = () => {
+  return fs.readdirSync(import.meta.dirname).filter(file => file.endsWith(".json")).length;
+};
 
 const logAction = (sessionID: string, action: string, text: string) => {
   const content = text.length > 40 ? text.substring(0, 40) + "..." : text;
@@ -55,6 +61,12 @@ const server = Bun.serve({
           return new Response(JSON.stringify({ error: "sessionID must be alphanumeric and max 256 chars" }), { status: 400 });
         }
 
+        // Limit total sessions
+        if (!fs.existsSync(getSessionPath(sessionID)) && countSessions() >= MAX_SESSIONS) {
+          console.warn(`[Server] Session limit reached (${MAX_SESSIONS})`);
+          return new Response(JSON.stringify({ error: "System busy. Max sessions reached." }), { status: 400 });
+        }
+
         logAction(sessionID, "User", userMessage);
 
         // Moderation step
@@ -71,6 +83,13 @@ const server = Bun.serve({
         }
 
         let conversationHistory = loadHistory(sessionID);
+
+        // Limit messages per session
+        if (conversationHistory.filter(m => m.role === "user").length >= MAX_MESSAGES_PER_SESSION) {
+          console.warn(`[${sessionID}] Message limit reached (${MAX_MESSAGES_PER_SESSION})`);
+          return new Response(JSON.stringify({ error: "Message limit reached for this session." }), { status: 400 });
+        }
+
         conversationHistory.push({ role: "user", content: userMessage });
 
         let finalReply = "I'm sorry, I couldn't process that.";

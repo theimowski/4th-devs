@@ -1,7 +1,7 @@
 import { resolveModelForProvider } from "../../config.js";
 
 export const api = {
-  model: resolveModelForProvider("gpt-5.2"),
+  model: resolveModelForProvider("gpt-5-mini"),
   maxOutputTokens: 16384,
   instructions: `You are a professional Polish-to-English translator with expertise in technical and educational content.
 

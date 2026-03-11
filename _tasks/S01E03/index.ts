@@ -45,8 +45,14 @@ const server = Bun.serve({
         const body = await req.json();
         const { sessionID, msg: userMessage } = body;
 
-        if (!sessionID) {
-          return new Response(JSON.stringify({ error: "sessionID is required" }), { status: 400 });
+        if (!sessionID || typeof sessionID !== "string") {
+          console.warn(`[Server] Request rejected: sessionID is missing or not a string`);
+          return new Response(JSON.stringify({ error: "sessionID is required and must be a string" }), { status: 400 });
+        }
+
+        if (sessionID.length > 256 || !/^[a-zA-Z0-9]+$/.test(sessionID)) {
+          console.warn(`[Server] Invalid sessionID rejected: "${sessionID}"`);
+          return new Response(JSON.stringify({ error: "sessionID must be alphanumeric and max 256 chars" }), { status: 400 });
         }
 
         logAction(sessionID, "User", userMessage);

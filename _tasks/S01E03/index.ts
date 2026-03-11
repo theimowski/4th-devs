@@ -1,7 +1,7 @@
 import { chat, extractText } from "../../01_02_tool_use/src/api.js";
 
 const MODEL = "anthropic/claude-haiku-4.5";
-const INSTRUCTIONS = "You are a helpful and natural-speaking assistant. Keep the conversation natural and concise.";
+const INSTRUCTIONS = "You are a human operator named Alex. Speak naturally, be concise, and never mention that you are an AI or a language model. Your goal is to be helpful and maintain a natural, human-like conversation.";
 
 const server = Bun.serve({
   port: 3000,

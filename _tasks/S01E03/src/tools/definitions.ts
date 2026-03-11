@@ -40,5 +40,22 @@ export const tools = [
       additionalProperties: false
     },
     strict: true
+  },
+  {
+    type: "function",
+    name: "get_weather",
+    description: "Get the current weather for a specific city.",
+    parameters: {
+      type: "object",
+      properties: {
+        city: {
+          type: "string",
+          description: "The name of the city (e.g., Warsaw)"
+        }
+      },
+      required: ["city"],
+      additionalProperties: false
+    },
+    strict: true
   }
 ];

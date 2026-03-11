@@ -13,7 +13,15 @@ export const handlers = {
           packageid: packageID
         })
       });
-      if (!response.ok) throw new Error(`API error (${response.status})`);
+      
+      if (!response.ok) {
+        return { 
+          error: "API Request Failed", 
+          status: response.status, 
+          body: await response.text() 
+        };
+      }
+      
       return await response.json();
     } catch (error) {
       console.error(`[Tool] Failed to check package ${packageID}:`, error.message);
@@ -35,7 +43,15 @@ export const handlers = {
           code: code
         })
       });
-      if (!response.ok) throw new Error(`API error (${response.status})`);
+
+      if (!response.ok) {
+        return { 
+          error: "API Request Failed", 
+          status: response.status, 
+          body: await response.text() 
+        };
+      }
+
       return await response.json();
     } catch (error) {
       console.error(`[Tool] Failed to redirect package ${packageID}:`, error.message);

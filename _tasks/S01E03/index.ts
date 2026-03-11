@@ -7,6 +7,11 @@ const INSTRUCTIONS = "You are a human operator named Alex. Speak naturally, be c
 
 const getSessionPath = (sessionID: string) => path.join(import.meta.dirname, `${sessionID}.json`);
 
+const logAction = (sessionID: string, action: string, text: string) => {
+  const content = text.length > 40 ? text.substring(0, 40) + "..." : text;
+  console.log(`[${sessionID}] ${action.padEnd(10)} | ${content}`);
+};
+
 const loadHistory = (sessionID: string) => {
   const filePath = getSessionPath(sessionID);
   if (fs.existsSync(filePath)) {
@@ -38,17 +43,13 @@ const server = Bun.serve({
           return new Response(JSON.stringify({ error: "sessionID is required" }), { status: 400 });
         }
 
-        console.log(`[Session: ${sessionID}] Input: ${userMessage}`);
+        logAction(sessionID, "User", userMessage);
 
-        // Load specific session history
         const conversationHistory = loadHistory(sessionID);
-        
-        // Add user message to history
         conversationHistory.push({ role: "user", content: userMessage });
 
-        console.log(`[Main] Sending request for ${sessionID} with ${conversationHistory.length} messages...`);
+        logAction(sessionID, "Request", `Sending with ${conversationHistory.length} messages`);
 
-        // Relay to model with session history
         const response = await chat({
           model: MODEL,
           instructions: INSTRUCTIONS,
@@ -56,15 +57,12 @@ const server = Bun.serve({
         });
 
         const reply = extractText(response) || "I'm sorry, I couldn't process that.";
-        console.log(`[Assistant] Reply: ${reply}`);
+        logAction(sessionID, "Assistant", reply);
 
-        // Add assistant reply and save
         conversationHistory.push({ role: "assistant", content: reply });
         saveHistory(sessionID, conversationHistory);
 
-        return Response.json({
-          msg: reply
-        });
+        return Response.json({ msg: reply });
       } catch (e) {
         console.error("Error processing request:", e.message);
         return new Response(JSON.stringify({ error: e.message }), { 

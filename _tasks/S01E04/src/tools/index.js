@@ -44,8 +44,8 @@ export const nativeHandlers = {
       try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const text = await response.text();
-        fs.writeFileSync(filePath, text);
+        const buffer = await response.arrayBuffer();
+        fs.writeFileSync(filePath, Buffer.from(buffer));
         results.push({ url, status: "success", filename });
       } catch (error) {
         results.push({ url, status: "error", message: error.message });

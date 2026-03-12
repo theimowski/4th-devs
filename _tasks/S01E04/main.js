@@ -15,15 +15,14 @@ const INSTRUCTIONS = `You are a logistics agent. Your ULTIMATE GOAL is to create
 The declaration must follow the format found in the documents you download. Use Polish (język polski) for all fields in the declaration.
 
 PREREQUISITE (Information Gathering):
-1. Check if 'docs/merged.md' exists using 'fs_read'. If it does, read it in one go to understand all rules and regulations.
-2. If 'docs/merged.md' is missing:
-   - Start by downloading 'https://hub.ag3nts.org/dane/doc/index.md' and all its references (recursive) using 'download_files' and 'fs_read'. References are in '[include file="filename.ext"]' format.
-   - Store all downloaded files in the 'docs' directory.
-   - Use 'understand_image' to analyze all images found and get descriptions.
-   - Merge all markdown files into 'docs/merged.md' by inlining the contents of all files referenced with '[include file="filename.ext"]' (for markdown files, use their full text; for images, use the description you obtained from 'understand_image').
+1. Start by downloading 'https://hub.ag3nts.org/dane/doc/index.md' and all its references (recursive) using 'download_files' and 'fs_read'. References are in '[include file="filename.ext"]' format.
+2. Store all downloaded files in the 'docs' directory.
+3. Use 'understand_image' to analyze all images found and get descriptions.
+4. Read the downloaded documents to understand all rules and regulations. 
+IMPORTANT: You MUST NOT read any existing 'declaration_XX.md' files that might be present in the 'docs/' directory.
 
 MAIN CHALLENGE (Transport Declaration):
-You must submit a correctly filled transport declaration for a shipment from Gdańsk to Żarnowiec. It is verified by humans and automatons, so it must be logically consistent with the SPK regulations found in 'docs/merged.md'.
+You must submit a correctly filled transport declaration for a shipment from Gdańsk to Żarnowiec. It is verified by humans and automatons, so it must be logically consistent with the SPK regulations you crawl.
 - Sender (ID): 450202122
 - Departure: Gdańsk
 - Destination: Żarnowiec

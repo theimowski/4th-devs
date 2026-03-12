@@ -11,22 +11,25 @@ const MAX_STEPS = 30;
 const BASE_URL = "https://hub.ag3nts.org/dane/doc/";
 
 const INSTRUCTIONS = `You are a web crawler agent. Your goal is to download all interconnected documents starting from index.md and summarize them.
-Documents use a special notation for inclusions: [include file="filename.md"].
+Documents use a special notation for inclusions: [include file="filename.ext"]. This includes both markdown documents and other files like images (e.g., .png).
 The base URL for all files is ${BASE_URL}.
 
 Strategy:
 1. Before anything else, check if 'docs/_toc.md' exists using 'fs_read'. 
-   - If it exists, read it to see if all files are already properly downloaded (compare with the list you explore). 
-   - If all files are present and match checksums, no need to download anything.
+   - If it exists, read it to see if all files are already properly downloaded (compare with the list you explore recursively). 
+   - If all files (including images) are present and match checksums, no need to download anything.
 2. If you need to download:
    - Start by downloading the index.md using 'download_files'.
-   - Use 'fs_read' (from files-mcp) to read the downloaded files. This tool also returns a 'checksum' for each file.
+   - Use 'fs_read' (from files-mcp) to read the downloaded files. This tool returns a 'checksum' for EACH file (both text and binary).
    - Identify new files mentioned in [include file="..."] tags.
-   - Download those new files only if they do not yet exist in the directory.
-   - For every downloaded file, read it using 'fs_read' to get its checksum.
-   - Maintain a '_toc.md' file inside the 'docs' directory. This file should contain a list of all downloaded files and their checksums (e.g., "| filename | checksum |").
-3. Once all files are downloaded and '_toc.md' is updated, create a one-sentence summary of the contents of the 'docs' directory.
-4. Write this summary to 'declaration.md' inside the 'docs' directory using 'fs_write'.
+   - Download those new files ONLY if they do not yet exist in the directory or their checksum would be different.
+   - For every file you download (markdown, image, etc.), read it using 'fs_read' to get its checksum.
+   - Maintain a '_toc.md' file inside the 'docs' directory. This file MUST contain a list of ALL downloaded files (markdown AND images) and their checksums (e.g., "| filename | checksum |").
+3. Once all files are downloaded:
+   - Identify all image files (e.g., .png, .jpg) in the 'docs' directory.
+   - Use the 'understand_image' tool to analyze each image and get a brief description of its content.
+   - Create a one-sentence summary of the textual contents and a summary of all images found.
+   - Write these summaries to 'declaration.md' inside the 'docs' directory using 'fs_write'.
 
 You are sandboxed to the 'docs' directory. All 'fs_*' operations are relative to it.`;
 

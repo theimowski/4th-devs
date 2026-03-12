@@ -10,26 +10,28 @@ const MODEL = "google/gemini-2.5-flash";
 const MAX_STEPS = 30;
 const BASE_URL = "https://hub.ag3nts.org/dane/doc/";
 
-const INSTRUCTIONS = `You are a web crawler agent. Your goal is to download all interconnected documents starting from index.md and summarize them.
-Documents use a special notation for inclusions: [include file="filename.ext"]. This includes both markdown documents and other files like images (e.g., .png).
-The base URL for all files is ${BASE_URL}.
+const INSTRUCTIONS = `You are a web crawler and logistics agent. Your ULTIMATE GOAL is to create a correctly filled transport declaration in 'docs/declaration.md' for the SPK (System Przesyłek Konduktorskich).
 
-Strategy:
-1. Before anything else, check if 'docs/_toc.md' exists using 'fs_read'. 
-   - If it exists, read it to see if all files are already properly downloaded (compare with the list you explore recursively). 
-   - If all files (including images) are present and match checksums, no need to download anything.
-2. If you need to download:
-   - Start by downloading the index.md using 'download_files'.
-   - Use 'fs_read' (from files-mcp) to read the downloaded files. This tool returns a 'checksum' for EACH file (both text and binary).
-   - Identify new files mentioned in [include file="..."] tags.
-   - Download those new files ONLY if they do not yet exist in the directory or their checksum would be different.
-   - For every file you download (markdown, image, etc.), read it using 'fs_read' to get its checksum.
-   - Maintain a '_toc.md' file inside the 'docs' directory. This file MUST contain a list of ALL downloaded files (markdown AND images) and their checksums (e.g., "| filename | checksum |").
-3. Once all files are downloaded:
-   - Identify all image files (e.g., .png, .jpg) in the 'docs' directory.
-   - Use the 'understand_image' tool to analyze each image and get a brief description of its content.
-   - Create a one-sentence summary of the textual contents and a summary of all images found.
-   - Write these summaries to 'declaration.md' inside the 'docs' directory using 'fs_write'.
+The declaration must follow the format found in the documents you download. You must gather all necessary data by crawling.
+
+PREREQUISITE (Crawling & Analysis):
+1. Check if 'docs/_toc.md' exists using 'fs_read'. If it does, verify all files and checksums.
+2. If not, start crawling from the main entry point (index) using 'download_files' and 'fs_read'. 
+   - Follow all [include file="filename.ext"] tags recursively.
+   - Maintain 'docs/_toc.md' with all filenames and checksums (including images).
+   - Use 'understand_image' to analyze all images found (e.g., maps, schematics) and get descriptions.
+
+MAIN CHALLENGE (Transport Declaration):
+You must submit a correctly filled transport declaration for a shipment from Gdańsk to Żarnowiec. It is verified by humans and automatons, so it must be logically consistent with the SPK regulations you crawl.
+- Sender (ID): 450202122
+- Departure: Gdańsk
+- Destination: Żarnowiec
+- Weight: 2800 kg
+- Content: reactor fuel cassettes
+- Budget: 0 PP (The shipment MUST be free or System-financed). You must find the specific rules in the documents (e.g., fee tables, categories, or exemptions) that allow for a 0 PP cost.
+- Special remarks: None (do not add any).
+
+The final 'docs/declaration.md' file must contain ONLY the filled declaration form, following the template discovered in the documents.
 
 You are sandboxed to the 'docs' directory. All 'fs_*' operations are relative to it.`;
 

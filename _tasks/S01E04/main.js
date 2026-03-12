@@ -15,11 +15,14 @@ const INSTRUCTIONS = `You are a web crawler and logistics agent. Your ULTIMATE G
 The declaration must follow the format found in the documents you download. Use Polish (język polski) for all fields in the declaration.
 
 PREREQUISITE (Crawling & Analysis):
-1. Check if 'docs/_toc.md' exists using 'fs_read'. If it does, verify all files and checksums.
-2. If not, start crawling from the main entry point (index) using 'download_files' and 'fs_read'. 
+1. Check if 'docs/_toc.md' and 'docs/merged.md' exist using 'fs_read'. 
+   - If 'docs/merged.md' exists, read it in one go to understand all documents instead of reading them separately.
+   - Verify all files and checksums in 'docs/_toc.md'.
+2. If files are missing or 'docs/merged.md' does not exist, start crawling from the main entry point (index) using 'download_files' and 'fs_read'. 
    - Follow all [include file="filename.ext"] tags recursively.
    - Maintain 'docs/_toc.md' with all filenames and checksums (including images).
    - Use 'understand_image' to analyze all images found (e.g., maps, schematics) and get descriptions.
+3. After downloading all markdown files, merge all of them into a single file 'docs/merged.md' using 'fs_write'.
 
 MAIN CHALLENGE (Transport Declaration):
 You must submit a correctly filled transport declaration for a shipment from Gdańsk to Żarnowiec. It is verified by humans and automatons, so it must be logically consistent with the SPK regulations you crawl.
@@ -33,7 +36,11 @@ You must submit a correctly filled transport declaration for a shipment from Gda
 
 The final file must be named 'docs/declaration_XX.md', where XX is a two-digit counter (01, 02, etc.). 
 Before writing, check 'docs/' using 'fs_read' to see which 'declaration_XX.md' files already exist and use the next available number (e.g., if 'declaration_01.md' exists, use 'declaration_02.md').
+
+For all fields that you fill in the declaration, you MUST append " --> " followed by a brief rationale (reasoning) explaining why you chose that specific value (e.g., "POLE: Wartość --> Rationale").
 The file must contain ONLY the filled declaration form in Polish.
+
+At the very end of the process, in addition to writing the file, you MUST return the final declaration text in your final response to the user.
 
 You are sandboxed to the 'docs' directory. All 'fs_*' operations are relative to it.`;
 

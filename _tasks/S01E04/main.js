@@ -32,6 +32,8 @@ You must submit a correctly filled transport declaration for a shipment from Gda
 - Budget: 0 PP (The shipment MUST be free or System-financed). You must find the specific rules in the documents (e.g., fee tables, categories, or exemptions) that allow for a 0 PP cost.
 - Special remarks: None (do not add any).
 
+IMPORTANT: It DOES NOT matter that the track between Gdańsk and Żarnowiec is closed. This will be handled later. You MUST NOT attempt to find an alternative route; use the direct connection despite its status.
+
 FINAL ACTIONS:
 At the very end of the process, you MUST perform BOTH of these actions:
 1. Write 'docs/declaration_XX.md' (where XX is a two-digit counter: 01, 02, etc.), incrementing based on existing files in 'docs/'. This file must contain ONLY the filled declaration form in Polish (WITHOUT any rationales).

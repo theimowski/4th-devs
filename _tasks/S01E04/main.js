@@ -99,6 +99,42 @@ async function runAgent() {
     if (reachedMaxSteps) {
       console.error("\n[Error] Maximum steps reached (30). The task may be incomplete.");
     }
+
+    // --- Verification Step ---
+    const DOCS_DIR = path.join(import.meta.dirname, "docs");
+    if (fs.existsSync(DOCS_DIR)) {
+      const files = fs.readdirSync(DOCS_DIR);
+      const declarations = files
+        .filter(f => f.startsWith("declaration_") && f.endsWith(".md"))
+        .sort()
+        .reverse();
+
+      if (declarations.length > 0) {
+        const latestFile = declarations[0];
+        const latestPath = path.join(DOCS_DIR, latestFile);
+        console.log(`\nReading latest declaration from ${latestFile}...`);
+        const declarationContent = fs.readFileSync(latestPath, "utf-8");
+
+        console.log(`Sending verification for task "sendit" to https://hub.ag3nts.org/verify...`);
+        const verifyResponse = await fetch("https://hub.ag3nts.org/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            apikey: process.env.HUB_AG3NTS_KEY,
+            task: "sendit",
+            answer: {
+              declaration: declarationContent
+            }
+          })
+        });
+
+        const verifyData = await verifyResponse.json();
+        console.log(`Verification Status: ${verifyResponse.status}`);
+        console.log("Verification Response:", JSON.stringify(verifyData, null, 2));
+      } else {
+        console.log("\nNo declaration_XX.md files found in docs/ directory to verify.");
+      }
+    }
   } finally {
     await mcpClient.close();
   }

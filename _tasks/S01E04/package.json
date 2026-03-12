@@ -1,5 +1,9 @@
 {
   "name": "s01e04",
   "version": "1.0.0",
-  "type": "commonjs"
+  "type": "module",
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "@modelcontextprotocol/sdk": "^1.6.0"
+  }
 }

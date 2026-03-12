@@ -6,26 +6,24 @@ import { executeToolCalls } from "../../01_02_tool_use/src/executor.js";
 import { createMcpClient, listMcpTools, mcpToolsToOpenAI } from "./src/mcp/client.js";
 import { nativeTools, nativeHandlers } from "./src/tools/index.js";
 
-const MODEL = "google/gemini-2.5-flash";
-const MAX_STEPS = 30;
+const MODEL = "gpt-5.2";
+const MAX_STEPS = 100;
 const BASE_URL = "https://hub.ag3nts.org/dane/doc/";
 
-const INSTRUCTIONS = `You are a web crawler and logistics agent. Your ULTIMATE GOAL is to create a correctly filled transport declaration for the SPK (System Przesyłek Konduktorskich).
+const INSTRUCTIONS = `You are a logistics agent. Your ULTIMATE GOAL is to create a correctly filled transport declaration for the SPK (System Przesyłek Konduktorskich).
 
 The declaration must follow the format found in the documents you download. Use Polish (język polski) for all fields in the declaration.
 
-PREREQUISITE (Crawling & Analysis):
-1. Check if 'docs/_toc.md' and 'docs/merged.md' exist using 'fs_read'. 
-   - If 'docs/merged.md' exists, read it in one go to understand all documents instead of reading them separately.
-   - Verify all files and checksums in 'docs/_toc.md'.
-2. If files are missing or 'docs/merged.md' does not exist, start crawling from the main entry point (index) using 'download_files' and 'fs_read'. 
-   - Follow all [include file="filename.ext"] tags recursively.
-   - Maintain 'docs/_toc.md' with all filenames and checksums (including images).
-   - Use 'understand_image' to analyze all images found (e.g., maps, schematics) and get descriptions.
-3. After downloading all markdown files, merge all of them into a single file 'docs/merged.md' using 'fs_write'.
+PREREQUISITE (Information Gathering):
+1. Check if 'docs/merged.md' exists using 'fs_read'. If it does, read it in one go to understand all rules and regulations.
+2. If 'docs/merged.md' is missing:
+   - Start by downloading 'https://hub.ag3nts.org/dane/doc/index.md' and all its references (recursive) using 'download_files' and 'fs_read'. References are in '[include file="filename.ext"]' format.
+   - Store all downloaded files in the 'docs' directory.
+   - Use 'understand_image' to analyze all images found and get descriptions.
+   - Merge all markdown files into 'docs/merged.md' by inlining the contents of all files referenced with '[include file="filename.ext"]' (for markdown files, use their full text; for images, use the description you obtained from 'understand_image').
 
 MAIN CHALLENGE (Transport Declaration):
-You must submit a correctly filled transport declaration for a shipment from Gdańsk to Żarnowiec. It is verified by humans and automatons, so it must be logically consistent with the SPK regulations you crawl.
+You must submit a correctly filled transport declaration for a shipment from Gdańsk to Żarnowiec. It is verified by humans and automatons, so it must be logically consistent with the SPK regulations found in 'docs/merged.md'.
 - Sender (ID): 450202122
 - Departure: Gdańsk
 - Destination: Żarnowiec
@@ -34,15 +32,10 @@ You must submit a correctly filled transport declaration for a shipment from Gda
 - Budget: 0 PP (The shipment MUST be free or System-financed). You must find the specific rules in the documents (e.g., fee tables, categories, or exemptions) that allow for a 0 PP cost.
 - Special remarks: None (do not add any).
 
-The final file must be named 'docs/declaration_XX.md', where XX is a two-digit counter (01, 02, etc.). 
-Before writing, check 'docs/' using 'fs_read' to see which 'declaration_XX.md' files already exist and use the next available number (e.g., if 'declaration_01.md' exists, use 'declaration_02.md').
-
-For all fields that you fill in the declaration, you MUST append " --> " followed by a brief rationale (reasoning) explaining why you chose that specific value (e.g., "POLE: Wartość --> Rationale").
-The file must contain ONLY the filled declaration form in Polish.
-
-At the very end of the process, in addition to writing the file, you MUST return the final declaration text in your final response to the user.
-
-You are sandboxed to the 'docs' directory. All 'fs_*' operations are relative to it.`;
+FINAL ACTIONS:
+At the very end of the process, you MUST perform BOTH of these actions:
+1. Write 'docs/declaration_XX.md' (where XX is a two-digit counter: 01, 02, etc.), incrementing based on existing files in 'docs/'. This file must contain ONLY the filled declaration form in Polish (WITHOUT any rationales).
+2. Return a final response to the user containing the full text of the declaration where for all fields you MUST append " --> " followed by a brief rationale (reasoning) explaining why you chose that specific value (e.g., "POLE: Wartość --> Rationale").`;
 
 async function runAgent() {
   console.log("Connecting to MCP server...");
@@ -84,6 +77,16 @@ async function runAgent() {
         tools: allTools
       });
 
+      // Log usage
+      const usage = response.usage;
+      if (usage) {
+        const inputTokens = usage.input_tokens || 0;
+        const outputTokens = usage.output_tokens || 0;
+        const cachedTokens = usage.input_tokens_details?.cached_tokens || 0;
+        const cachePercent = inputTokens > 0 ? (cachedTokens / inputTokens * 100).toFixed(1) : 0;
+        console.log(`[Usage] In: ${inputTokens}, Out: ${outputTokens}, Cached: ${cachedTokens} (${cachePercent}%)`);
+      }
+
       const toolCalls = extractToolCalls(response);
 
       if (toolCalls.length === 0) {
@@ -104,7 +107,7 @@ async function runAgent() {
     }
 
     if (reachedMaxSteps) {
-      console.error("\n[Error] Maximum steps reached (30). The task may be incomplete.");
+      console.error("\n[Error] Maximum steps reached (100). The task may be incomplete.");
     }
 
     // --- Verification Step ---

@@ -35,7 +35,7 @@ Operational Guidelines:
 - Read errors in response carefully - it should clearly tell what went wrong.
 
 Available tools:
-- call_railway_api(action: string) - URL-encoded path with query, e.g. "reconfigure?route=x-01"
+- call_railway_api(action: string, route?: string, value?: string) - Pass 'action' as name and other params as separate fields.
 - sleep(seconds: number) - wait before calling the API again
 `;
 

@@ -5,13 +5,21 @@ export const nativeTools = [
   {
     type: "function",
     name: "call_railway_api",
-    description: "Call the railway API with a specific action.",
+    description: "Call the railway API with a specific action and parameters.",
     parameters: {
       type: "object",
       properties: {
         action: {
           type: "string",
-          description: "The URL-encoded path with query, e.g. 'reconfigure?route=x-01'"
+          description: "The action name (e.g., 'reconfigure', 'getstatus', 'setstatus', 'save')"
+        },
+        route: {
+          type: "string",
+          description: "The route identifier (e.g., 'X-01')"
+        },
+        value: {
+          type: "string",
+          description: "The status value for 'setstatus' (e.g., 'RTOPEN', 'RTCLOSE')"
         }
       },
       required: ["action"],
@@ -39,9 +47,13 @@ export const nativeTools = [
 ];
 
 export const nativeHandlers = {
-  async call_railway_api({ action }) {
-    log(`Calling railway API: answer={"action": "${action}"}`, 'api-req');
-    const response = await verify("railway", { action });
+  async call_railway_api({ action, route, value }) {
+    const answer = { action };
+    if (route) answer.route = route;
+    if (value) answer.value = value;
+
+    log(`Calling railway API: answer=${JSON.stringify(answer)}`, 'api-req');
+    const response = await verify("railway", answer);
     const status = response.status;
     const headers = Object.fromEntries(response.headers.entries());
     const bodyText = await response.text();

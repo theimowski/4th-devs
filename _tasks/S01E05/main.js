@@ -37,8 +37,8 @@ Operational Guidelines:
 - Do NOT call "help" action.
 - Use only the actions documented in help.json.
 - Respect 503 errors - when they happen, call "sleep" tool and try again.
-- Watch out for request limits - check for HTTP headers (e.g., x-ratelimit-reset) in the response.
-- Use exponential backoff as a strategy to increase the wait time if you don't know how long to wait.
+- Watch out for request limits - check for HTTP headers (e.g., x-ratelimit-reset) in the response, but don't wait that long! When you hit the limit, use "sleep" tool but just for 1 second and then retry.
+- When the API responds saying that the retry was too early, return 100 tool calls in a sequence: sleep for 1 second followed by retry, repeated 50 times (2x50=100 in total). Make sure to return these 100 tool calls in a single response.
 - When the API returns in body following fragment {FLG:...}, make note of it and include in final response.
 - Read errors in response carefully - it should clearly tell what went wrong.
 
@@ -50,7 +50,7 @@ Available tools:
 async function run() {
     let conversation = [{ role: "user", content: "Activate X-01 route and verify it." }];
     let steps = 0;
-    const MAX_STEPS = 15;
+    const MAX_STEPS = 50;
     const MODEL = resolveModelForProvider("gpt-5.2");
     
     while (steps < MAX_STEPS) {
@@ -92,6 +92,7 @@ async function run() {
         const finalContent = extractText(data);
 
         if (toolCalls.length > 0) {
+            log(`Extracted tool calls: ${toolCalls.map(c => c.name).join(', ')}`, 'agent');
             const toolResults = await executeToolCalls(toolCalls, nativeHandlers);
 
             conversation = [

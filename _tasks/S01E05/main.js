@@ -3,41 +3,15 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { resolveModelForProvider } from '../../config.js';
 import { chat, extractToolCalls, extractText } from '../../01_02_tool_use/src/api.js';
+import { executeToolCalls } from '../../01_02_tool_use/src/executor.js';
 import { nativeTools, nativeHandlers } from './src/tools/index.js';
+import { log, clearLog } from './src/log.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const helpPath = path.join(__dirname, 'help.json');
-const logPath = path.join(__dirname, 'log.txt');
 
 // 1. Clear log file
-fs.writeFileSync(logPath, '');
-
-function log(message, type = 'info', detailedOnly = false) {
-    const timestamp = new Date().toISOString();
-    const logLine = `[${timestamp}] [${type.toUpperCase()}] ${typeof message === 'object' ? JSON.stringify(message) : message}\n`;
-    fs.appendFileSync(logPath, logLine);
-    
-    if (detailedOnly) return;
-
-    if (type === 'api-req') {
-        console.log(`[API Req] ${message}`);
-    } else if (type === 'api-res') {
-        console.log(`[API Res] status=${message.status}`);
-        if (message.body && typeof message.body === 'object' && message.body.FLG) {
-            console.log(`[FLAG] ${message.body.FLG}`);
-        }
-    } else if (type === 'tool-use') {
-        console.log(`[Tool] ${message}`);
-    } else if (type === 'agent') {
-        console.log(`[Agent] ${message}`);
-    } else if (type === 'token') {
-        console.log(`[Token] ${message}`);
-    } else if (type === 'error') {
-        console.error(`[Error] ${message}`);
-    } else {
-        console.log(message);
-    }
-}
+clearLog();
 
 const helpDoc = JSON.parse(fs.readFileSync(helpPath, 'utf-8'));
 
@@ -107,40 +81,13 @@ async function run() {
         const finalContent = extractText(data);
 
         if (toolCalls.length > 0) {
-            conversation = [...conversation, ...toolCalls];
-            
-            for (const call of toolCalls) {
-                const { name, arguments: argsString } = call.function || call;
-                const args = typeof argsString === 'string' ? JSON.parse(argsString) : argsString;
-                
-                const handler = nativeHandlers[name];
-                if (!handler) {
-                    log(`Unknown tool: ${name}`, 'error');
-                    throw new Error(`Unknown tool: ${name}`);
-                }
+            const toolResults = await executeToolCalls(toolCalls, nativeHandlers);
 
-                if (name === 'call_railway_api') {
-                    log(`Calling railway API: answer={"action": "${args.action}"}`, 'api-req');
-                } else if (name === 'sleep') {
-                    log(`Sleeping for ${args.seconds} seconds`, 'tool-use');
-                } else {
-                    log(`Executing tool: ${name} with args: ${JSON.stringify(args)}`, 'tool-use');
-                }
-                
-                const result = await handler(args);
-
-                if (name === 'call_railway_api') {
-                    log(`status=${result.status}, headers=${JSON.stringify(result.headers)}, body=${JSON.stringify(result.body)}`, 'api-res-detailed', true);
-                    log({ status: result.status, body: result.body }, 'api-res');
-                }
-
-                conversation.push({
-                    role: "tool",
-                    tool_call_id: call.id || call.call_id,
-                    name: name,
-                    content: JSON.stringify(result || { ok: true })
-                });
-            }
+            conversation = [
+                ...conversation,
+                ...toolCalls,
+                ...toolResults
+            ];
         } else if (finalContent) {
             log(`Final Response: ${finalContent}`, 'agent');
             return;
@@ -151,7 +98,6 @@ async function run() {
     }
     log("Reached MAX_STEPS limit.", 'error');
 }
-
 
 run().catch(error => {
     log(error.message, 'error');

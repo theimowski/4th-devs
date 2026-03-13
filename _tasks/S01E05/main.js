@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { verify } from '../utils/utils.js';
 import { resolveModelForProvider } from '../../config.js';
 import { chat, extractToolCalls, extractText } from '../../01_02_tool_use/src/api.js';
+import { nativeTools, nativeHandlers } from './src/tools/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const helpPath = path.join(__dirname, 'help.json');
@@ -39,38 +39,6 @@ function log(message, type = 'info', detailedOnly = false) {
     }
 }
 
-async function callRailwayApi(action) {
-    log(`Calling railway API: answer={"action": "${action}"}`, 'api-req');
-    
-    let response;
-    try {
-        response = await verify("railway", { action });
-    } catch (e) {
-        log(`API Fetch Error: ${e.message}`, 'error');
-        return { status: 0, error: e.message };
-    }
-
-    const status = response.status;
-    const headers = Object.fromEntries(response.headers.entries());
-    const bodyText = await response.text();
-    let body;
-    try {
-        body = JSON.parse(bodyText);
-    } catch (e) {
-        body = bodyText;
-    }
-
-    log(`status=${status}, headers=${JSON.stringify(headers)}, body=${JSON.stringify(body)}`, 'api-res-detailed', true);
-    log({ status, body }, 'api-res');
-    
-    return { status, headers, body };
-}
-
-async function sleep(seconds) {
-    log(`Sleeping for ${seconds} seconds`, 'tool-use');
-    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
-}
-
 const helpDoc = JSON.parse(fs.readFileSync(helpPath, 'utf-8'));
 
 const systemPrompt = `You are an AI agent controlling a railway system.
@@ -97,43 +65,6 @@ Available tools:
 - sleep(seconds: number) - wait before calling the API again
 `;
 
-const tools = [
-  {
-    type: "function",
-    function: {
-      name: "call_railway_api",
-      description: "Call the railway API with a specific action.",
-      parameters: {
-        type: "object",
-        properties: {
-          action: {
-            type: "string",
-            description: "The URL-encoded path with query, e.g. 'reconfigure?route=x-01'"
-          }
-        },
-        required: ["action"]
-      }
-    }
-  },
-  {
-    type: "function",
-    function: {
-      name: "sleep",
-      description: "Sleep for a specified number of seconds.",
-      parameters: {
-        type: "object",
-        properties: {
-          seconds: {
-            type: "number",
-            description: "Number of seconds to sleep."
-          }
-        },
-        required: ["seconds"]
-      }
-    }
-  }
-];
-
 async function run() {
     let conversation = [{ role: "user", content: "Activate X-01 route and verify it." }];
     let steps = 0;
@@ -158,7 +89,7 @@ async function run() {
             data = await chat({
                 model: MODEL,
                 input: conversation,
-                tools: tools,
+                tools: nativeTools,
                 instructions: systemPrompt
             });
         } catch (e) {
@@ -179,23 +110,35 @@ async function run() {
             conversation = [...conversation, ...toolCalls];
             
             for (const call of toolCalls) {
-                const { name, arguments: argsString } = call.function;
-                const args = JSON.parse(argsString);
-                log(`Executing tool: ${name} with args: ${argsString}`, 'tool-use');
+                const { name, arguments: argsString } = call.function || call;
+                const args = typeof argsString === 'string' ? JSON.parse(argsString) : argsString;
                 
-                let result;
+                const handler = nativeHandlers[name];
+                if (!handler) {
+                    log(`Unknown tool: ${name}`, 'error');
+                    throw new Error(`Unknown tool: ${name}`);
+                }
+
                 if (name === 'call_railway_api') {
-                    result = await callRailwayApi(args.action);
+                    log(`Calling railway API: answer={"action": "${args.action}"}`, 'api-req');
                 } else if (name === 'sleep') {
-                    await sleep(args.seconds);
-                    result = { ok: true };
+                    log(`Sleeping for ${args.seconds} seconds`, 'tool-use');
+                } else {
+                    log(`Executing tool: ${name} with args: ${JSON.stringify(args)}`, 'tool-use');
                 }
                 
+                const result = await handler(args);
+
+                if (name === 'call_railway_api') {
+                    log(`status=${result.status}, headers=${JSON.stringify(result.headers)}, body=${JSON.stringify(result.body)}`, 'api-res-detailed', true);
+                    log({ status: result.status, body: result.body }, 'api-res');
+                }
+
                 conversation.push({
                     role: "tool",
-                    tool_call_id: call.id,
+                    tool_call_id: call.id || call.call_id,
                     name: name,
-                    content: JSON.stringify(result)
+                    content: JSON.stringify(result || { ok: true })
                 });
             }
         } else if (finalContent) {
@@ -208,6 +151,7 @@ async function run() {
     }
     log("Reached MAX_STEPS limit.", 'error');
 }
+
 
 run().catch(error => {
     log(error.message, 'error');

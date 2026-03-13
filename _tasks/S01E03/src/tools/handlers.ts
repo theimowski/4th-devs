@@ -57,27 +57,6 @@ export const handlers = {
       console.error(`[Tool] Failed to redirect package ${packageID}:`, error.message);
       return { error: error.message };
     }
-  },
-
-  async get_weather({ city }) {
-    console.log(`[Tool] Fetching weather for ${city}...`);
-    try {
-      // Using a free public API for testing
-      const response = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`);
-      if (!response.ok) throw new Error("Weather service unavailable");
-      
-      const data = await response.json();
-      const current = data.current_condition[0];
-      
-      return {
-        city: city,
-        temp_C: current.temp_C,
-        condition: current.weatherDesc[0].value,
-        humidity: current.humidity
-      };
-    } catch (error) {
-      console.error(`[Tool] Failed to fetch weather for ${city}:`, error.message);
-      return { error: "Could not fetch weather data. Please try again later." };
-    }
   }
+
 };

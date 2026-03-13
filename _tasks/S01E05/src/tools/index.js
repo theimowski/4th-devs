@@ -1,6 +1,12 @@
 import { verify } from "../../utils/utils.js";
 import { log } from "../log.js";
 
+let ignoredHeaders = {};
+
+export function setIgnoredHeaders(headers) {
+  ignoredHeaders = headers;
+}
+
 export const nativeTools = [
   {
     type: "function",
@@ -55,7 +61,13 @@ export const nativeHandlers = {
     log(`Calling railway API: answer=${JSON.stringify(answer)}`, 'api-req');
     const response = await verify("railway", answer);
     const status = response.status;
-    const headers = Object.fromEntries(response.headers.entries());
+    
+    // Filter headers
+    const allHeaders = Object.fromEntries(response.headers.entries());
+    const filteredHeaders = Object.fromEntries(
+      Object.entries(allHeaders).filter(([key]) => !ignoredHeaders[key.toLowerCase()])
+    );
+
     const bodyText = await response.text();
     let body;
     try {
@@ -63,9 +75,11 @@ export const nativeHandlers = {
     } catch (e) {
       body = bodyText;
     }
-    log(`status=${status}, headers=${JSON.stringify(headers)}, body=${JSON.stringify(body)}`, 'api-res-detailed', true);
+    
+    log(`status=${status}, headers=${JSON.stringify(allHeaders)}, body=${JSON.stringify(body)}`, 'api-res-detailed', true);
     log({ status, body }, 'api-res');
-    return { status, headers, body };
+    
+    return { status, headers: filteredHeaders, body };
   },
   async sleep({ seconds }) {
     log(`Sleeping for ${seconds} seconds`, 'tool-use');

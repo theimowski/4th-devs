@@ -4,16 +4,24 @@ import { fileURLToPath } from 'node:url';
 import { resolveModelForProvider } from '../../config.js';
 import { chat, extractToolCalls, extractText } from '../../01_02_tool_use/src/api.js';
 import { executeToolCalls } from '../../01_02_tool_use/src/executor.js';
-import { nativeTools, nativeHandlers } from './src/tools/index.js';
+import { nativeTools, nativeHandlers, setIgnoredHeaders } from './src/tools/index.js';
 import { log, clearLog } from './src/log.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const helpPath = path.join(__dirname, 'help.json');
+const helpHeadersPath = path.join(__dirname, 'help-headers.json');
 
 // 1. Clear log file
 clearLog();
 
 const helpDoc = JSON.parse(fs.readFileSync(helpPath, 'utf-8'));
+const helpHeaders = JSON.parse(fs.readFileSync(helpHeadersPath, 'utf-8'));
+
+// Convert keys to lowercase for matching
+const ignoredHeaders = Object.fromEntries(
+  Object.keys(helpHeaders).map(key => [key.toLowerCase(), true])
+);
+setIgnoredHeaders(ignoredHeaders);
 
 const systemPrompt = `You are an AI agent controlling a railway system.
 Documentation for the "railway" API:

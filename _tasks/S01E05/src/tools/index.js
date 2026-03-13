@@ -84,6 +84,7 @@ export const nativeHandlers = {
   },
   async sleep({ seconds }) {
     log(`Sleeping for ${seconds} seconds`, 'tool-use');
-    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+    await new Promise(resolve => setTimeout(resolve, seconds * 1000));
+    return `Slept for ${seconds}s...`;
   }
 };

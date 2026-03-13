@@ -79,10 +79,13 @@ async function run() {
             return;
         }
 
-        if (data.usage) {
-            log(`Input: ${data.usage.prompt_tokens}, Output: ${data.usage.completion_tokens}, Cache: ${data.usage.cache_read_tokens_details?.tokens || 0}`, 'token');
-        } else if (data.usage_metadata) {
-            log(`Input: ${data.usage_metadata.input_tokens}, Output: ${data.usage_metadata.output_tokens}, Cache: ${data.usage_metadata.cache_read_tokens || 0}`, 'token');
+        const usage = data.usage || data.usage_metadata;
+        if (usage) {
+            const inputTokens = usage.input_tokens || usage.prompt_tokens || 0;
+            const outputTokens = usage.output_tokens || usage.completion_tokens || 0;
+            const cachedTokens = usage.input_tokens_details?.cached_tokens || usage.cache_read_tokens || usage.cache_read_tokens_details?.tokens || 0;
+            const cachePercent = inputTokens > 0 ? (cachedTokens / inputTokens * 100).toFixed(1) : 0;
+            log(`In: ${inputTokens}, Out: ${outputTokens}, Cached: ${cachedTokens} (${cachePercent}%)`, 'token');
         }
 
         const toolCalls = extractToolCalls(data);

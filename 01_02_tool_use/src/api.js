@@ -20,6 +20,8 @@ export const chat = async ({ model, input, tools, toolChoice = "auto", instructi
   const data = await response.json();
 
   if (!response.ok || data.error) {
+    let error = JSON.stringify(data);
+    console.log(`API ERROR: ${error}`);
     const message = data?.error?.message ?? `Request failed with status ${response.status}`;
     throw new Error(message);
   }

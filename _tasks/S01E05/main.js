@@ -43,8 +43,8 @@ Operational Guidelines:
 - Read errors in response carefully - it should clearly tell what went wrong.
 
 Available tools:
-- call_railway_api(action: string, route?: string, value?: string) - Pass 'action' as name and other params as separate fields.
-- sleep(seconds: number) - wait before calling the API again
+- call_railway_api(action: string | null, route: string | null, value: string | null) - All 3 arguments are required, but can be null.
+- sleep({ seconds: number }) - wait before calling the API again
 `;
 
 async function run() {

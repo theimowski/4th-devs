@@ -1,4 +1,4 @@
-import { verify } from "../../utils/utils.js";
+import { verify } from "../../../utils/utils.js";
 import { log } from "../log.js";
 
 let ignoredHeaders = {};
@@ -16,19 +16,19 @@ export const nativeTools = [
       type: "object",
       properties: {
         action: {
-          type: "string",
+          type: ["string", "null"],
           description: "The action name (e.g., 'reconfigure', 'getstatus', 'setstatus', 'save')"
         },
         route: {
-          type: "string",
+          type: ["string", "null"],
           description: "The route identifier (e.g., 'X-01')"
         },
         value: {
-          type: "string",
+          type: ["string", "null"],
           description: "The status value for 'setstatus' (e.g., 'RTOPEN', 'RTCLOSE')"
         }
       },
-      required: ["action"],
+      required: ["action", "route", "value"],
       additionalProperties: false
     },
     strict: true
@@ -54,9 +54,10 @@ export const nativeTools = [
 
 export const nativeHandlers = {
   async call_railway_api({ action, route, value }) {
-    const answer = { action };
-    if (route) answer.route = route;
-    if (value) answer.value = value;
+    const answer = {};
+    if (action !== null) answer.action = action;
+    if (route !== null) answer.route = route;
+    if (value !== null) answer.value = value;
 
     log(`Calling railway API: answer=${JSON.stringify(answer)}`, 'api-req');
     const response = await verify("railway", answer);

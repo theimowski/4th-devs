@@ -77,7 +77,7 @@ export const createNativeHandlers = () => ({
         const output = stringify(mappedRecords, { header: true });
         fs.writeFileSync(csvPath, output);
         
-        return { status: "success", runNumber, file: `categorize-${runNumber}.csv`, recordsCount: mappedRecords.length };
+        return { status: "success", csv: output };
     },
     reset: async () => {
         log(`Resetting Categorize API...`, 'agent', false, logFilePath);
@@ -116,6 +116,7 @@ export const createNativeHandlers = () => ({
             headers: Object.fromEntries(response.headers.entries()), 
             body 
         }, 'api-res-detailed', true, logFilePath);
+        log({ status: response.status, body }, 'api-res', false, logFilePath);
         
         // Update the CSV file
         const csvPath = path.join(taskDir, `categorize-${runNumber}.csv`);

@@ -36,6 +36,7 @@ export async function fetchHubFile(filename, targetDir) {
 export function log(message, type = 'info', detailed = false, logFilePath = path.join(__dirname, '../debug.log')) {
     const timestamp = new Date().toISOString();
     const prefix = `[${timestamp}] [${type.toUpperCase()}]`;
+    const prefixConsole = `[${type.toUpperCase()}]`;
     const formattedMessage = typeof message === 'object' ? JSON.stringify(message, null, 2) : message;
     const logLine = `${prefix} ${formattedMessage}\n`;
 
@@ -45,9 +46,9 @@ export function log(message, type = 'info', detailed = false, logFilePath = path
     // Only log brief to stdout unless detailed or error
     if (!detailed || type === 'error' || type === 'agent') {
         if (typeof message === 'object') {
-            console.log(`${prefix} [Object]`);
+            console.log(`${prefixConsole} ${JSON.stringify(message, null, 0)}`);
         } else {
-            console.log(`${prefix} ${message}`);
+            console.log(`${prefixConsole} ${message}`);
         }
     }
 }

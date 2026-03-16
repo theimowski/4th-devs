@@ -15,8 +15,8 @@ clearLog(logFilePath);
 
 async function run() {
     let runNumber = 0;
-    const MAX_RUNS = 3;
-    const MAX_STEPS = 10;
+    const MAX_RUNS = 20;
+    const MAX_STEPS = 20;
     const handlers = createNativeHandlers();
     
     let conversation = [{ role: "user", content: "Categorize all 10 items from the CSV file. The CSV has 'code' as the item ID - use it in your prompts. Remember the reactor rule and the 100-token limit per prompt." }];
@@ -61,9 +61,10 @@ async function run() {
             }
 
             const toolCalls = extractToolCalls(data);
-            const finalContent = extractText(data);
+            const text = extractText(data);
 
             if (toolCalls.length > 0) {
+                log(text, 'text', false, logFilePath);
                 log(`Tool calls: ${toolCalls.map(c => c.name).join(', ')}`, 'agent', false, logFilePath);
                 const toolResults = await executeToolCalls(toolCalls, handlers);
 
@@ -85,12 +86,12 @@ async function run() {
                         runShouldReset = true;
                     }
                 }
-            } else if (finalContent) {
-                log(`Final Response: ${finalContent}`, 'agent', false, logFilePath);
-                if (finalContent.includes("FLG:")) {
+            } else if (text) {
+                log(`Final Response: ${text}`, 'agent', false, logFilePath);
+                if (text.includes("FLG:")) {
                     return;
                 }
-                conversation.push({ role: "assistant", content: finalContent });
+                conversation.push({ role: "assistant", content: text });
                 conversation.push({ role: "user", content: "Please continue if there are more items to categorize." });
             } else {
                 log(`No tool calls or text in response.`, 'agent', false, logFilePath);

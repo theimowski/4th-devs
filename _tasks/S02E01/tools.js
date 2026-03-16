@@ -31,7 +31,10 @@ export const nativeTools = [
         parameters: { 
             type: "object", 
             properties: {}, 
-            required: [],
+            properties: {
+                runNumber: { type: "number", description: "The current run number" }
+            },
+            required: ["runNumber"],
             additionalProperties: false
         },
         strict: true
@@ -79,8 +82,8 @@ export const createNativeHandlers = () => ({
         
         return { status: "success", csv: output };
     },
-    reset: async () => {
-        log(`Resetting Categorize API...`, 'agent', false, logFilePath);
+    reset: async ({ runNumber }) => {
+        log(`Resetting Categorize API (run ${runNumber})...`, 'agent', false, logFilePath);
         
         const response = await verify("categorize", { prompt: "reset" });
         const bodyText = await response.text();
@@ -97,7 +100,7 @@ export const createNativeHandlers = () => ({
             body 
         }, 'api-res-detailed', true, logFilePath);
         
-        return { status: response.status, body };
+        return { status: response.status };
     },
     categorize: async ({ prompt, runNumber }) => {
         log(`Categorizing with prompt (run ${runNumber}): "${prompt}"`, 'agent', false, logFilePath);
@@ -116,7 +119,7 @@ export const createNativeHandlers = () => ({
             headers: Object.fromEntries(response.headers.entries()), 
             body 
         }, 'api-res-detailed', true, logFilePath);
-        log({ status: response.status, body }, 'api-res', false, logFilePath);
+        log(body?.message, 'api-res', false, logFilePath);
         
         // Update the CSV file
         const csvPath = path.join(taskDir, `categorize-${runNumber}.csv`);

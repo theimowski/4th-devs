@@ -2,13 +2,12 @@
  * Agent Loop
  * 
  * Executes chat → tool calls → results cycle until completion.
- * Supports both MCP tools and native tools.
+ * Uses MCP tools for file operations.
  * Maintains conversation state for follow-up questions.
  */
 
-import { chat, extractToolCalls, extractText } from "./helpers/api.js";
+import { chat, extractToolCalls, extractText, extractReasoning } from "./helpers/api.js";
 import { callMcpTool, mcpToolsToOpenAI } from "./mcp/client.js";
-import { nativeTools, isNativeTool, executeNativeTool } from "./native/tools.js";
 import log from "./helpers/logger.js";
 
 const MAX_STEPS = 50;
@@ -19,24 +18,18 @@ const MAX_STEPS = 50;
 
 const runTool = async (mcpClient, toolCall) => {
   const args = JSON.parse(toolCall.arguments);
+  const toolName = toolCall.name;
 
-  log.tool(toolCall.name, args);
+  log.tool(toolName, args);
 
   try {
-    let result;
-    
-    if (isNativeTool(toolCall.name)) {
-      result = await executeNativeTool(toolCall.name, args);
-    } else {
-      result = await callMcpTool(mcpClient, toolCall.name, args);
-    }
-
+    const result = await callMcpTool(mcpClient, toolName, args);
     const output = JSON.stringify(result);
-    log.toolResult(toolCall.name, true, output);
+    log.toolResult(toolName, true, output);
     return { type: "function_call_output", call_id: toolCall.call_id, output };
   } catch (error) {
     const output = JSON.stringify({ error: error.message });
-    log.toolResult(toolCall.name, false, error.message);
+    log.toolResult(toolName, false, error.message);
     return { type: "function_call_output", call_id: toolCall.call_id, output };
   }
 };
@@ -59,7 +52,7 @@ const runTools = (mcpClient, toolCalls) =>
  * @returns {object} { response, conversationHistory }
  */
 export const run = async (query, { mcpClient, mcpTools, conversationHistory = [] }) => {
-  const tools = [...mcpToolsToOpenAI(mcpTools), ...nativeTools];
+  const tools = mcpToolsToOpenAI(mcpTools);
   
   // Start with existing history or empty array
   const messages = [...conversationHistory, { role: "user", content: query }];
@@ -70,11 +63,13 @@ export const run = async (query, { mcpClient, mcpTools, conversationHistory = []
     log.api(`Step ${step}`, messages.length);
     const response = await chat({ input: messages, tools });
     log.apiDone(response.usage);
+    log.reasoning(extractReasoning(response));
 
     const toolCalls = extractToolCalls(response);
 
     if (toolCalls.length === 0) {
       const text = extractText(response) ?? "No response";
+      log.response(text);
       
       // Add assistant response to history
       messages.push(...response.output);

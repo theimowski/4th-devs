@@ -23,8 +23,6 @@ export async function fetchHubFile(filename, targetDir) {
   const url = `https://hub.ag3nts.org/data/${apikey}/${filename}`;
   const filePath = path.join(targetDir, filename);
 
-  console.log(`Downloading ${filename} from ${url}...`);
-
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to download ${filename}: ${response.status} ${response.statusText}`);
@@ -32,7 +30,6 @@ export async function fetchHubFile(filename, targetDir) {
 
   const text = await response.text();
   fs.writeFileSync(filePath, text);
-  console.log(`File ${filename} downloaded successfully to ${filePath}.`);
   return text;
 }
 

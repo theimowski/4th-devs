@@ -11,22 +11,18 @@ const logQuery = (query) => {
 const logResult = (text) => console.log(`\nA: ${text}`);
 
 export const executeToolCalls = async (toolCalls, handlers) => {
-  console.log(`\nTool calls: ${toolCalls.length}`);
   const results = [];
 
   for (const call of toolCalls) {
     const args = JSON.parse(call.arguments);
-    console.log(`  → ${call.name}(${JSON.stringify(args)})`);
 
     try {
       const handler = handlers[call.name];
       if (!handler) throw new Error(`Unknown tool: ${call.name}`);
 
       const result = await handler(args);
-      console.log(`    ✓ Success`);
       results.push({ type: "function_call_output", call_id: call.call_id, output: JSON.stringify(result) });
     } catch (error) {
-      console.log(`    ✗ Error: ${error.message}`);
       results.push({ type: "function_call_output", call_id: call.call_id, output: JSON.stringify({ error: error.message }) });
     }
   }

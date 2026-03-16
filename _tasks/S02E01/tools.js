@@ -60,27 +60,42 @@ export const createNativeHandlers = () => ({
         const content = await fetchHubFile('categorize.csv', taskDir);
         const csvPath = path.join(taskDir, `categorize-${runNumber}.csv`);
         
-        // Parse original CSV
+        // CSV has code,description. We want to treat 'code' as 'id'.
         const records = parse(content, {
-            columns: false,
+            columns: true,
             skip_empty_lines: true
         });
         
-        // Add headers and empty columns for prompt/answer
-        const header = ["id", "description", "prompt", "answer"];
-        const rows = records.map(r => [...r, "", ""]);
+        // Map 'code' to 'id' and add empty prompt/answer
+        const mappedRecords = records.map(r => ({
+            id: r.code,
+            description: r.description,
+            prompt: "",
+            answer: ""
+        }));
         
-        const output = stringify([header, ...rows]);
+        const output = stringify(mappedRecords, { header: true });
         fs.writeFileSync(csvPath, output);
         
-        return { status: "success", file: `categorize-${runNumber}.csv`, recordsCount: records.length };
+        return { status: "success", runNumber, file: `categorize-${runNumber}.csv`, recordsCount: mappedRecords.length };
     },
     reset: async () => {
         log(`Resetting Categorize API...`, 'agent', false, logFilePath);
         
         const response = await verify("categorize", { prompt: "reset" });
-        const body = await response.json();
-        log(`Reset response headers: ${JSON.stringify([...response.headers.entries()])}`, 'detailed', true, logFilePath);
+        const bodyText = await response.text();
+        let body;
+        try {
+            body = bodyText ? JSON.parse(bodyText) : null;
+        } catch (e) {
+            body = bodyText;
+        }
+        
+        log({ 
+            status: response.status, 
+            headers: Object.fromEntries(response.headers.entries()), 
+            body 
+        }, 'api-res-detailed', true, logFilePath);
         
         return { status: response.status, body };
     },
@@ -88,8 +103,19 @@ export const createNativeHandlers = () => ({
         log(`Categorizing with prompt (run ${runNumber}): "${prompt}"`, 'agent', false, logFilePath);
         
         const response = await verify("categorize", { prompt });
-        const body = await response.json();
-        log(`Categorize response headers: ${JSON.stringify([...response.headers.entries()])}`, 'detailed', true, logFilePath);
+        const bodyText = await response.text();
+        let body;
+        try {
+            body = bodyText ? JSON.parse(bodyText) : null;
+        } catch (e) {
+            body = bodyText;
+        }
+
+        log({ 
+            status: response.status, 
+            headers: Object.fromEntries(response.headers.entries()), 
+            body 
+        }, 'api-res-detailed', true, logFilePath);
         
         // Update the CSV file
         const csvPath = path.join(taskDir, `categorize-${runNumber}.csv`);

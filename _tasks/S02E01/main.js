@@ -19,11 +19,22 @@ async function run() {
     const MAX_STEPS = 20;
     const handlers = createNativeHandlers();
     
-    let conversation = [{ role: "user", content: "Categorize all 10 items from the CSV file. The CSV has 'code' as the item ID - use it in your prompts. Remember the reactor rule and the 100-token limit per prompt." }];
+    let conversation = [{ 
+        role: "user", 
+        content: "Categorize all 10 items from the CSV file. The CSV has 'code' as the item ID - use it in your prompts. Remember the reactor rule and the 100-token limit per prompt.",
+        run: 0 
+    }];
 
     for (; runNumber < MAX_RUNS; ) {
         log(`Starting Run Attempt (runNumber: ${runNumber}, max: ${MAX_RUNS})`, 'agent', false, logFilePath);
         
+        // Prune conversation to only last 3 runs
+        const oldSize = conversation.length;
+        conversation = conversation.filter(msg => msg.run >= runNumber - 2);
+        if (conversation.length < oldSize) {
+            log(`Pruned conversation from ${oldSize} to ${conversation.length} messages (kept runs >= ${runNumber - 2})`, 'agent', false, logFilePath);
+        }
+
         let steps = 0;
         let runShouldReset = false;
 
@@ -33,11 +44,18 @@ async function run() {
             
             log("Calling Agent...", 'agent', false, logFilePath);
             
-            // Add runNumber info as a user message at each step or at the beginning of run
+            // ephemeral message for current run info
             const stepConversation = [
                 ...conversation,
-                { role: "user", content: `CURRENT RUN NUMBER: ${runNumber}. ALWAYS use this value when calling 'download_categorize_csv' and 'categorize' tools.` }
+                { 
+                    role: "user", 
+                    content: `CURRENT RUN NUMBER: ${runNumber}. ALWAYS use this value when calling 'download_categorize_csv' and 'categorize' tools.`,
+                    run: runNumber
+                }
             ];
+
+            // Map out the 'run' field before sending to chat API
+            const inputForChat = stepConversation.map(({ run, ...rest }) => rest);
 
             log({ instructions: SYSTEM_PROMPT, input: stepConversation }, 'chat-req', true, logFilePath);
 
@@ -45,7 +63,7 @@ async function run() {
             try {
                 data = await chat({
                     model: resolveModelForProvider(MODEL_NAME),
-                    input: stepConversation,
+                    input: inputForChat,
                     tools: nativeTools,
                     instructions: SYSTEM_PROMPT
                 });
@@ -61,17 +79,16 @@ async function run() {
             }
 
             const toolCalls = extractToolCalls(data);
-            const text = extractText(data);
+            const finalContent = extractText(data);
 
             if (toolCalls.length > 0) {
-                log(text, 'text', false, logFilePath);
                 log(`Tool calls: ${toolCalls.map(c => c.name).join(', ')}`, 'agent', false, logFilePath);
                 const toolResults = await executeToolCalls(toolCalls, handlers);
 
                 conversation = [
                     ...conversation,
-                    ...toolCalls,
-                    ...toolResults
+                    ...toolCalls.map(c => ({ ...c, run: runNumber })),
+                    ...toolResults.map(r => ({ ...r, run: runNumber }))
                 ];
                 
                 // Check for FLG in tool results
@@ -86,13 +103,13 @@ async function run() {
                         runShouldReset = true;
                     }
                 }
-            } else if (text) {
-                log(`Final Response: ${text}`, 'agent', false, logFilePath);
-                if (text.includes("FLG:")) {
+            } else if (finalContent) {
+                log(`Final Response: ${finalContent}`, 'agent', false, logFilePath);
+                if (finalContent.includes("FLG:")) {
                     return;
                 }
-                conversation.push({ role: "assistant", content: text });
-                conversation.push({ role: "user", content: "Please continue if there are more items to categorize." });
+                conversation.push({ role: "assistant", content: finalContent, run: runNumber });
+                conversation.push({ role: "user", content: "Please continue if there are more items to categorize.", run: runNumber });
             } else {
                 log(`No tool calls or text in response.`, 'agent', false, logFilePath);
                 return;

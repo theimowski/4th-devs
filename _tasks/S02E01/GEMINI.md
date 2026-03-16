@@ -70,3 +70,8 @@ Use exactly the following tools, nothing less nothing more:
 * `categorize` to call Categorize API with a crafted prompt - `prompt` as the single input argument. Outputs: `status`, `body`. Log the HTTP response headers in detailed mode, but don't add them to output.
 
 Make sure the tools always have an output, even the `reset` tool.
+
+## Misc
+
+* I have my `.env` file in place, do not check it
+* Do not attempt to run the code yourself, I'll do this myself

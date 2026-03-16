@@ -1,4 +1,4 @@
-export const MODEL_NAME = "anthropic/claude-3-5-sonnet-20241022";
+export const MODEL_NAME = "anthropic/claude-sonnet-4.6";
 
 export const SYSTEM_PROMPT = `You are a professional item categorizer. Your task is to classify items as either "DNG" (Dangerous) or "NEU" (Neutral).
 

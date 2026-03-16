@@ -11,34 +11,54 @@ const logFilePath = path.join(taskDir, 'debug.log');
 
 export const nativeTools = [
     {
+        type: "function",
         name: "download_categorize_csv",
         description: "Download the CSV file with items to categorize",
-        parameters: { type: "object", properties: {}, required: [] }
+        parameters: {
+            type: "object",
+            properties: {
+                runNumber: { type: "number", description: "The current run number" }
+            },
+            required: ["runNumber"],
+            additionalProperties: false
+        },
+        strict: true
     },
     {
+        type: "function",
         name: "reset",
         description: "Reset the Categorize API state and budget",
-        parameters: { type: "object", properties: {}, required: [] }
+        parameters: { 
+            type: "object", 
+            properties: {}, 
+            required: [],
+            additionalProperties: false
+        },
+        strict: true
     },
     {
+        type: "function",
         name: "categorize",
         description: "Categorize a SINGLE item using a crafted prompt",
         parameters: {
             type: "object",
             properties: {
-                prompt: { type: "string", description: "The concise prompt (max 100 tokens total) to categorize the item. Should result in ONLY 'DNG' or 'NEU'." }
+                prompt: { type: "string", description: "The concise prompt (max 100 tokens total) to categorize the item. Should result in ONLY 'DNG' or 'NEU'." },
+                runNumber: { type: "number", description: "The current run number" }
             },
-            required: ["prompt"]
-        }
+            required: ["prompt", "runNumber"],
+            additionalProperties: false
+        },
+        strict: true
     }
 ];
 
-export const createNativeHandlers = (state) => ({
-    download_categorize_csv: async () => {
-        log(`Downloading CSV...`, 'agent', false, logFilePath);
+export const createNativeHandlers = () => ({
+    download_categorize_csv: async ({ runNumber }) => {
+        log(`Downloading CSV for run ${runNumber}...`, 'agent', false, logFilePath);
         
         const content = await fetchHubFile('categorize.csv', taskDir);
-        const csvPath = path.join(taskDir, `categorize-${state.runNumber}.csv`);
+        const csvPath = path.join(taskDir, `categorize-${runNumber}.csv`);
         
         // Parse original CSV
         const records = parse(content, {
@@ -53,7 +73,7 @@ export const createNativeHandlers = (state) => ({
         const output = stringify([header, ...rows]);
         fs.writeFileSync(csvPath, output);
         
-        return { status: "success", file: `categorize-${state.runNumber}.csv`, recordsCount: records.length };
+        return { status: "success", file: `categorize-${runNumber}.csv`, recordsCount: records.length };
     },
     reset: async () => {
         log(`Resetting Categorize API...`, 'agent', false, logFilePath);
@@ -62,19 +82,17 @@ export const createNativeHandlers = (state) => ({
         const body = await response.json();
         log(`Reset response headers: ${JSON.stringify([...response.headers.entries()])}`, 'detailed', true, logFilePath);
         
-        state.runNumber++;
-        
         return { status: response.status, body };
     },
-    categorize: async ({ prompt }) => {
-        log(`Categorizing with prompt: "${prompt}"`, 'agent', false, logFilePath);
+    categorize: async ({ prompt, runNumber }) => {
+        log(`Categorizing with prompt (run ${runNumber}): "${prompt}"`, 'agent', false, logFilePath);
         
         const response = await verify("categorize", { prompt });
         const body = await response.json();
         log(`Categorize response headers: ${JSON.stringify([...response.headers.entries()])}`, 'detailed', true, logFilePath);
         
         // Update the CSV file
-        const csvPath = path.join(taskDir, `categorize-${state.runNumber}.csv`);
+        const csvPath = path.join(taskDir, `categorize-${runNumber}.csv`);
         if (fs.existsSync(csvPath)) {
             const content = fs.readFileSync(csvPath, 'utf-8');
             const records = parse(content, { columns: true });

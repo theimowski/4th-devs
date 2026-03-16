@@ -106,7 +106,8 @@ async function run() {
             } else if (finalContent) {
                 log(`Final Response: ${finalContent}`, 'agent', false, logFilePath);
                 if (finalContent.includes("FLG:")) {
-                    return;
+                    log(`SUCCESS! Flag found: ${finalContent.match(/FLG:[^}]+/)?.[0]}`, 'agent', false, logFilePath);
+                    //return;
                 }
                 conversation.push({ role: "assistant", content: finalContent, run: runNumber });
                 conversation.push({ role: "user", content: "Please continue if there are more items to categorize.", run: runNumber });

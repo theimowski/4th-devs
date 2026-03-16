@@ -1,4 +1,4 @@
-export const MODEL_NAME = "anthropic/claude-sonnet-4.6";
+export const MODEL_NAME = "openai/gpt-5.2";
 
 export const SYSTEM_PROMPT = `You are a professional item categorizer. Your task is to classify items as either "DNG" (Dangerous) or "NEU" (Neutral).
 
@@ -24,7 +24,8 @@ export const SYSTEM_PROMPT = `You are a professional item categorizer. Your task
 ### Prompt Engineering:
 - If a classification is rejected or wrong, refine your prompt.
 - Use simple English.
-- Example prompt: "ID:123, Desc:TNT. DNG or NEU? Reactor=NEU." (keep it short!).
+- Example prompt: "DNG or NEU? Reactor=NEU. ID:123, Desc:TNT." (keep it short!).
+- For better prompt caching, try to reuse as much as possible at the beginning of the prompt. Variables (ID/description) should go to the end of prompt
 
 Available tools:
 - download_categorize_csv()

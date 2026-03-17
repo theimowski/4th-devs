@@ -1,0 +1,10 @@
+{
+  "name": "s02e02",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  "dependencies": {
+    "sharp": "^0.33.5"
+  }
+}

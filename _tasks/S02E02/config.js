@@ -17,8 +17,8 @@ Example response:
 Image size is ${width}x${height}.
 IMPORTANT: ymax and xmax MUST be within the bounds of the original image (ymax <= ${height}, xmax <= ${width}).`;
 
-export const getSquarePrompt = (width, height) => `This image is a 3x3 grid of squares. 
-Extract the coordinates for the square at position 1x1 (top-left). 
+export const getSquarePromptForPos = (row, col, width, height) => `This image is a 3x3 grid of squares. 
+Extract the coordinates for a specific square in this grid. 
 The crop should be tight enough so that the thin black frames of the grid are NOT visible. 
 Inside the squares there are thick black lines - these are part of the square's content and should NOT be confused with the thin grid framing.
 Return ONLY a JSON object with the following keys: ymin, xmin, ymax, xmax. The coordinates should be in pixels.
@@ -31,7 +31,8 @@ Example response:
   "xmax": 150
 }
 
-Image size is ${width}x${height}.`;
+Image size is ${width}x${height}.
+Target square position: row ${row}, column ${col} (1-indexed).`;
 
 export const getCategorizationPrompt = () => `The image represents a set of black lines on a bright background. 
 A line always originates at the center of the image and can go towards one of the edges: left, top, right, bottom. 

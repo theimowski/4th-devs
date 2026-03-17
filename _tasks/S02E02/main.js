@@ -2,14 +2,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 import { fetchHubFile } from '../utils/utils.js';
-import { MODEL, CATEGORIZATION_MODEL, getGridPrompt, getSquarePrompt, getCategorizationPrompt } from './config.js';
+import { MODEL, CATEGORIZATION_MODEL, getGridPrompt, getSquarePromptForPos, getCategorizationPrompt } from './config.js';
 import { vision, extractText } from './ai.js';
 import { crop } from './image.js';
 
 const __dirname = import.meta.dirname;
 const originalPath = path.join(__dirname, 'electricity.png');
 const gridPath = path.join(__dirname, 'electricity-grid.png');
-const squarePath = path.join(__dirname, 'electricity-1x1.png');
 
 async function run() {
     if (!fs.existsSync(originalPath)) {
@@ -37,36 +36,52 @@ async function run() {
     await crop(originalPath, gridCoords, gridPath);
     console.log(`Saved grid to ${gridPath}`);
 
-    // STEP 2: Extract the 1x1 square from the grid image
-    console.log("\n--- STEP 2: Extracting 1x1 Square ---");
+    // STEP 2 & 3: Iterate through the grid, extract and categorize each square
     const gridBuffer = fs.readFileSync(gridPath);
     const gridMetadata = await sharp(gridBuffer).metadata();
     const gridBase64 = gridBuffer.toString('base64');
 
-    console.log(`Calling vision model for square: ${MODEL}...`);
-    const squarePrompt = getSquarePrompt(gridMetadata.width, gridMetadata.height);
-    const squareData = await vision(MODEL, squarePrompt, gridBase64);
-    const squareResultText = extractText(squareData);
+    const results = [];
 
-    const squareCoordsMatch = squareResultText.match(/\{[\s\S]*\}/);
-    if (!squareCoordsMatch) throw new Error("No JSON found in square response");
-    const squareCoords = JSON.parse(squareCoordsMatch[0]);
-    console.log("Square Coordinates:", squareCoords);
+    for (let row = 1; row <= 3; row++) {
+        for (let col = 1; col <= 3; col++) {
+            console.log(`\n--- Processing Square [Row ${row}, Col ${col}] ---`);
+            
+            const squarePath = path.join(__dirname, `electricity-${row}x${col}.png`);
+            
+            // Extract Square
+            console.log(`Calling vision model for square ${row}x${col}: ${MODEL}...`);
+            const squarePrompt = getSquarePromptForPos(row, col, gridMetadata.width, gridMetadata.height);
+            const squareData = await vision(MODEL, squarePrompt, gridBase64);
+            const squareResultText = extractText(squareData);
 
-    console.log("Cropping 1x1 square...");
-    await crop(gridPath, squareCoords, squarePath);
-    console.log(`Saved 1x1 square to ${squarePath}`);
+            const squareCoordsMatch = squareResultText.match(/\{[\s\S]*\}/);
+            if (!squareCoordsMatch) {
+                console.error(`No JSON found in square response for ${row}x${col}`);
+                continue;
+            }
+            const squareCoords = JSON.parse(squareCoordsMatch[0]);
+            console.log(`Square ${row}x${col} Coordinates:`, squareCoords);
 
-    // STEP 3: Categorize the 1x1 square
-    console.log("\n--- STEP 3: Categorizing 1x1 Square ---");
-    const finalSquareBuffer = fs.readFileSync(squarePath);
-    const finalSquareBase64 = finalSquareBuffer.toString('base64');
+            console.log(`Cropping square ${row}x${col}...`);
+            await crop(gridPath, squareCoords, squarePath);
+            
+            // Categorize Square
+            const finalSquareBuffer = fs.readFileSync(squarePath);
+            const finalSquareBase64 = finalSquareBuffer.toString('base64');
 
-    console.log(`Calling vision model for categorization: ${CATEGORIZATION_MODEL}...`);
-    const categorizationPrompt = getCategorizationPrompt();
-    const categorizationData = await vision(CATEGORIZATION_MODEL, categorizationPrompt, finalSquareBase64);
-    const categorizationResultText = extractText(categorizationData);
-    console.log("Categorization Result:", categorizationResultText);
+            console.log(`Calling vision model for categorization: ${CATEGORIZATION_MODEL}...`);
+            const categorizationPrompt = getCategorizationPrompt();
+            const categorizationData = await vision(CATEGORIZATION_MODEL, categorizationPrompt, finalSquareBase64);
+            const categorizationResultText = extractText(categorizationData);
+            console.log(`Categorization Result for ${row}x${col}:`, categorizationResultText);
+            
+            results.push({ pos: `${row}x${col}`, result: categorizationResultText });
+        }
+    }
+
+    console.log("\n--- FINAL RESULTS ---");
+    console.table(results);
 }
 
 run().catch(err => {

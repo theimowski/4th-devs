@@ -11,11 +11,11 @@ const RESPONSES_ENDPOINTS = {
 };
 const EMBEDDINGS_ENDPOINTS = {
   openai: "https://api.openai.com/v1/embeddings",
-  openrouter: "https://openrouter.ai/api/v1/embeddings"
+  openrouter: "https://" + (process.env.OR_HOST?.trim() ?? "") + "/api/v1/embeddings"
 };
 const CHAT_API_BASE_URLS = {
   openai: "https://api.openai.com/v1",
-  openrouter: "https://openrouter.ai/api/v1"
+  openrouter: "https://" + (process.env.OR_HOST?.trim() ?? "") + "/api/v1"
 };
 const OPENROUTER_ONLINE_SUFFIX = ":online";
 const VALID_OPENAI_SEARCH_CONTEXT_SIZES = new Set(["low", "medium", "high"]);

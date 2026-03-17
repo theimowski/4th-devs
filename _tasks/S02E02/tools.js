@@ -11,14 +11,14 @@ export const nativeTools = [
     {
         type: "function",
         name: "extract_grid",
-        description: "Extract the 3x3 grid from an image and save it to a new file.",
+        description: "Extract the 3x3 grid from an image and save it to a new file. Use filenames only.",
         parameters: {
             type: "object",
             properties: {
-                inputPath: { type: "string", description: "Path to the source image" },
-                outputPath: { type: "string", description: "Path where the cropped grid should be saved" }
+                inputFile: { type: "string", description: "Filename of the source image" },
+                outputFile: { type: "string", description: "Filename where the cropped grid should be saved" }
             },
-            required: ["inputPath", "outputPath"],
+            required: ["inputFile", "outputFile"],
             additionalProperties: false
         },
         strict: true
@@ -26,16 +26,16 @@ export const nativeTools = [
     {
         type: "function",
         name: "extract_square",
-        description: "Extract a specific square (row/col) from a grid image and save it to a new file.",
+        description: "Extract a specific square (row/col) from a grid image and save it to a new file. Use filenames only.",
         parameters: {
             type: "object",
             properties: {
-                inputPath: { type: "string", description: "Path to the grid image" },
-                outputPath: { type: "string", description: "Path where the cropped square should be saved" },
+                inputFile: { type: "string", description: "Filename of the grid image" },
+                outputFile: { type: "string", description: "Filename where the cropped square should be saved" },
                 row: { type: "number", description: "Row index (1-3)" },
                 col: { type: "number", description: "Column index (1-3)" }
             },
-            required: ["inputPath", "outputPath", "row", "col"],
+            required: ["inputFile", "outputFile", "row", "col"],
             additionalProperties: false
         },
         strict: true
@@ -43,13 +43,13 @@ export const nativeTools = [
     {
         type: "function",
         name: "classify_square",
-        description: "Classify the line pattern in a square image. Returns a number 0-15.",
+        description: "Classify the line pattern in a square image. Returns a number 0-15. Use filename only.",
         parameters: {
             type: "object",
             properties: {
-                imagePath: { type: "string", description: "Path to the square image" }
+                imageFile: { type: "string", description: "Filename of the square image" }
             },
-            required: ["imagePath"],
+            required: ["imageFile"],
             additionalProperties: false
         },
         strict: true
@@ -71,9 +71,9 @@ export const nativeTools = [
 ];
 
 export const createNativeHandlers = () => ({
-    extract_grid: async ({ inputPath, outputPath }) => {
-        const fullInputPath = path.resolve(__dirname, inputPath);
-        const fullOutputPath = path.resolve(__dirname, outputPath);
+    extract_grid: async ({ inputFile, outputFile }) => {
+        const fullInputPath = path.join(__dirname, inputFile);
+        const fullOutputPath = path.join(__dirname, outputFile);
         
         const buffer = fs.readFileSync(fullInputPath);
         const metadata = await sharp(buffer).metadata();
@@ -93,12 +93,12 @@ export const createNativeHandlers = () => ({
             status: "success", 
             coords, 
             dimensions: { width: metadata.width, height: metadata.height },
-            outputPath
+            outputFile
         };
     },
-    extract_square: async ({ inputPath, outputPath, row, col }) => {
-        const fullInputPath = path.resolve(__dirname, inputPath);
-        const fullOutputPath = path.resolve(__dirname, outputPath);
+    extract_square: async ({ inputFile, outputFile, row, col }) => {
+        const fullInputPath = path.join(__dirname, inputFile);
+        const fullOutputPath = path.join(__dirname, outputFile);
         
         const buffer = fs.readFileSync(fullInputPath);
         const metadata = await sharp(buffer).metadata();
@@ -118,11 +118,11 @@ export const createNativeHandlers = () => ({
             status: "success", 
             coords, 
             dimensions: { width: metadata.width, height: metadata.height },
-            outputPath
+            outputFile
         };
     },
-    classify_square: async ({ imagePath }) => {
-        const fullPath = path.resolve(__dirname, imagePath);
+    classify_square: async ({ imageFile }) => {
+        const fullPath = path.join(__dirname, imageFile);
         const buffer = fs.readFileSync(fullPath);
         const base64 = buffer.toString('base64');
 

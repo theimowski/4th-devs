@@ -12,12 +12,20 @@ const logFilePath = path.join(__dirname, 'debug.log');
 
 clearLog(logFilePath);
 
+function formatToolCall(call) {
+    const args = JSON.parse(call.arguments);
+    const params = Object.values(args)
+        .map(v => typeof v === 'string' ? `"${v}"` : v)
+        .join(',');
+    return `${call.name}(${params})`;
+}
+
 async function run() {
     log("Starting Agentic Loop for S02E02", 'agent', false, logFilePath);
     
     const handlers = createNativeHandlers();
     let conversation = [
-        { role: "user", content: "Solve the first row of the electricity puzzle. Extract grids first, then process squares 1x1, 1x2, and 1x3." }
+        { role: "user", content: "Solve the first row of the electricity puzzle. Extract grids first, then process squares 1x1, 1x2, and 1x3. Use filenames only." }
     ];
 
     const MAX_STEPS = 20;
@@ -38,7 +46,8 @@ async function run() {
             log(data, 'chat-res', true, logFilePath);
             const usage = extractTokenUsage(data);
             if (usage) {
-                log(`Tokens - In: ${usage.input}, Out: ${usage.output}, Cached: ${usage.cached}`, 'token', false, logFilePath);
+                const cachedPercent = usage.input > 0 ? ((usage.cached / usage.input) * 100).toFixed(1) : "0.0";
+                log(`Tokens - In: ${usage.input}, Out: ${usage.output}, Cached: ${cachedPercent}%`, 'token', false, logFilePath);
             }
 
             const toolCalls = extractToolCalls(data);
@@ -50,9 +59,17 @@ async function run() {
             }
 
             if (toolCalls.length > 0) {
-                log(`Tool calls: ${toolCalls.map(c => c.name).join(', ')}`, 'agent', false, logFilePath);
+                for (const call of toolCalls) {
+                    log(`${formatToolCall(call)}`, 'tool', false, logFilePath);
+                }
+
                 const toolResults = await executeToolCalls(toolCalls, handlers);
                 
+                for (const result of toolResults) {
+                    const call = toolCalls.find(c => c.call_id === result.call_id);
+                    log(`${formatToolCall(call)} -> ${JSON.stringify(result.output)}`, 'tool', false, logFilePath);
+                }
+
                 conversation = [
                     ...conversation,
                     ...toolCalls.map(c => ({ ...c })),

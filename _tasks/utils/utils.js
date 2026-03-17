@@ -45,7 +45,7 @@ export function log(message, type = 'info', detailed = false, logFilePath = path
     fs.appendFileSync(logFilePath, logLine);
 
     // Only log brief to stdout unless detailed or error
-    if (!detailed || type === 'error' || type === 'agent') {
+    if (!detailed || type === 'error' || type === 'agent' || type === 'tool') {
         if (typeof message === 'object') {
             console.log(`${prefixConsole} ${JSON.stringify(message, null, 0)}`);
         } else {

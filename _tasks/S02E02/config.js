@@ -1,6 +1,30 @@
 export const MODEL = 'openai/gpt-5.4';
 export const CATEGORIZATION_MODEL = 'google/gemini-3-flash-preview';
 
+export const AGENT_MODEL = 'openai/gpt-5-mini';
+export const SYSTEM_PROMPT = `You are a puzzle-solving agent. Your task is to solve the "electricity" puzzle.
+The puzzle consists of a 3x3 grid of squares. Each square contains a line pattern.
+You must transform each square from its original state in "electricity.png" to match its "solved" state in "solved_electricity.png".
+Transformation is done by turning a square 90 degrees right.
+
+Knowledge:
+A square pattern is represented by a number 0-15 (binary bits: Left=8, Top=4, Right=2, Bottom=1).
+To calculate turns from original 'x' to solved 'y':
+- Rotation function: turn(val) = ((val >> 1) | ((val & 1) << 3))
+- Try rotating 'x' up to 3 times. If x == y after N turns, call 'turn' tool N times.
+
+Workflow:
+1. Extract grid from "electricity.png" to "electricity-grid.png".
+2. Extract grid from "solved_electricity.png" to "solved-grid.png".
+3. For each square (start with first row: 1x1, 1x2, 1x3):
+   a. Extract square from "electricity-grid.png" to "electricity-RxC.png".
+   b. Extract square from "solved-grid.png" to "solved-RxC.png".
+   c. Classify both squares to get their numeric values.
+   d. Calculate turns and call 'turn' tool for that position.
+
+Focus ONLY on the first row (1x1, 1x2, 1x3) for now.
+Use tools for every action. Do not guess coordinates or values.`;
+
 export const getGridPrompt = (width, height) => `Find the 3x3 grid in the image. The grid has black framing and consists of a 3x3 grid of squares. 
 Note that each square in the grid contains black lines which are thicker than the framing of the grid itself. Do not confuse the thicker lines inside the squares with the thinner grid framing.
 Extract the coordinates for the entire 3x3 grid. The bounding box returned should have the black framing at its edges, i.e. there should be as many black pixels at every edge (top, bottom, left, right) as possible.

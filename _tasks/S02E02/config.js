@@ -1,4 +1,5 @@
 export const MODEL = 'openai/gpt-5.4';
+export const CATEGORIZATION_MODEL = 'google/gemini-3-flash-preview';
 
 export const getGridPrompt = (width, height) => `Find the 3x3 grid in the image. The grid has black framing and consists of a 3x3 grid of squares. 
 Note that each square in the grid contains black lines which are thicker than the framing of the grid itself. Do not confuse the thicker lines inside the squares with the thinner grid framing.
@@ -31,3 +32,11 @@ Example response:
 }
 
 Image size is ${width}x${height}.`;
+
+export const getCategorizationPrompt = () => `The image represents a set of lines. 
+A line always originates at the center of the image and can go towards one of the edges: left, top, right, bottom. 
+Lines are always black. Background is always bright. 
+Respond ONLY with a comma-separated list of directions where the lines go. 
+
+Example response:
+top,bottom`;

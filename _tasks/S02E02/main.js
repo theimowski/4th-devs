@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 import { fetchHubFile } from '../utils/utils.js';
-import { MODEL, getGridPrompt, getSquarePrompt } from './config.js';
+import { MODEL, CATEGORIZATION_MODEL, getGridPrompt, getSquarePrompt, getCategorizationPrompt } from './config.js';
 import { vision, extractText } from './ai.js';
 import { crop } from './image.js';
 
@@ -56,6 +56,17 @@ async function run() {
     console.log("Cropping 1x1 square...");
     await crop(gridPath, squareCoords, squarePath);
     console.log(`Saved 1x1 square to ${squarePath}`);
+
+    // STEP 3: Categorize the 1x1 square
+    console.log("\n--- STEP 3: Categorizing 1x1 Square ---");
+    const finalSquareBuffer = fs.readFileSync(squarePath);
+    const finalSquareBase64 = finalSquareBuffer.toString('base64');
+
+    console.log(`Calling vision model for categorization: ${CATEGORIZATION_MODEL}...`);
+    const categorizationPrompt = getCategorizationPrompt();
+    const categorizationData = await vision(CATEGORIZATION_MODEL, categorizationPrompt, finalSquareBase64);
+    const categorizationResultText = extractText(categorizationData);
+    console.log("Categorization Result:", categorizationResultText);
 }
 
 run().catch(err => {

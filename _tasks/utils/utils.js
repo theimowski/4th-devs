@@ -28,9 +28,10 @@ export async function fetchHubFile(filename, targetDir) {
     throw new Error(`Failed to download ${filename}: ${response.status} ${response.statusText}`);
   }
 
-  const text = await response.text();
-  fs.writeFileSync(filePath, text);
-  return text;
+  const arrayBuffer = await response.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  fs.writeFileSync(filePath, buffer);
+  return buffer;
 }
 
 export function log(message, type = 'info', detailed = false, logFilePath = path.join(__dirname, '../debug.log')) {

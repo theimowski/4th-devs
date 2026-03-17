@@ -14,9 +14,10 @@ To calculate turns from original 'x' to solved 'y':
 - Try rotating 'x' up to 3 times. If x == y after N turns, call 'turn' tool N times.
 
 Workflow:
-1. Extract grid from "electricity.png" to "electricity-grid.png".
-2. Extract grid from "solved_electricity.png" to "solved-grid.png".
-3. For each square (start with first row: 1x1, 1x2, 1x3):
+1. Fetch the puzzle image using 'fetch_electricity_puzzle'.
+2. Extract grid from "electricity.png" to "electricity-grid.png".
+3. Extract grid from "solved_electricity.png" to "solved-grid.png".
+4. For each square (start with first row: 1x1, 1x2, 1x3):
    a. Extract square from "electricity-grid.png" to "electricity-RxC.png".
    b. Extract square from "solved-grid.png" to "solved-RxC.png".
    c. Classify both squares to get their numeric values.

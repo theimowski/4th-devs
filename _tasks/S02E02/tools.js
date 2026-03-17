@@ -4,10 +4,25 @@ import sharp from 'sharp';
 import { MODEL, CATEGORIZATION_MODEL, getGridPrompt, getSquarePromptForPos, getCategorizationPrompt } from './config.js';
 import { vision, extractText } from './ai.js';
 import { crop } from './image.js';
+import { fetchHubFile } from '../utils/utils.js';
 
 const __dirname = import.meta.dirname;
 
 export const nativeTools = [
+    {
+        type: "function",
+        name: "fetch_electricity_puzzle",
+        description: "Download the 'electricity.png' puzzle image from the hub.",
+        parameters: {
+            type: "object",
+            properties: {
+                reason: { type: "string", description: "Reason for fetching the puzzle (dummy parameter)" }
+            },
+            required: ["reason"],
+            additionalProperties: false
+        },
+        strict: true
+    },
     {
         type: "function",
         name: "extract_grid",
@@ -71,6 +86,10 @@ export const nativeTools = [
 ];
 
 export const createNativeHandlers = () => ({
+    fetch_electricity_puzzle: async ({ reason }) => {
+        await fetchHubFile('electricity.png', __dirname);
+        return { status: "success", filename: "electricity.png", reason };
+    },
     extract_grid: async ({ inputFile, outputFile }) => {
         const fullInputPath = path.join(__dirname, inputFile);
         const fullOutputPath = path.join(__dirname, outputFile);

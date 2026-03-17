@@ -1,0 +1,16 @@
+export const MODEL = 'openai/gpt-5.4';
+
+export const getPrompt = (width, height) => `Find the 3x3 grid in the image. The grid has black framing and consists of a 3x3 grid of squares. 
+Note that each square in the grid contains black lines which are thicker than the framing of the grid itself. Do not confuse the thicker lines inside the squares with the thinner grid framing.
+Extract the coordinates for the entire 3x3 grid. The bounding box returned should have the black framing at its edges, i.e. there should be as many black pixels at every edge (top, bottom, left, right) as possible.
+Return ONLY a JSON object with the following keys: ymin, xmin, ymax, xmax. The coordinates should be in pixels.
+Image size is ${width}x${height}.
+IMPORTANT: ymax and xmax MUST be within the bounds of the original image (ymax <= ${height}, xmax <= ${width}).
+
+Example response:
+{
+  "ymin": 100,
+  "xmin": 150,
+  "ymax": 200,
+  "xmax": 250
+}`;

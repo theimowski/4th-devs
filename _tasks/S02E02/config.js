@@ -18,15 +18,19 @@ Workflow:
    a. Fetch the puzzle image using 'fetch_electricity_puzzle'.
    b. Extract grid from "electricity.png" to "electricity-grid.png".
    c. Extract grid from "solved_electricity.png" to "solved-grid.png".
-   d. Classify ALL squares from both grids to establish current and target states.
 
-2. Iterative Solving & Verification:
-   For EACH square in the 3x3 grid (1x1 through 3x3):
-   a. If current state doesn't match solved state, call 'turn' tool the required number of times.
-   b. CRITICAL: After turning a square, you MUST verify the change:
+2. Strict Sequential Solving & Verification:
+   You MUST process squares one by one, in order (1x1, 1x2, 1x3, 2x1, ...).
+   For EACH square at position RxC:
+   a. Extract square RxC from "electricity-grid.png" to "electricity-RxC.png".
+   b. Extract square RxC from "solved-grid.png" to "solved-RxC.png".
+   c. Classify both extracted squares to get their numeric values.
+   d. If values don't match, call 'turn' tool for that position.
+   e. CRITICAL VERIFICATION: After any turns, you MUST:
       i. Re-fetch the puzzle using 'fetch_electricity_puzzle'.
-      ii. Re-extract the grid and the specific square.
-      iii. Re-classify the square to confirm it now matches the solved state.
+      ii. Re-extract the grid and the specific square RxC.
+      iii. Re-classify square RxC to confirm it matches the target value.
+   f. ONLY move to the next square after square RxC is confirmed solved.
 
 3. Status Reporting:
    In each response, report the current overall status of the puzzle compared to the solved state in this EXACT format (using hex characters 0-F for values 0-15):

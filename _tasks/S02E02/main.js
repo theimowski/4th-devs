@@ -25,13 +25,14 @@ async function run() {
     
     const handlers = createNativeHandlers();
     let conversation = [
-        { role: "user", content: "Solve the first row of the electricity puzzle. Extract grids first, then process squares 1x1, 1x2, and 1x3. Use filenames only." }
+        { role: "user", content: "Solve the electricity puzzle. Extract grids first, then process ALL squares from 1x1 to 3x3 until the flag is found." }
     ];
 
-    const MAX_STEPS = 20;
+    const MAX_STEPS = 100;
     let step = 0;
+    let solved = false;
 
-    while (step < MAX_STEPS) {
+    while (step < MAX_STEPS && !solved) {
         step++;
         log(`Step ${step}/${MAX_STEPS}`, 'agent', false, logFilePath);
 
@@ -70,6 +71,15 @@ async function run() {
                         output = JSON.parse(result.output);
                     } catch (e) {}
                     log(`${formatToolCall(call)} -> ${typeof output === 'object' ? JSON.stringify(output) : output}`, 'tool', false, logFilePath);
+                    
+                    // Check for flag in the tool output
+                    const outputStr = JSON.stringify(output);
+                    if (outputStr.includes("FLG:")) {
+                        const flag = outputStr.match(/FLG:[^"}]+/)?.[0];
+                        log(`PUZZLE SOLVED! Flag found: ${flag}`, 'info', false, logFilePath);
+                        console.log(`\n🎉 SUCCESS! Flag: ${flag}\n`);
+                        solved = true;
+                    }
                 }
 
                 conversation = [

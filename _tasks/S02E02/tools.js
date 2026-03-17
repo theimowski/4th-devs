@@ -4,7 +4,7 @@ import sharp from 'sharp';
 import { MODEL, CATEGORIZATION_MODEL, getGridPrompt, getSquarePromptForPos, getCategorizationPrompt } from './config.js';
 import { vision, extractText } from './ai.js';
 import { crop } from './image.js';
-import { fetchHubFile } from '../utils/utils.js';
+import { fetchHubFile, verify } from '../utils/utils.js';
 
 const __dirname = import.meta.dirname;
 
@@ -72,7 +72,7 @@ export const nativeTools = [
     {
         type: "function",
         name: "turn",
-        description: "Turn a square at a given position (e.g., '1x1') 90 degrees right (dry-run).",
+        description: "Turn a square at a given position (e.g., '1x1') 90 degrees right.",
         parameters: {
             type: "object",
             properties: {
@@ -153,7 +153,8 @@ export const createNativeHandlers = () => ({
         return { status: "success", value };
     },
     turn: async ({ pos }) => {
-        console.log(`[DRY-RUN] Turning square ${pos}...`);
-        return { status: "success", message: `Turned square ${pos}` };
+        const response = await verify("electricity", { rotate: pos });
+        const body = await response.json();
+        return { status: response.status, body };
     }
 });

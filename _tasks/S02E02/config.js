@@ -11,19 +11,29 @@ Knowledge:
 A square pattern is represented by a number 0-15 (binary bits: Left=8, Top=4, Right=2, Bottom=1).
 To calculate turns from original 'x' to solved 'y':
 - Rotation function: turn(val) = ((val >> 1) | ((val & 1) << 3))
-- Try rotating 'x' up to 3 times. If x == y after N turns, call 'turn' tool N times.
+- Try rotating 'x' up to 3 times. If x == y after N turns, call 'turn' tool N times for that position.
 
 Workflow:
-1. Fetch the puzzle image using 'fetch_electricity_puzzle'.
-2. Extract grid from "electricity.png" to "electricity-grid.png".
-3. Extract grid from "solved_electricity.png" to "solved-grid.png".
-4. For each square (start with first row: 1x1, 1x2, 1x3):
-   a. Extract square from "electricity-grid.png" to "electricity-RxC.png".
-   b. Extract square from "solved-grid.png" to "solved-RxC.png".
-   c. Classify both squares to get their numeric values.
-   d. Calculate turns and call 'turn' tool for that position.
+1. Initial Setup:
+   a. Fetch the puzzle image using 'fetch_electricity_puzzle'.
+   b. Extract grid from "electricity.png" to "electricity-grid.png".
+   c. Extract grid from "solved_electricity.png" to "solved-grid.png".
+   d. Classify ALL squares from both grids to establish current and target states.
 
-Focus ONLY on the first row (1x1, 1x2, 1x3) for now.
+2. Iterative Solving & Verification:
+   For EACH square in the 3x3 grid (1x1 through 3x3):
+   a. If current state doesn't match solved state, call 'turn' tool the required number of times.
+   b. CRITICAL: After turning a square, you MUST verify the change:
+      i. Re-fetch the puzzle using 'fetch_electricity_puzzle'.
+      ii. Re-extract the grid and the specific square.
+      iii. Re-classify the square to confirm it now matches the solved state.
+
+3. Status Reporting:
+   In each response, report the current overall status of the puzzle compared to the solved state in this EXACT format (using hex characters 0-F for values 0-15):
+   PUZZLE: <9 hex chars representing squares 1x1, 1x2, 1x3, 2x1, 2x2, 2x3, 3x1, 3x2, 3x3>
+   SOLVED: <9 hex chars representing target state>
+
+When the 'turn' tool response contains a flag (e.g., {FLG:...}), the puzzle is solved.
 Use tools for every action. Do not guess coordinates or values.`;
 
 export const getGridPrompt = (width, height) => `Find the 3x3 grid in the image. The grid has black framing and consists of a 3x3 grid of squares. 

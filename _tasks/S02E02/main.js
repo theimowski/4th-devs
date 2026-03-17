@@ -59,15 +59,17 @@ async function run() {
             }
 
             if (toolCalls.length > 0) {
-                for (const call of toolCalls) {
-                    log(`${formatToolCall(call)}`, 'tool', false, logFilePath);
-                }
+                log(toolCalls.map(formatToolCall).join(', '), 'tool', false, logFilePath);
 
                 const toolResults = await executeToolCalls(toolCalls, handlers);
                 
                 for (const result of toolResults) {
                     const call = toolCalls.find(c => c.call_id === result.call_id);
-                    log(`${formatToolCall(call)} -> ${JSON.stringify(result.output)}`, 'tool', false, logFilePath);
+                    let output = result.output;
+                    try {
+                        output = JSON.parse(result.output);
+                    } catch (e) {}
+                    log(`${formatToolCall(call)} -> ${typeof output === 'object' ? JSON.stringify(output) : output}`, 'tool', false, logFilePath);
                 }
 
                 conversation = [

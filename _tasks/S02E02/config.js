@@ -33,10 +33,18 @@ Example response:
 
 Image size is ${width}x${height}.`;
 
-export const getCategorizationPrompt = () => `The image represents a set of lines. 
+export const getCategorizationPrompt = () => `The image represents a set of black lines on a bright background. 
 A line always originates at the center of the image and can go towards one of the edges: left, top, right, bottom. 
-Lines are always black. Background is always bright. 
-Respond ONLY with a comma-separated list of directions where the lines go. 
 
-Example response:
-top,bottom`;
+You must return a single decimal number between 0 and 15 representing the set of detected lines. 
+The number is constructed using a 4-bit binary format where:
+- 1st bit (MSB, value 8): Left edge
+- 2nd bit (value 4): Top edge
+- 3rd bit (value 2): Right edge
+- 4th bit (LSB, value 1): Bottom edge
+
+Example: "right,bottom" is binary 0011, which is 3 in decimal. Return only "3".
+Example: "left,top,right" is binary 1110, which is 14 in decimal. Return only "14".
+
+If you are unable to categorize the image or detect the lines, return a descriptive error message explaining why.
+Otherwise, return ONLY the decimal number.`;

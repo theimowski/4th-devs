@@ -47,7 +47,7 @@ async function run() {
         { role: "user", content: `Analyze the logs and find the last ERROR log entry, then verify it.${timeRangeStr}` }
     ];
 
-    const MAX_STEPS = 50;
+    const MAX_STEPS = 100;
     let step = 0;
     let solved = false;
 

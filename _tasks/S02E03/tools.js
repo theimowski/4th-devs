@@ -44,25 +44,16 @@ export const nativeTools = [
     {
         type: "function",
         name: "compress_logs",
-        description: "Compress log entries to a very short format using AI. Input: array of log entries {timestamp, level, content}. Result format: YYYY-MM-DD HH:MM LEVL:COMPRESSED. Result must not exceed 6000 characters.",
+        description: "Compress log contents using AI. Input: array of strings. Returns: array of compressed strings in the same order.",
         parameters: {
             type: "object",
             properties: {
-                entries: { 
+                contents: { 
                     type: "array", 
-                    items: {
-                        type: "object",
-                        properties: {
-                            timestamp: { type: "string" },
-                            level: { type: "string" },
-                            content: { type: "string" }
-                        },
-                        required: ["timestamp", "level", "content"],
-                        additionalProperties: false
-                    }
+                    items: { type: "string" }
                 }
             },
-            required: ["entries"],
+            required: ["contents"],
             additionalProperties: false
         },
         strict: true
@@ -77,7 +68,7 @@ export const nativeTools = [
                 logs: {
                     type: "array",
                     items: { type: "string" },
-                    description: "Array of raw log entries (strings)"
+                    description: "Array of final condensed logs (strings)"
                 }
             },
             required: ["logs"],
@@ -86,12 +77,6 @@ export const nativeTools = [
         strict: true
     }
 ];
-
-const findKeywords = (content) => {
-    const matches = content.match(/\b[A-Z0-9]{3,}\b/g);
-    if (!matches) return "NONE";
-    return [...new Set(matches)].join(',');
-};
 
 export const createNativeHandlers = () => ({
     search_logs: async ({ levels, after, before, keyword }) => {
@@ -147,7 +132,6 @@ export const createNativeHandlers = () => ({
             results.push({
                 timestamp,
                 level,
-                keyword: findKeywords(logContent),
                 content: logContent
             });
         }
@@ -156,29 +140,34 @@ export const createNativeHandlers = () => ({
         log(`search_logs(levels: ${JSON.stringify(levels)}, after: ${after}, before: ${before}, keyword: ${keyword}) -> success, items: ${results.length}`, 'tool', false, debugLogFilePath);
         return res;
     },
-    compress_logs: async ({ entries }) => {
-        log(`compress_logs(entries: ${entries.length})`, 'tool', false, debugLogFilePath);
+    compress_logs: async ({ contents }) => {
+        log(`compress_logs(contents: ${contents.length})`, 'tool', false, debugLogFilePath);
         
         const timestamp = Date.now();
-        const logsToCompress = entries.map(e => `[${e.timestamp}] [${e.level}] ${e.content}`).join('\n');
-        fs.writeFileSync(path.join(__dirname, `compress_${timestamp}_before.log`), logsToCompress);
+        if (contents.length === 0) {
+            return { status: "success", compressed: [] };
+        }
+
+        fs.writeFileSync(path.join(__dirname, `compress_${timestamp}_before.log`), contents.join('\n'));
 
         const model = resolveModelForProvider(COMPRESSION_MODEL);
         const data = await chat({
             model: model,
-            input: [{ role: "user", content: logsToCompress }],
+            input: [{ role: "user", content: contents.join('\n') }],
             instructions: COMPRESSION_PROMPT
         });
 
         const resultText = data.output_text || (data.output?.find(o => o.type === 'message')?.content?.[0]?.text) || "";
-        const truncatedResult = resultText.length > 6000 ? resultText.substring(0, 5997) + "..." : resultText;
+        fs.writeFileSync(path.join(__dirname, `compress_${timestamp}_after.log`), resultText);
+
+        const compressedLines = resultText.split('\n').filter(l => l.trim());
         
-        fs.writeFileSync(path.join(__dirname, `compress_${timestamp}_after.log`), truncatedResult);
-        
-        log(`compress_logs -> count: ${truncatedResult.split('\n').length}, chars: ${truncatedResult.length}`, 'tool', false, debugLogFilePath);
-        return { status: "success", compressed: truncatedResult };
+        log(`compress_logs -> count: ${compressedLines.length}`, 'tool', false, debugLogFilePath);
+        return { status: "success", compressed: compressedLines };
     },
     verify: async ({ logs }) => {
+        const timestamp = Date.now();
+        fs.writeFileSync(path.join(__dirname, `verify_${timestamp}.log`), logs.join('\n'));
         const answer = { logs: logs.join('\n') };
         const response = await hubVerify("failure", answer);
         const body = await response.json();

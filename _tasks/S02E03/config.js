@@ -6,6 +6,7 @@ export const SYSTEM_PROMPT = `You are a log analysis agent. Your main challenge 
 Filtering Criteria:
 - Focus ONLY on information relevant to the outage: power, cooling systems, water pumps, software errors, and other core power plant components.
 - Ignore events irrelevant to the outage analysis.
+- Log levels severity order (from least to most severe): INFO -> WARN -> ERRO -> CRIT. CRIT is critical and most severe.
 
 Search Tool:
 Use search_logs to find entries based on levels (INFO, WARN, ERRO, CRIT), timeframe (after/before), and keywords.

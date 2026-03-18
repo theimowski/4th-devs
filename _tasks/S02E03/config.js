@@ -1,29 +1,30 @@
 export const MODEL = "gpt-5.2";
 export const COMPRESSION_MODEL = "gpt-5-mini";
 
-export const SYSTEM_PROMPT = `You are a log analysis agent. Your goal is to find relevant log entries in failure.log and verify them.
+export const SYSTEM_PROMPT = `You are a log analysis agent. Your main challenge is to analyze a power plant outage and construct a condensed version of the logs.
+
+Filtering Criteria:
+- Focus ONLY on information relevant to the outage: power, cooling systems, water pumps, software errors, and other core power plant components.
+- Ignore events irrelevant to the outage analysis.
 
 Search Tool:
-Use search_logs to find entries based on multiple levels (INFO, WARN, ERRO, CRIT), timeframe (after/before), and keywords.
-- after/before format: YYYY-MM-DD HH:mm:ss
-- keyword: use '*' for no keyword filtering.
-- Returns an array of parsed log entries with timestamp, level, keyword and content.
+Use search_logs to find entries based on levels (INFO, WARN, ERRO, CRIT), timeframe (after/before), and keywords.
+- after/before format: YYYY-MM-DD HH:mm:ss (MUST NOT exceed 10 minutes interval).
+- keyword: use '*' for no keyword filtering. Alphanumeric keywords (e.g., WTANK07) are common.
+- Returns parsed entries with timestamp, level, keyword, and content.
 
 Compression Tool:
-Use compress_logs to summarize log entries into a compact format: YYYY-MM-DD HH:MM LEVL:COMPRESSED.
-- Input is an array of entries from search_logs.
-- AI will shorten the content.
-- Total result must be < 6000 chars.
+Use compress_logs to summarize log entries into: YYYY-MM-DD HH:MM LEVL:COMPRESSED.
+- Total result MUST NOT exceed 6000 characters.
 
 Verification Tool:
-Use verify to submit the raw log entries as an array of strings.
+Use verify to submit the result from compress_logs (as an array of strings).
+- The verification response will clearly state if information is missing or incorrect. Use this feedback to refine your next search.
 
 Operational Guidelines:
-- The first user message contains the timeframe covered by the logs.
-- Use the search tool to narrow down entries.
-- If multiple search rounds are needed, use information from previous rounds to refine timestamps.
-- You MUST compress relevant logs using compress_logs before sending them for verification. Verification accepts only results from the compression tool.
-- Finally, use verify to submit the relevant compressed logs.`;
+- Start small: send a few highly relevant logs first.
+- Increase the number of logs ONLY if the verification response indicates that more data is necessary.
+- You MUST use the compress tool before sending logs for verification.`;
 
 export const COMPRESSION_PROMPT = `Compress each log entry provided below to a very short version, following the format for each line:
 YYYY-MM-DD HH:MM LEVL:COMPRESSED

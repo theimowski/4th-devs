@@ -2,6 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { verify as hubVerify, log } from '../utils/utils.js';
+import { chat } from '../../01_02_tool_use/src/api.js';
+import { COMPRESSION_MODEL, COMPRESSION_PROMPT } from './config.js';
+import { resolveModelForProvider } from '../../config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const logFilePath = path.join(__dirname, 'failure.log');
@@ -40,6 +43,33 @@ export const nativeTools = [
     },
     {
         type: "function",
+        name: "compress_logs",
+        description: "Compress log entries to a very short format using AI. Input: array of log entries {timestamp, level, keyword, content}. Result format: YYYY-MM-DD HH:MM LEVL KEYWORD:COMPRESSED. Result must not exceed 6000 characters.",
+        parameters: {
+            type: "object",
+            properties: {
+                entries: { 
+                    type: "array", 
+                    items: {
+                        type: "object",
+                        properties: {
+                            timestamp: { type: "string" },
+                            level: { type: "string" },
+                            keyword: { type: "string" },
+                            content: { type: "string" }
+                        },
+                        required: ["timestamp", "level", "keyword", "content"],
+                        additionalProperties: false
+                    }
+                }
+            },
+            required: ["entries"],
+            additionalProperties: false
+        },
+        strict: true
+    },
+    {
+        type: "function",
         name: "verify",
         description: "Submit identified logs for verification",
         parameters: {
@@ -58,11 +88,16 @@ export const nativeTools = [
     }
 ];
 
+const findKeyword = (content) => {
+    const match = content.match(/\b[A-Z]{3,}\b/); // Upper-case words with 3+ characters
+    return match ? match[0] : "NONE";
+};
+
 export const createNativeHandlers = () => ({
     search_logs: async ({ levels, after, before, keyword }) => {
         if (!fs.existsSync(logFilePath)) {
             const err = { status: "error", message: "failure.log not found" };
-            log(`search_logs(levels: ${JSON.stringify(levels)}, after: ${after}, before: ${before}, keyword: ${keyword}) -> ${JSON.stringify(err)}`, 'tool', false, debugLogFilePath);
+            log(`search_logs(...) -> ${JSON.stringify(err)}`, 'tool', false, debugLogFilePath);
             return err;
         }
 
@@ -71,7 +106,7 @@ export const createNativeHandlers = () => ({
 
         if (isNaN(afterDate.getTime()) || isNaN(beforeDate.getTime())) {
             const err = { status: "error", message: "Invalid date format for 'after' or 'before'." };
-            log(`search_logs(levels: ${JSON.stringify(levels)}, after: ${after}, before: ${before}, keyword: ${keyword}) -> ${JSON.stringify(err)}`, 'tool', false, debugLogFilePath);
+            log(`search_logs(...) -> ${JSON.stringify(err)}`, 'tool', false, debugLogFilePath);
             return err;
         }
 
@@ -80,13 +115,13 @@ export const createNativeHandlers = () => ({
 
         if (diffMs > maxDiffMs) {
             const err = { status: "error", message: `Timeframe interval exceeds 10 minutes (current: ${(diffMs / 60000).toFixed(1)} min). Please narrow down your search.` };
-            log(`search_logs(levels: ${JSON.stringify(levels)}, after: ${after}, before: ${before}, keyword: ${keyword}) -> ${JSON.stringify(err)}`, 'tool', false, debugLogFilePath);
+            log(`search_logs(...) -> ${JSON.stringify(err)}`, 'tool', false, debugLogFilePath);
             return err;
         }
 
         if (diffMs < 0) {
             const err = { status: "error", message: "'before' must be after 'after'." };
-            log(`search_logs(levels: ${JSON.stringify(levels)}, after: ${after}, before: ${before}, keyword: ${keyword}) -> ${JSON.stringify(err)}`, 'tool', false, debugLogFilePath);
+            log(`search_logs(...) -> ${JSON.stringify(err)}`, 'tool', false, debugLogFilePath);
             return err;
         }
 
@@ -104,19 +139,47 @@ export const createNativeHandlers = () => ({
             if (levels.length > 0 && !levels.includes(level)) continue;
             if (logDate < afterDate) continue;
             if (logDate > beforeDate) continue;
-            if (keyword !== '*' && !logContent.toLowerCase().includes(keyword.toLowerCase())) continue;
+            
+            let foundKeyword = keyword;
+            if (keyword === '*') {
+                foundKeyword = findKeyword(logContent);
+            } else if (!logContent.toLowerCase().includes(keyword.toLowerCase())) {
+                continue;
+            }
 
             results.push({
                 timestamp,
                 level,
-                content: logContent,
-                raw: line
+                keyword: foundKeyword,
+                content: logContent
             });
         }
 
         const res = { status: "success", count: results.length, entries: results };
         log(`search_logs(levels: ${JSON.stringify(levels)}, after: ${after}, before: ${before}, keyword: ${keyword}) -> success, items: ${results.length}`, 'tool', false, debugLogFilePath);
         return res;
+    },
+    compress_logs: async ({ entries }) => {
+        log(`compress_logs(entries: ${entries.length})`, 'tool', false, debugLogFilePath);
+        
+        const timestamp = Date.now();
+        const logsToCompress = entries.map(e => `[${e.timestamp}] [${e.level}] [${e.keyword}] ${e.content}`).join('\n');
+        fs.writeFileSync(path.join(__dirname, `compress_${timestamp}_before.log`), logsToCompress);
+
+        const model = resolveModelForProvider(COMPRESSION_MODEL);
+        const data = await chat({
+            model: model,
+            input: [{ role: "user", content: logsToCompress }],
+            instructions: COMPRESSION_PROMPT
+        });
+
+        const resultText = data.output_text || (data.output?.find(o => o.type === 'message')?.content?.[0]?.text) || "";
+        const truncatedResult = resultText.length > 6000 ? resultText.substring(0, 5997) + "..." : resultText;
+        
+        fs.writeFileSync(path.join(__dirname, `compress_${timestamp}_after.log`), truncatedResult);
+        
+        log(`compress_logs -> count: ${truncatedResult.split('\n').length}, chars: ${truncatedResult.length}`, 'tool', false, debugLogFilePath);
+        return { status: "success", compressed: truncatedResult };
     },
     verify: async ({ logs }) => {
         const answer = { logs: logs.join('\n') };

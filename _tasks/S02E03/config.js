@@ -10,7 +10,8 @@ Filtering Criteria:
 
 Search Tool:
 Use search_logs to find entries based on levels (INFO, WARN, ERRO, CRIT), timeframe (after/before), and keywords.
-- after/before format: YYYY-MM-DD HH:mm:ss (MUST NOT exceed 10 minutes interval).
+- after/before format: YYYY-MM-DD HH:mm:ss.
+- interval (before - after) MUST NOT exceed 10 minutes, UNLESS a keyword is provided (then it can be up to 60 minutes).
 - keyword: use '*' for no keyword filtering. Alphanumeric keywords (e.g., WTANK07) are common.
 - Returns parsed entries with timestamp, level, and content.
 
@@ -27,11 +28,14 @@ Use verify to submit the final condensed logs.
 - ALL logs MUST be in CHRONOLOGICAL order.
 - Total payload MUST NOT exceed 6000 characters.
 - The verification response will clearly state if information is missing or incorrect. Use this feedback to refine your next search.
+- In subsequent attempts to verify, DO NOT send less logs than before.
+- If previous verifications mentioned missing information about a device, it's crucial to include logs relating to that device.
 
 Operational Guidelines:
 - Start small: send a few highly relevant logs first.
 - Increase the number of logs ONLY if the verification response indicates that more data is necessary.
-- You MUST compress the content of relevant logs using compress_logs before sending them for verification.`;
+- You MUST compress the content of relevant logs using compress_logs before sending them for verification.
+- Keep solving the task until the verification response contains "{FLG:...}".`;
 
 export const COMPRESSION_PROMPT = `Compress each log entry content provided below to a very short version.
 

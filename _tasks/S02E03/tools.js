@@ -14,7 +14,7 @@ export const nativeTools = [
     {
         type: "function",
         name: "search_logs",
-        description: "Search for log entries in failure.log based on levels, timeframe, and keywords. Returns an array of parsed log entries. The timeframe (before - after) MUST NOT exceed 10 minutes.",
+        description: "Search for log entries in failure.log based on levels, timeframe, and keywords. Returns an array of parsed log entries. The timeframe (before - after) MUST NOT exceed 10 minutes, unless a keyword is provided (then up to 60 minutes).",
         parameters: {
             type: "object",
             properties: {
@@ -78,6 +78,12 @@ export const nativeTools = [
     }
 ];
 
+const findKeywords = (content) => {
+    const matches = content.match(/\b[A-Z0-9]{3,}\b/g);
+    if (!matches) return "NONE";
+    return [...new Set(matches)].join(',');
+};
+
 export const createNativeHandlers = () => ({
     search_logs: async ({ levels, after, before, keyword }) => {
         if (!fs.existsSync(logFilePath)) {
@@ -96,12 +102,10 @@ export const createNativeHandlers = () => ({
         }
 
         const diffMs = beforeDate.getTime() - afterDate.getTime();
-        const maxDiffMs = 10 * 60 * 1000; // 10 minutes
+        const maxDiffMs = (keyword && keyword !== '*') ? 60 * 60 * 1000 : 10 * 60 * 1000;
 
         if (diffMs > maxDiffMs) {
-            const err = { status: "error", message: `Timeframe interval exceeds 10 minutes (current: ${(diffMs / 60000).toFixed(1)} min). Please narrow down your search.` };
-            log(`search_logs(...) -> ${JSON.stringify(err)}`, 'tool', false, debugLogFilePath);
-            return err;
+            return { status: "error", message: `Timeframe interval exceeds limit (current: ${(diffMs / 60000).toFixed(1)} min, allowed: ${maxDiffMs / 60000} min). Please narrow down your search.` };
         }
 
         if (diffMs < 0) {

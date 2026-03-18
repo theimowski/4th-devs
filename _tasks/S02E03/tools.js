@@ -14,7 +14,7 @@ export const nativeTools = [
     {
         type: "function",
         name: "search_logs",
-        description: "Search for log entries in failure.log based on levels, timeframe, and keywords. Returns an array of parsed log entries. The timeframe (before - after) MUST NOT exceed 10 minutes, unless a keyword is provided (then up to 60 minutes).",
+        description: "Search for log entries in failure.log based on levels, timeframe, and keywords. Returns an array of parsed log entries. Timeframe MUST NOT exceed 30 min (or 180 min if keyword provided).",
         parameters: {
             type: "object",
             properties: {
@@ -102,7 +102,7 @@ export const createNativeHandlers = () => ({
         }
 
         const diffMs = beforeDate.getTime() - afterDate.getTime();
-        const maxDiffMs = (keyword && keyword !== '*') ? 60 * 60 * 1000 : 10 * 60 * 1000;
+        const maxDiffMs = (keyword && keyword !== '*') ? 180 * 60 * 1000 : 30 * 60 * 1000;
 
         if (diffMs > maxDiffMs) {
             return { status: "error", message: `Timeframe interval exceeds limit (current: ${(diffMs / 60000).toFixed(1)} min, allowed: ${maxDiffMs / 60000} min). Please narrow down your search.` };
@@ -171,12 +171,13 @@ export const createNativeHandlers = () => ({
     },
     verify: async ({ logs }) => {
         const timestamp = Date.now();
-        fs.writeFileSync(path.join(__dirname, `verify_${timestamp}.log`), logs.join('\n'));
-        const answer = { logs: logs.join('\n') };
+        const payload = logs.join('\n');
+        fs.writeFileSync(path.join(__dirname, `verify_${timestamp}.log`), payload);
+        const answer = { logs: payload };
         const response = await hubVerify("failure", answer);
         const body = await response.json();
         const res = { status: response.status, body };
-        log(`verify(logs: [${logs.length} items]) -> ${JSON.stringify(res)}`, 'tool', false, debugLogFilePath);
+        log(`verify(logs: [${logs.length} items, ${payload.length} chars]) -> ${JSON.stringify(res)}`, 'tool', false, debugLogFilePath);
         return res;
     }
 });

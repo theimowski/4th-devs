@@ -74,3 +74,11 @@ export function extractTokenUsage(data) {
         cached: cachedTokens
     };
 }
+
+export function formatToolCall(call) {
+    const args = JSON.parse(call.arguments);
+    const params = Object.values(args)
+        .map(v => typeof v === 'string' ? `"${v}"` : v)
+        .join(',');
+    return `${call.name}(${params})`;
+}

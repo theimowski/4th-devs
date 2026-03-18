@@ -4,21 +4,13 @@ import { resolveModelForProvider } from '../../config.js';
 import { chat, extractToolCalls, extractText } from '../../01_02_tool_use/src/api.js';
 import { executeToolCalls } from '../../01_02_tool_use/src/executor.js';
 import { nativeTools, createNativeHandlers } from './tools.js';
-import { log, clearLog, extractTokenUsage } from '../utils/utils.js';
+import { log, clearLog, extractTokenUsage, formatToolCall } from '../utils/utils.js';
 import { AGENT_MODEL, SYSTEM_PROMPT } from './config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const logFilePath = path.join(__dirname, 'debug.log');
 
 clearLog(logFilePath);
-
-function formatToolCall(call) {
-    const args = JSON.parse(call.arguments);
-    const params = Object.values(args)
-        .map(v => typeof v === 'string' ? `"${v}"` : v)
-        .join(',');
-    return `${call.name}(${params})`;
-}
 
 async function run() {
     log("Starting Agentic Loop for S02E02", 'agent', false, logFilePath);

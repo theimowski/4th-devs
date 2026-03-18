@@ -20,15 +20,34 @@ if (!fs.existsSync(logFilePath)) {
     await fetchHubFile('failure.log', __dirname);
 }
 
+function getLogTimeRange() {
+    const content = fs.readFileSync(logFilePath, 'utf8');
+    const lines = content.split('\n').filter(l => l.trim());
+    if (lines.length === 0) return { first: null, last: null };
+
+    const extractTime = (line) => {
+        const match = line.match(/^\[(.*?)\]/);
+        return match ? match[1] : null;
+    };
+
+    return {
+        first: extractTime(lines[0]),
+        last: extractTime(lines[lines.length - 1])
+    };
+}
+
 async function run() {
     const model = resolveModelForProvider(MODEL);
     const handlers = createNativeHandlers();
     
+    const { first, last } = getLogTimeRange();
+    const timeRangeStr = first && last ? `\nLogs cover timeframe from ${first} to ${last}.` : "";
+
     let conversation = [
-        { role: "user", content: "Analyze the logs and find the last ERROR log entry, then verify it." }
+        { role: "user", content: `Analyze the logs and find the last ERROR log entry, then verify it.${timeRangeStr}` }
     ];
 
-    const MAX_STEPS = 3;
+    const MAX_STEPS = 10;
     let step = 0;
     let solved = false;
 
@@ -70,7 +89,6 @@ async function run() {
                     try {
                         output = JSON.parse(result.output);
                     } catch (e) {}
-                    log(`${formatToolCall(call)} -> ${typeof output === 'object' ? JSON.stringify(output) : output}`, 'tool', false, debugLogFilePath);
                     
                     if (output.body && JSON.stringify(output.body).includes("FLG:")) {
                         log(`Flag found: ${JSON.stringify(output.body)}`, 'info', false, debugLogFilePath);
@@ -91,6 +109,10 @@ async function run() {
             log(error.message, 'error', false, debugLogFilePath);
             break;
         }
+    }
+
+    if (!solved && step >= MAX_STEPS) {
+        log(`Reached MAX_STEPS limit (${MAX_STEPS}).`, 'error', false, debugLogFilePath);
     }
 }
 

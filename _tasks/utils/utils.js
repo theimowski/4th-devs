@@ -77,8 +77,11 @@ export function extractTokenUsage(data) {
 
 export function formatToolCall(call) {
     const args = JSON.parse(call.arguments);
-    const params = Object.values(args)
+    let params = Object.values(args)
         .map(v => typeof v === 'string' ? `"${v}"` : v)
         .join(',');
+    if (params.length > 100) {
+        params = params.substring(0, 100) + "(...)";
+    }
     return `${call.name}(${params})`;
 }

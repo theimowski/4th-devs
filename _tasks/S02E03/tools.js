@@ -44,7 +44,7 @@ export const nativeTools = [
     {
         type: "function",
         name: "compress_logs",
-        description: "Compress log entries to a very short format using AI. Input: array of log entries {timestamp, level, keyword, content}. Result format: YYYY-MM-DD HH:MM LEVL KEYWORD:COMPRESSED. Result must not exceed 6000 characters.",
+        description: "Compress log entries to a very short format using AI. Input: array of log entries {timestamp, level, content}. Result format: YYYY-MM-DD HH:MM LEVL:COMPRESSED. Result must not exceed 6000 characters.",
         parameters: {
             type: "object",
             properties: {
@@ -55,10 +55,9 @@ export const nativeTools = [
                         properties: {
                             timestamp: { type: "string" },
                             level: { type: "string" },
-                            keyword: { type: "string" },
                             content: { type: "string" }
                         },
-                        required: ["timestamp", "level", "keyword", "content"],
+                        required: ["timestamp", "level", "content"],
                         additionalProperties: false
                     }
                 }
@@ -88,9 +87,10 @@ export const nativeTools = [
     }
 ];
 
-const findKeyword = (content) => {
-    const match = content.match(/\b[A-Z]{3,}\b/); // Upper-case words with 3+ characters
-    return match ? match[0] : "NONE";
+const findKeywords = (content) => {
+    const matches = content.match(/\b[A-Z0-9]{3,}\b/g);
+    if (!matches) return "NONE";
+    return [...new Set(matches)].join(',');
 };
 
 export const createNativeHandlers = () => ({
@@ -140,17 +140,14 @@ export const createNativeHandlers = () => ({
             if (logDate < afterDate) continue;
             if (logDate > beforeDate) continue;
             
-            let foundKeyword = keyword;
-            if (keyword === '*') {
-                foundKeyword = findKeyword(logContent);
-            } else if (!logContent.toLowerCase().includes(keyword.toLowerCase())) {
+            if (keyword !== '*' && !logContent.toLowerCase().includes(keyword.toLowerCase())) {
                 continue;
             }
 
             results.push({
                 timestamp,
                 level,
-                keyword: foundKeyword,
+                keyword: findKeywords(logContent),
                 content: logContent
             });
         }
@@ -163,7 +160,7 @@ export const createNativeHandlers = () => ({
         log(`compress_logs(entries: ${entries.length})`, 'tool', false, debugLogFilePath);
         
         const timestamp = Date.now();
-        const logsToCompress = entries.map(e => `[${e.timestamp}] [${e.level}] [${e.keyword}] ${e.content}`).join('\n');
+        const logsToCompress = entries.map(e => `[${e.timestamp}] [${e.level}] ${e.content}`).join('\n');
         fs.writeFileSync(path.join(__dirname, `compress_${timestamp}_before.log`), logsToCompress);
 
         const model = resolveModelForProvider(COMPRESSION_MODEL);

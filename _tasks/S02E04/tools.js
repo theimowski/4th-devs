@@ -26,13 +26,13 @@ export const nativeTools = [
 
 export const createNativeHandlers = () => ({
     zmail_api_call: async ({ action, parameters }) => {
-        log(`zmail_api_call(action: ${action}, params: ${JSON.stringify(parameters)})`, 'tool', false, debugLogFilePath);
+        log(`zmail_api_call(${action}, ${JSON.stringify(parameters)})`, 'tool', false, debugLogFilePath);
         try {
             const response = await hubApi('zmail', { action, ...parameters });
             const body = await response.text();
             fs.writeFileSync(path.join(__dirname, `${action}_sample.json`), body);
             log(`zmail_api_call -> ok, saved to ${action}_sample.json`, 'tool', false, debugLogFilePath);
-            return "ok";
+            return body;
         } catch (error) {
             log(`zmail_api_call error: ${error.message}`, 'error', false, debugLogFilePath);
             return `error: ${error.message}`;

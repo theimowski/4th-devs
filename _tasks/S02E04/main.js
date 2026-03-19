@@ -24,7 +24,7 @@ async function run() {
     }
 
     let conversation = [
-        { role: "user", content: `Explore the zmail API as instructed. Help content:\n${helpContent}` }
+        { role: "user", content: "Explore the zmail API as instructed." }
     ];
 
     const MAX_STEPS = 20;
@@ -39,7 +39,7 @@ async function run() {
                 model: model,
                 input: conversation,
                 tools: nativeTools,
-                instructions: SYSTEM_PROMPT
+                instructions: `${SYSTEM_PROMPT}\n\nHelp content:\n${helpContent}`
             });
 
             log(data, 'chat-res', true, debugLogFilePath);
@@ -58,8 +58,6 @@ async function run() {
             }
 
             if (toolCalls.length > 0) {
-                log(toolCalls.map(formatToolCall).join(', '), 'tool', false, debugLogFilePath);
-
                 const toolResults = await executeToolCalls(toolCalls, handlers);
                 
                 conversation = [

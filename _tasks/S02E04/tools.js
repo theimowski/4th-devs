@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { hubApi, log } from '../utils/utils.js';
+import { hubApi, log, verify } from '../utils/utils.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const debugLogFilePath = path.join(__dirname, 'debug.log');
@@ -33,6 +33,22 @@ export const allTools = [
                 task: { type: "string", description: "The specific task description for the agent" }
             },
             required: ["agent", "task"],
+            additionalProperties: false
+        },
+        strict: true
+    },
+    {
+        type: "function",
+        name: "verify_answer",
+        description: "Submit the found data to the verification endpoint.",
+        parameters: {
+            type: "object",
+            properties: {
+                password: { type: "string" },
+                date: { type: "string", description: "YYYY-MM-DD" },
+                confirmation_code: { type: "string" }
+            },
+            required: ["password", "date", "confirmation_code"],
             additionalProperties: false
         },
         strict: true
@@ -77,6 +93,19 @@ export const createNativeHandlers = (agentName) => ({
             return body;
         } catch (error) {
             log(`zmail_api_call error: ${error.message}`, 'error', false, debugLogFilePath);
+            return `error: ${error.message}`;
+        }
+    },
+    verify_answer: async (answer) => {
+        log(`verify_answer(${JSON.stringify(answer)})`, 'tool', false, debugLogFilePath);
+        try {
+            const response = await verify("mailbox", answer);
+            const body = await response.json();
+            const res = { status: response.status, body };
+            log(`verify_answer -> ${JSON.stringify(res)}`, 'tool', false, debugLogFilePath);
+            return JSON.stringify(res);
+        } catch (error) {
+            log(`verify_answer error: ${error.message}`, 'error', false, debugLogFilePath);
             return `error: ${error.message}`;
         }
     }

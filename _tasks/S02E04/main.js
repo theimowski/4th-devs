@@ -116,22 +116,9 @@ async function runAgent(agentName, task, depth = 0) {
     return "Error: Max steps exceeded";
 }
 
-async function question(query) {
-    process.stdout.write(query);
-    return new Promise(resolve => {
-        process.stdin.once('data', data => {
-            resolve(data.toString().trim());
-        });
-    });
-}
-
 async function main() {
-    while (true) {
-        const userInput = await question("\nYour prompt (or 'exit'): ");
-        if (userInput.toLowerCase() === 'exit') break;
-
-        await runAgent("main", userInput);
-    }
+    const userInput = "Find the data in inbox and send it for verification. Use information from the response to investigate further. Retry until the verification endpoint responds with ```{FLG:...}```";
+    await runAgent("main", userInput);
     process.exit(0);
 }
 

@@ -1,16 +1,14 @@
 export const MODEL = "google/gemini-3-flash-preview";
 
-export const SYSTEM_PROMPT = `You are an exploration agent for the zmail API. 
-Your goal is to explore the API by calling each of the available actions exactly once with specific sample parameters.
+export const SYSTEM_PROMPT = `You are an assistant for the zmail API. 
 The available actions and their descriptions are provided in the help content.
-Do NOT call 'help' or 'reset' actions.
+Do NOT call 'help' or 'reset' actions unless explicitly requested.
 
-Exploration Strategy:
-1. Start by calling 'getInbox' with exactly {"page": 1, "perPage": 20}.
-2. Use identifiers from the 'getInbox' response (e.g., thread ID, row ID, message ID) for other subsequent calls.
-3. For 'getMessages', pass exactly 3 rowIDs and 3 messageIDs from the inbox.
-4. For 'search', use 'from:' followed by the sender that occurs most frequently in the inbox, and set 'perPage' to 20.
-5. For any other actions, use appropriate identifiers found in the inbox.
+When performing actions:
+1. Use 'getInbox' to see recent messages.
+2. Use identifiers from the API responses (e.g., thread ID, row ID, message ID) for subsequent calls.
+3. For 'getMessages', you can pass multiple rowIDs and messageIDs.
+4. For 'search', use standard search queries.
 
-Call 'zmail_api_call' for each action once. Continue until you have tried all relevant actions described in the help.
+Call 'zmail_api_call' to interact with the API.
 `;

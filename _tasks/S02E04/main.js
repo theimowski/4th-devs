@@ -13,7 +13,7 @@ const debugLogFilePath = path.join(__dirname, 'debug.log');
 
 clearLog(debugLogFilePath);
 
-async function run() {
+async function runAgent(userInput) {
     const model = resolveModelForProvider(MODEL);
     const handlers = createNativeHandlers();
     
@@ -24,7 +24,7 @@ async function run() {
     }
 
     let conversation = [
-        { role: "user", content: "Explore the zmail API as instructed." }
+        { role: "user", content: userInput }
     ];
 
     const MAX_STEPS = 20;
@@ -54,6 +54,7 @@ async function run() {
 
             if (assistantText) {
                 log(`Agent: ${assistantText}`, 'agent', false, debugLogFilePath);
+                console.log(`\nAssistant: ${assistantText}`);
                 conversation.push({ role: "assistant", content: assistantText });
             }
 
@@ -76,6 +77,25 @@ async function run() {
     }
 }
 
-run().catch(error => {
+async function question(query) {
+    process.stdout.write(query);
+    return new Promise(resolve => {
+        process.stdin.once('data', data => {
+            resolve(data.toString().trim());
+        });
+    });
+}
+
+async function main() {
+    while (true) {
+        const userInput = await question("\nYour prompt (or 'exit'): ");
+        if (userInput.toLowerCase() === 'exit') break;
+
+        await runAgent(userInput);
+    }
+    process.exit(0);
+}
+
+main().catch(error => {
     log(error.message, 'error', false, debugLogFilePath);
 });

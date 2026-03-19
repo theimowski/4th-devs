@@ -24,14 +24,41 @@ export const nativeTools = [
     }
 ];
 
+const sanitize = (str) => String(str).replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
 export const createNativeHandlers = () => ({
     zmail_api_call: async ({ action, parameters }) => {
         log(`zmail_api_call(${action}, ${JSON.stringify(parameters)})`, 'tool', false, debugLogFilePath);
         try {
             const response = await hubApi('zmail', { action, ...parameters });
             const body = await response.text();
-            fs.writeFileSync(path.join(__dirname, `${action}_sample.json`), body);
-            log(`zmail_api_call -> ok, saved to ${action}_sample.json`, 'tool', false, debugLogFilePath);
+            
+            let subDir = action;
+            let fileName = `${sanitize(action)}_sample.json`;
+
+            if (action === 'getInbox') {
+                subDir = 'inbox';
+                fileName = `${sanitize(parameters.page)}_${sanitize(parameters.perPage)}.json`;
+            } else if (action === 'getThread') {
+                subDir = 'thread';
+                fileName = `${sanitize(parameters.threadID)}.json`;
+            } else if (action === 'getMessages') {
+                subDir = 'messages';
+                const ids = Object.values(parameters).flat().map(sanitize).join('_');
+                fileName = `${ids}.json`;
+            } else if (action === 'search') {
+                subDir = 'search';
+                fileName = `${sanitize(parameters.query)}.json`;
+            }
+
+            const targetDir = path.join(__dirname, 'json', subDir);
+            if (!fs.existsSync(targetDir)) {
+                fs.mkdirSync(targetDir, { recursive: true });
+            }
+            const filePath = path.join(targetDir, fileName);
+            fs.writeFileSync(filePath, body);
+            
+            log(`zmail_api_call -> ok, saved to ${path.relative(__dirname, filePath)}`, 'tool', false, debugLogFilePath);
             return body;
         } catch (error) {
             log(`zmail_api_call error: ${error.message}`, 'error', false, debugLogFilePath);

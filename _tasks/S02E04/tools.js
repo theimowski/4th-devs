@@ -6,11 +6,11 @@ import { hubApi, log } from '../utils/utils.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const debugLogFilePath = path.join(__dirname, 'debug.log');
 
-export const nativeTools = [
+export const allTools = [
     {
         type: "function",
         name: "zmail_api_call",
-        description: "Call zmail API with specified action and parameters. Writes response to file and returns 'ok'.",
+        description: "Call zmail API with specified action and parameters. Writes response to file and returns JSON response content.",
         parameters: {
             type: "object",
             properties: {
@@ -21,12 +21,27 @@ export const nativeTools = [
             additionalProperties: false
         },
         strict: true
+    },
+    {
+        type: "function",
+        name: "delegate",
+        description: "Delegate a task to another specialized agent.",
+        parameters: {
+            type: "object",
+            properties: {
+                agent: { type: "string", enum: ["mail"], description: "The name of the agent to delegate to" },
+                task: { type: "string", description: "The specific task description for the agent" }
+            },
+            required: ["agent", "task"],
+            additionalProperties: false
+        },
+        strict: true
     }
 ];
 
 const sanitize = (str) => String(str).replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
-export const createNativeHandlers = () => ({
+export const createNativeHandlers = (agentName) => ({
     zmail_api_call: async ({ action, parameters }) => {
         log(`zmail_api_call(${action}, ${JSON.stringify(parameters)})`, 'tool', false, debugLogFilePath);
         try {

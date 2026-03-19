@@ -82,20 +82,17 @@ async function runAgent(agentName, task, depth = 0) {
 
             if (assistantText) {
                 log(`Assistant: ${assistantText}`, agentName, false, debugLogFilePath);
-                if (depth === 0) console.log(`\nAssistant: ${assistantText}`);
                 conversation.push({ role: "assistant", content: assistantText });
             }
 
             if (toolCalls.length > 0) {
-                log(toolCalls.map(formatToolCall).join(', '), 'tool', false, debugLogFilePath);
-
                 let toolResults = [];
                 for (const call of toolCalls) {
                     if (call.name === 'delegate') {
                         const args = JSON.parse(call.arguments);
                         log(`Delegating to ${args.agent}: ${args.task}`, agentName, false, debugLogFilePath);
                         const result = await runAgent(args.agent, args.task, depth + 1);
-                        toolResults.push({ call_id: call.call_id, output: result });
+                        toolResults.push({ call_id: call.call_id, output: result, type: "function_call_output" });
                     } else {
                         const result = await executeToolCalls([call], handlers);
                         toolResults.push(...result);

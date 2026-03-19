@@ -18,6 +18,19 @@ export async function verify(task, answer) {
   return response;
 }
 
+export async function hubApi(path, params = {}) {
+  const apikey = process.env.HUB_AG3NTS_KEY;
+  const response = await fetch(`https://hub.ag3nts.org/api/${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      apikey,
+      ...params
+    })
+  });
+  return response;
+}
+
 export async function fetchHubFile(filename, targetDir) {
   const apikey = process.env.HUB_AG3NTS_KEY;
   const url = `https://hub.ag3nts.org/data/${apikey}/${filename}`;

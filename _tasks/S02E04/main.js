@@ -1,15 +1,83 @@
 import fs from 'node:fs';
-import { hubApi } from '../utils/utils.js';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { resolveModelForProvider } from '../../config.js';
+import { chat, extractToolCalls, extractText } from '../../01_02_tool_use/src/api.js';
+import { executeToolCalls } from '../../01_02_tool_use/src/executor.js';
+import { log, clearLog, extractTokenUsage, formatToolCall } from '../utils/utils.js';
+import { nativeTools, createNativeHandlers } from './tools.js';
+import { MODEL, SYSTEM_PROMPT } from './config.js';
 
-async function main() {
-    try {
-        const response = await hubApi('zmail', { action: 'help', page: 1 });
-        const body = await response.text();
-        fs.writeFileSync('help-1', body);
-        console.log('Saved response to help-1');
-    } catch (error) {
-        console.error('Error:', error);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const debugLogFilePath = path.join(__dirname, 'debug.log');
+
+clearLog(debugLogFilePath);
+
+async function run() {
+    const model = resolveModelForProvider(MODEL);
+    const handlers = createNativeHandlers();
+    
+    let helpContent = "";
+    const helpFilePath = path.join(__dirname, 'help.json');
+    if (fs.existsSync(helpFilePath)) {
+        helpContent = fs.readFileSync(helpFilePath, 'utf8');
+    }
+
+    let conversation = [
+        { role: "user", content: `Explore the zmail API as instructed. Help content:\n${helpContent}` }
+    ];
+
+    const MAX_STEPS = 20;
+    let step = 0;
+
+    while (step < MAX_STEPS) {
+        step++;
+        log(`Step ${step}/${MAX_STEPS}`, 'agent', false, debugLogFilePath);
+
+        try {
+            const data = await chat({
+                model: model,
+                input: conversation,
+                tools: nativeTools,
+                instructions: SYSTEM_PROMPT
+            });
+
+            log(data, 'chat-res', true, debugLogFilePath);
+            const usage = extractTokenUsage(data);
+            if (usage) {
+                const cachedPercent = usage.input > 0 ? ((usage.cached / usage.input) * 100).toFixed(1) : "0.0";
+                log(`Tokens - In: ${usage.input}, Out: ${usage.output}, Cached: ${cachedPercent}%`, 'token', false, debugLogFilePath);
+            }
+
+            const toolCalls = extractToolCalls(data);
+            const assistantText = extractText(data);
+
+            if (assistantText) {
+                log(`Agent: ${assistantText}`, 'agent', false, debugLogFilePath);
+                conversation.push({ role: "assistant", content: assistantText });
+            }
+
+            if (toolCalls.length > 0) {
+                log(toolCalls.map(formatToolCall).join(', '), 'tool', false, debugLogFilePath);
+
+                const toolResults = await executeToolCalls(toolCalls, handlers);
+                
+                conversation = [
+                    ...conversation,
+                    ...toolCalls.map(c => ({ ...c })),
+                    ...toolResults.map(r => ({ ...r }))
+                ];
+            } else {
+                log("No more tool calls.", 'agent', false, debugLogFilePath);
+                break;
+            }
+        } catch (error) {
+            log(error.message, 'error', false, debugLogFilePath);
+            break;
+        }
     }
 }
 
-main();
+run().catch(error => {
+    log(error.message, 'error', false, debugLogFilePath);
+});

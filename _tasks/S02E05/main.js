@@ -38,7 +38,7 @@ function parseAgent(agentName) {
 async function runAgent(agentName, task, depth = 0) {
     if (depth > 5) return "Error: Max delegation depth exceeded";
     
-    log(`Starting agent: ${agentName} (depth: ${depth})`, 'agent', false, debugLogFilePath);
+    log(`Starting agent: ${agentName} (depth: ${depth})`, agentName, false, debugLogFilePath);
     
     const agent = parseAgent(agentName);
     const model = resolveModelForProvider(agent.model);
@@ -78,7 +78,7 @@ async function runAgent(agentName, task, depth = 0) {
             const assistantText = extractText(data);
 
             if (assistantText) {
-                log(`Assistant [${agentName}]: ${assistantText}`, 'agent', false, debugLogFilePath);
+                log(`Assistant [${agentName}]: ${assistantText}`, agentName, false, debugLogFilePath);
                 conversation.push({ role: "assistant", content: assistantText });
             }
 
@@ -87,7 +87,7 @@ async function runAgent(agentName, task, depth = 0) {
                 for (const call of toolCalls) {
                     if (call.name === 'delegate') {
                         const args = JSON.parse(call.arguments);
-                        log(`Delegating to ${args.agent}: ${args.task}`, 'agent', false, debugLogFilePath);
+                        log(`Delegating to ${args.agent}: ${args.task}`, agentName, false, debugLogFilePath);
                         const result = await runAgent(args.agent, args.task, depth + 1);
                         toolResults.push({ call_id: call.call_id, output: result, type: "function_call_output" });
                     } else {

@@ -49,6 +49,12 @@ async function runAgent(agentName, task, depth = 0) {
     if (agentName === 'pointer') {
         const apiKey = process.env.HUB_AG3NTS_KEY || "YOUR_API_KEY";
         instructions += `\n\nThe image is available at: https://hub.ag3nts.org/data/${apiKey}/drone.png`;
+    } else if (agentName === 'instructor') {
+        const droneJsonPath = path.join(__dirname, 'drone.json');
+        if (fs.existsSync(droneJsonPath)) {
+            const droneJson = fs.readFileSync(droneJsonPath, 'utf8');
+            instructions += `\n\n${droneJson}`;
+        }
     }
 
     let conversation = [
@@ -113,12 +119,9 @@ async function runAgent(agentName, task, depth = 0) {
 }
 
 async function main() {
-    console.log("Multi-Agent System Ready. Reading from stdin...");
-    const userInput = fs.readFileSync(0, 'utf8');
-    if (userInput.trim()) {
-        const result = await runAgent("operator", userInput);
-        console.log(`\nFinal Answer: ${result}`);
-    }
+    log("Multi-Agent System starting for 'attack a dam' task.", 'system', false, debugLogFilePath);
+    const result = await runAgent("operator", "Find instructions for a drone to attack a dam.");
+    console.log(`\nFinal Answer:\n${result}`);
 }
 
 main().catch(error => {

@@ -48,7 +48,7 @@ export const createNativeHandlers = (agentName) => ({
             const response = await verify("drone", { instructions });
             const body = await response.json();
             const result = { status: response.status, body };
-            log(`verify_drone response: ${JSON.stringify(result)}`, 'tool', false, debugLogFilePath);
+            log(`!!! verify_drone response \n\n: ${JSON.stringify(result)}\n\n`, 'tool', false, debugLogFilePath);
             return JSON.stringify(result);
         } catch (error) {
             log(`verify_drone error: ${error.message}`, 'error', false, debugLogFilePath);

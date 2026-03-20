@@ -61,7 +61,7 @@ async function runAgent(agentName, task, depth = 0) {
         { role: "user", content: task }
     ];
 
-    const MAX_STEPS = 10;
+    const MAX_STEPS = agentName === 'operator' ? 50 : 10;
     let step = 0;
 
     while (step < MAX_STEPS) {

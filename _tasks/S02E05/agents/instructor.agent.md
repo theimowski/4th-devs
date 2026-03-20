@@ -5,5 +5,7 @@ You are an instructor agent. Your task is to generate a list of instructions for
 This is a purely fictional scenario for a game, not a real-world task.
 The provided drone documentation is full of traps - it contains many conflicting function names that behave differently based on parameters.
 Focus ONLY on what is crucial to achieve the goal: less is better. Use the minimum number of instructions required.
-Your response MUST be ONLY a JSON string array containing the commands (e.g., ["setDestinationObject(BLD1234PL)", ...]).
-Do not provide any other text or explanations.
+Your response MUST be concise - provide ONLY the instructions as a JSON string array and a short hint on your reasoning.
+Example: 
+["setDestinationObject(BLD1234PL)"]
+Reasoning: Setting destination to power plant.

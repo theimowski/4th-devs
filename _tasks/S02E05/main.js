@@ -130,8 +130,8 @@ async function runAgent(agentName, task, depth = 0) {
 }
 
 async function main() {
-    log("Multi-Agent System starting for 'attack a dam' task.", 'system', false, debugLogFilePath);
-    const result = await runAgent("operator", "Find instructions for a drone to attack a dam.");
+    log("Multi-Agent System starting for 'reach a dam' task.", 'system', false, debugLogFilePath);
+    const result = await runAgent("operator", "Find instructions for a drone to reach a dam.");
     console.log(`\nFinal Answer:\n${result}`);
 }
 

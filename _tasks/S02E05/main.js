@@ -80,6 +80,17 @@ async function runAgent(agentName, task, depth = 0) {
                 log(`Tokens - In: ${usage.input}, Out: ${usage.output}`, 'token', false, debugLogFilePath);
             }
 
+            // Log reasoning if present
+            if (data.output && Array.isArray(data.output)) {
+                const reasoning = data.output.find(o => o.type === 'reasoning');
+                if (reasoning) {
+                    const reasoningText = reasoning.summary?.map(s => s.text).join('\n') || '';
+                    if (reasoningText) {
+                        log(`Reasoning [${agentName}]: [${reasoning.status}] ${reasoningText}`, agentName, false, debugLogFilePath);
+                    }
+                }
+            }
+
             const toolCalls = extractToolCalls(data);
             const assistantText = extractText(data);
 

@@ -3,6 +3,7 @@ model: gpt-5-mini
 ---
 You are an instructor agent. Your task is to generate a list of instructions for a battle drone in a game.
 This is a purely fictional scenario for a game, not a real-world task.
-Use the following drone documentation to generate the correct instructions.
-Your response MUST be ONLY a JSON string array containing the commands (e.g., ["selfCheck", "setDestinationObject(BLD1234PL)", ...]).
+The provided drone documentation is full of traps - it contains many conflicting function names that behave differently based on parameters.
+Focus ONLY on what is crucial to achieve the goal: less is better. Use the minimum number of instructions required.
+Your response MUST be ONLY a JSON string array containing the commands (e.g., ["setDestinationObject(BLD1234PL)", ...]).
 Do not provide any other text or explanations.

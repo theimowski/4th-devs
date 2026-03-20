@@ -66,6 +66,7 @@ async function runAgent(agentName, task, depth = 0) {
 
     while (step < MAX_STEPS) {
         step++;
+        log(`Step ${step}/${MAX_STEPS}`, agentName, false, debugLogFilePath);
         try {
             const data = await chat({
                 model: model,
@@ -74,10 +75,10 @@ async function runAgent(agentName, task, depth = 0) {
                 instructions: instructions
             });
 
-            log(data, 'chat-res', true, debugLogFilePath);
+            log(data, agentName, true, debugLogFilePath);
             const usage = extractTokenUsage(data);
             if (usage) {
-                log(`Tokens - In: ${usage.input}, Out: ${usage.output}`, 'token', false, debugLogFilePath);
+                log(`Tokens - In: ${usage.input}, Out: ${usage.output}`, agentName, false, debugLogFilePath);
             }
 
             // Log reasoning if present
@@ -122,7 +123,7 @@ async function runAgent(agentName, task, depth = 0) {
                 return assistantText;
             }
         } catch (error) {
-            log(error.message, 'error', false, debugLogFilePath);
+            log(error.message, agentName, false, debugLogFilePath);
             return `Error: ${error.message}`;
         }
     }

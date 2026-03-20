@@ -1,4 +1,9 @@
-import { verify } from '../utils/utils.js';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { verify, log } from '../utils/utils.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const debugLogFilePath = path.join(__dirname, 'debug.log');
 
 export const allTools = [
     {
@@ -38,11 +43,15 @@ export const allTools = [
 
 export const createNativeHandlers = (agentName) => ({
     verify_drone: async ({ instructions }) => {
+        log(`verify_drone instructions: ${JSON.stringify(instructions)}`, 'tool', false, debugLogFilePath);
         try {
             const response = await verify("drone", { instructions });
             const body = await response.json();
-            return JSON.stringify({ status: response.status, body });
+            const result = { status: response.status, body };
+            log(`verify_drone response: ${JSON.stringify(result)}`, 'tool', false, debugLogFilePath);
+            return JSON.stringify(result);
         } catch (error) {
+            log(`verify_drone error: ${error.message}`, 'error', false, debugLogFilePath);
             return JSON.stringify({ error: error.message });
         }
     }

@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const sensorsDir = path.join(__dirname, 'sensors');
-const MODEL_NAME = "google/gemini-3.1-flash-lite-preview";
+const MODEL_NAME = "gpt-5.4";
 
 const validRanges = {
     temperature_K: { min: 553, max: 873, type: 'temperature' },
@@ -19,21 +19,21 @@ const validRanges = {
     humidity_percent: { min: 40.0, max: 80.0, type: 'humidity' }
 };
 
-async function classifyNotes(uniqueNotes) {
-    const notesListStr = uniqueNotes.map((note, i) => `${i}: ${note}`).join('\n');
+async function classifyFragments(uniqueFragments) {
+    const fragmentsListStr = uniqueFragments.map((frag, i) => `${i}: ${frag}`).join('\n');
 
-    const systemPrompt = `Analyze sensor operator notes. 
-Output ONLY a JSON array of indices (numbers) for notes that indicate an anomaly, error, instability, concern, fault, or need for investigation (BAD notes). 
-Use 0-based indexing (the first note provided is index 0).
-If a note sounds nominal, healthy, consistent, or OK, do NOT include its index.
+    const systemPrompt = `Analyze sensor operator note fragments. 
+Output ONLY a JSON array of indices (numbers) for fragments that indicate an anomaly, error, instability, concern, fault, or need for investigation (BAD fragments). 
+Use 0-based indexing (the first fragment provided is index 0).
+If a fragment sounds nominal, healthy, consistent, or OK, do NOT include its index.
 Example output: [1, 2, 5]`;
 
     const model = resolveModelForProvider(MODEL_NAME);
-    console.log(`Calling LLM (${MODEL_NAME}) to classify ${uniqueNotes.length} unique notes...`);
+    console.log(`Calling LLM (${MODEL_NAME}) to classify ${uniqueFragments.length} unique fragments...`);
     
     const response = await chat({
         model: model,
-        input: [{ role: "user", content: notesListStr }],
+        input: [{ role: "user", content: fragmentsListStr }],
         instructions: systemPrompt
     });
 
@@ -57,57 +57,68 @@ Example output: [1, 2, 5]`;
     return badIndices;
 }
 
-async function processLLMClassification(notesToIds) {
-    const uniqueNotes = Object.keys(notesToIds);
-    const badIndices = await classifyNotes(uniqueNotes);
+async function processLLMClassification(idToNote) {
+    // 1. Extract unique fragments
+    const allFragments = new Set();
+    const idToFragments = {};
 
-    const okIds = [];
+    for (const [id, note] of Object.entries(idToNote)) {
+        const frags = note.split(',').map(f => f.trim().toLowerCase()).filter(Boolean);
+        idToFragments[id] = frags;
+        frags.forEach(f => allFragments.add(f));
+    }
+
+    const uniqueFragments = Array.from(allFragments).sort();
+    const badFragmentIndices = await classifyFragments(uniqueFragments);
+    const badFragments = new Set(badFragmentIndices.map(idx => uniqueFragments[idx]));
+
+    // 2. Determine BAD IDs based on fragments
     const badIds = [];
 
-    uniqueNotes.forEach((note, index) => {
-        const ids = notesToIds[note];
-        if (badIndices.includes(index)) {
-            badIds.push(...ids);
-        } else {
-            okIds.push(...ids);
+    for (const [id, frags] of Object.entries(idToFragments)) {
+        const numId = parseInt(id, 10);
+        const isBad = frags.some(f => badFragments.has(f));
+        if (isBad) {
+            badIds.push(numId);
         }
-    });
+    }
 
-    okIds.sort((a, b) => a - b);
     badIds.sort((a, b) => a - b);
 
-    const safeModelName = MODEL_NAME.replace(/\//g, '-').replace(/\./g, '-');
-    fs.writeFileSync(path.join(__dirname, `${safeModelName}_OK.json`), JSON.stringify(okIds, null, 2));
-    fs.writeFileSync(path.join(__dirname, `${safeModelName}_BAD.json`), JSON.stringify(badIds, null, 2));
-
-    console.log(`LLM Result (${safeModelName}): ${okIds.length} OK, ${badIds.length} BAD.`);
+    // Save to bad.json as requested
+    fs.writeFileSync(path.join(__dirname, 'bad.json'), JSON.stringify(badIds, null, 2));
+    console.log(`LLM Result saved to bad.json: ${badIds.length} files with BAD notes.`);
+    
+    return badIds;
 }
 
 async function main() {
     const files = fs.readdirSync(sensorsDir).filter(file => file.endsWith('.json'));
     
-    // Read manually refined bad notes list
-    const badNotesIds = JSON.parse(fs.readFileSync(path.join(__dirname, 'bad.json'), 'utf8'));
-
-    // 1. Programmatic Anomaly Detection (Keeping it separate as per previous logic)
-    const programmaticAnomalies = [];
-    const notesToIds = {};
+    // 1. Collect all notes first
+    const idToNote = {};
+    const fileData = {};
 
     files.forEach(file => {
         const filePath = path.join(sensorsDir, file);
         const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
         const id = parseInt(file.replace('.json', ''), 10);
-        
-        // Group notes
-        const note = data.operator_notes;
-        if (!notesToIds[note]) {
-            notesToIds[note] = [];
-        }
-        notesToIds[note].push(id);
+        idToNote[id] = data.operator_notes;
+        fileData[id] = data;
+    });
 
+    // 2. LLM Classification of Operator Notes
+    const badNotesIds = await processLLMClassification(idToNote);
+
+    // 3. Programmatic Anomaly Assessment
+    const anomalies = [];
+
+    for (const id in fileData) {
+        const data = fileData[id];
+        const numId = parseInt(id, 10);
         const activeTypes = data.sensor_type ? data.sensor_type.split('/') : [];
+        
         let isOff = false;
-
         for (const [field, config] of Object.entries(validRanges)) {
             const val = data[field];
             const isActive = activeTypes.includes(config.type);
@@ -117,18 +128,17 @@ async function main() {
             if (isActive && val === 0) isOff = true;
         }
 
-        // Anomaly only if measurement is off BUT operator note is "OK" (not in bad.json)
-        if (isOff && !badNotesIds.includes(id)) {
-            programmaticAnomalies.push(id);
+        // Anomaly logic:
+        // contradiction between measurements and notes
+        const isInBadJson = badNotesIds.includes(numId);
+        if ((isOff && !isInBadJson) || (!isOff && isInBadJson)) {
+            anomalies.push(numId);
         }
-    });
+    }
 
-    programmaticAnomalies.sort((a, b) => a - b);
-    fs.writeFileSync(path.join(__dirname, 'anomalies.json'), JSON.stringify(programmaticAnomalies, null, 2));
-    console.log(`Programmatic anomalies found: ${programmaticAnomalies.length}. Saved to anomalies.json`);
-
-    // 2. LLM Classification of Operator Notes
-    // await processLLMClassification(notesToIds);
+    anomalies.sort((a, b) => a - b);
+    fs.writeFileSync(path.join(__dirname, 'anomalies.json'), JSON.stringify(anomalies));
+    console.log(`Final anomalies found: ${anomalies.length}. Saved to anomalies.json`);
 }
 
 main().catch(console.error);

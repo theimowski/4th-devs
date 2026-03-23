@@ -125,13 +125,13 @@ async function main() {
 
             if (val !== 0 && (val < config.min || val > config.max)) isOff = true;
             if (!isActive && val !== 0) isOff = true;
-            if (isActive && val === 0) isOff = true;
+            //if (isActive && val === 0) isOff = true;
         }
 
         // Anomaly logic:
         // contradiction between measurements and notes
         const isInBadJson = badNotesIds.includes(numId);
-        if ((isOff && !isInBadJson) || (!isOff && isInBadJson)) {
+        if ((isOff) || (!isOff && isInBadJson)) {
             anomalies.push(numId);
         }
     }

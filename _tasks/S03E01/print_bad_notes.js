@@ -5,8 +5,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const badJsonPath = path.join(__dirname, 'google-gemini-2-5-flash_BAD.json');
-const outputTxtPath = path.join(__dirname, 'google-gemini-2-5-flash_BAD.txt');
+const badJsonPath = path.join(__dirname, 'google-gemini-3-1-flash-lite-preview_BAD.json');
+const outputTxtPath = path.join(__dirname, 'google-gemini-3-1-flash-lite-preview_BAD.txt');
 const sensorsDir = path.join(__dirname, 'sensors');
 
 function generateBadNotesReport() {

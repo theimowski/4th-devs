@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const sensorsDir = path.join(__dirname, 'sensors');
-const MODEL_NAME = "google/gemini-2.5-flash";
+const MODEL_NAME = "google/gemini-3.1-flash-lite-preview";
 
 const validRanges = {
     temperature_K: { min: 553, max: 873, type: 'temperature' },
@@ -19,46 +19,7 @@ const validRanges = {
     humidity_percent: { min: 40.0, max: 80.0, type: 'humidity' }
 };
 
-async function main() {
-    const files = fs.readdirSync(sensorsDir).filter(file => file.endsWith('.json'));
-    
-    // 1. Programmatic Anomaly Detection (Keeping it separate as per previous logic)
-    const programmaticAnomalies = [];
-    const notesToIds = {};
-
-    files.forEach(file => {
-        const filePath = path.join(sensorsDir, file);
-        const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-        const id = parseInt(file.replace('.json', ''), 10);
-        
-        // Group notes
-        const note = data.operator_notes;
-        if (!notesToIds[note]) {
-            notesToIds[note] = [];
-        }
-        notesToIds[note].push(id);
-
-        const activeTypes = data.sensor_type ? data.sensor_type.split('/') : [];
-        let isAnomaly = false;
-
-        for (const [field, config] of Object.entries(validRanges)) {
-            const val = data[field];
-            const isActive = activeTypes.includes(config.type);
-
-            if (val !== 0 && (val < config.min || val > config.max)) isAnomaly = true;
-            if (!isActive && val !== 0) isAnomaly = true;
-            if (isActive && val === 0) isAnomaly = true;
-        }
-
-        if (isAnomaly) programmaticAnomalies.push(id);
-    });
-
-    programmaticAnomalies.sort((a, b) => a - b);
-    fs.writeFileSync(path.join(__dirname, 'anomalies.json'), JSON.stringify(programmaticAnomalies, null, 2));
-    console.log(`Programmatic anomalies found: ${programmaticAnomalies.length}. Saved to anomalies.json`);
-
-    // 2. LLM Classification of Operator Notes
-    const uniqueNotes = Object.keys(notesToIds);
+async function classifyNotes(uniqueNotes) {
     const notesListStr = uniqueNotes.map((note, i) => `${i}: ${note}`).join('\n');
 
     const systemPrompt = `Analyze sensor operator notes. 
@@ -93,6 +54,12 @@ Example output: [1, 2, 5]`;
     } catch (e) {
         console.error("Failed to parse LLM response:", assistantContent);
     }
+    return badIndices;
+}
+
+async function processLLMClassification(notesToIds) {
+    const uniqueNotes = Object.keys(notesToIds);
+    const badIndices = await classifyNotes(uniqueNotes);
 
     const okIds = [];
     const badIds = [];
@@ -114,6 +81,54 @@ Example output: [1, 2, 5]`;
     fs.writeFileSync(path.join(__dirname, `${safeModelName}_BAD.json`), JSON.stringify(badIds, null, 2));
 
     console.log(`LLM Result (${safeModelName}): ${okIds.length} OK, ${badIds.length} BAD.`);
+}
+
+async function main() {
+    const files = fs.readdirSync(sensorsDir).filter(file => file.endsWith('.json'));
+    
+    // Read manually refined bad notes list
+    const badNotesIds = JSON.parse(fs.readFileSync(path.join(__dirname, 'bad.json'), 'utf8'));
+
+    // 1. Programmatic Anomaly Detection (Keeping it separate as per previous logic)
+    const programmaticAnomalies = [];
+    const notesToIds = {};
+
+    files.forEach(file => {
+        const filePath = path.join(sensorsDir, file);
+        const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        const id = parseInt(file.replace('.json', ''), 10);
+        
+        // Group notes
+        const note = data.operator_notes;
+        if (!notesToIds[note]) {
+            notesToIds[note] = [];
+        }
+        notesToIds[note].push(id);
+
+        const activeTypes = data.sensor_type ? data.sensor_type.split('/') : [];
+        let isOff = false;
+
+        for (const [field, config] of Object.entries(validRanges)) {
+            const val = data[field];
+            const isActive = activeTypes.includes(config.type);
+
+            if (val !== 0 && (val < config.min || val > config.max)) isOff = true;
+            if (!isActive && val !== 0) isOff = true;
+            if (isActive && val === 0) isOff = true;
+        }
+
+        // Anomaly only if measurement is off BUT operator note is "OK" (not in bad.json)
+        if (isOff && !badNotesIds.includes(id)) {
+            programmaticAnomalies.push(id);
+        }
+    });
+
+    programmaticAnomalies.sort((a, b) => a - b);
+    fs.writeFileSync(path.join(__dirname, 'anomalies.json'), JSON.stringify(programmaticAnomalies, null, 2));
+    console.log(`Programmatic anomalies found: ${programmaticAnomalies.length}. Saved to anomalies.json`);
+
+    // 2. LLM Classification of Operator Notes
+    // await processLLMClassification(notesToIds);
 }
 
 main().catch(console.error);

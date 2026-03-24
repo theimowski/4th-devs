@@ -9,7 +9,7 @@ import {
   flush, 
   shutdownTracing 
 } from './langfuse.js';
-import { MODEL, SYSTEM_PROMPT, TRACE_NAME, AGENT_TASK } from './config.js';
+import { MODEL, SYSTEM_PROMPT, TRACE_NAME, AGENT_TASK, MAX_STEPS, USER_MESSAGE } from './config.js';
 import { tools, handlers } from './tools.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -26,11 +26,9 @@ if (existsSync(envPath)) {
 clearLog(debugLogFilePath);
 initTracing('S03E02-Hacker');
 
-const MAX_STEPS = 5;
-
 async function runHacker() {
   let conversation = [
-    { role: 'user', content: 'Explore the system and check if /opt/firmware/cooler/cooler.bin exists. Start with help command.' }
+    { role: 'user', content: USER_MESSAGE }
   ];
 
   return withAgent({ name: 'hacker', agentId: 'hacker-1', task: AGENT_TASK }, async () => {

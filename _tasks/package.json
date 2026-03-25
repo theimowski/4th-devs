@@ -1,0 +1,11 @@
+{
+  "name": "ai-devs-tasks",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@langfuse/otel": "^4.4.9",
+    "@langfuse/tracing": "^4.4.9",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-node": "^0.208.0"
+  }
+}

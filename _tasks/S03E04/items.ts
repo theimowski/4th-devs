@@ -29,6 +29,8 @@ Logic:
   Example: "Mamy prawie 100, doprecyzuj jakie mają być: pojemność elektryczna (pF) i napięcie (V)?"
 - If no items are found, inform the user clearly.
 
+CRITICAL: Your final response MUST BE between 4 and 500 bytes in size.
+
 Respond ONLY with information about the items or the clarification request. Avoid conversational filler.`;
 
 const tools = [

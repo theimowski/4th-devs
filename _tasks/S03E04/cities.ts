@@ -57,6 +57,7 @@ const SYSTEM_PROMPT = `You are a helpful assistant that finds cities where a spe
 You have access to a tool 'cities' which takes an item code and returns a list of cities.
 Your goal is to answer the user's query about item locations.
 Respond with information about the items found in a natural sentence. Do not include any conversational filler or unrelated text.
+CRITICAL: Your final response MUST BE between 4 and 500 bytes in size.
 If you find the cities, list them. If no cities are found or the item code is unknown, say so clearly.
 Always use the 'cities' tool if the user provides an item code or asks about one.`;
 

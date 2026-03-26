@@ -20,6 +20,7 @@ Your goal is to answer the user's query by searching for items in the inventory.
 
 You have access to an 'items' tool which literally calls the 'grep' program on the 'items.csv' file. 
 Use this tool with appropriate search patterns to find what the user is looking for.
+Note: The 'items' tool already calls grep with the '-i' (case-insensitive) flag, so do NOT use inline regex flags like '(?i)'. Use simple search strings or standard regex patterns.
 
 Logic:
 - Extract item names from the user query.

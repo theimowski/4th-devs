@@ -2,6 +2,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import { chat, extractToolCalls, extractText } from "../../01_02_tool_use/src/api.js";
+import { 
+  withTrace, 
+  withAgent, 
+  startGeneration, 
+  advanceTurn, 
+  withTool 
+} from "../utils/langfuse.js";
+import { extractTokenUsage } from "../utils/utils.js";
 
 const citiesCsvPath = path.join(import.meta.dirname, "cities.csv");
 const connectionsCsvPath = path.join(import.meta.dirname, "connections.csv");
@@ -73,58 +81,78 @@ const tools = [
 
 const handlers = {
   cities: async ({ itemCode }: { itemCode: string }) => {
-    console.log(`[Tool] Looking up itemCode: ${itemCode}`);
-    const cities = itemCodeToCities[itemCode];
-    if (cities && cities.length > 0) {
-      return JSON.stringify(cities);
-    }
-    return JSON.stringify({ error: `Item ${itemCode} not found or has no city assignments.` });
+    return withTool({ name: "cities", input: { itemCode } }, async () => {
+      console.log(`[Tool] Looking up itemCode: ${itemCode}`);
+      const cities = itemCodeToCities[itemCode];
+      if (cities && cities.length > 0) {
+        return JSON.stringify(cities);
+      }
+      return JSON.stringify({ error: `Item ${itemCode} not found or has no city assignments.` });
+    });
   }
 };
 
 export async function handleCitiesQuery(userQuery: string): Promise<string> {
-  let conversation: any[] = [{ role: "user", content: userQuery }];
-  let finalOutput = "I'm sorry, I couldn't find an answer.";
+  const sessionId = `cities-${Date.now()}`;
+  const traceName = "City Search: " + (userQuery.length > 30 ? userQuery.substring(0, 30) + "..." : userQuery);
 
-  for (let step = 0; step < 5; step++) {
-    const response = await chat({
-      model: MODEL,
-      input: conversation,
-      tools,
-      instructions: SYSTEM_PROMPT
-    });
+  return withTrace({ name: traceName, sessionId, input: userQuery }, async () => {
+    return withAgent({ name: "city-finder", agentId: "finder-1", task: "find cities for item" }, async () => {
+      let conversation: any[] = [{ role: "user", content: userQuery }];
+      let finalOutput = "I'm sorry, I couldn't find an answer.";
 
-    const toolCalls = extractToolCalls(response);
-    const text = extractText(response);
+      for (let step = 0; step < 5; step++) {
+        advanceTurn();
+        const generation = startGeneration({ model: MODEL, input: conversation });
 
-    if (text) {
-      conversation.push({ role: "assistant", content: text });
-      finalOutput = text;
-    }
+        try {
+          const response = await chat({
+            model: MODEL,
+            input: conversation,
+            tools,
+            instructions: SYSTEM_PROMPT
+          });
 
-    if (toolCalls && toolCalls.length > 0) {
-      const toolResults = [];
-      for (const call of toolCalls) {
-        const handler = (handlers as any)[call.name];
-        if (handler) {
-          const args = JSON.parse(call.arguments);
-          const result = await handler(args);
-          toolResults.push({ type: "function_call_output", call_id: call.call_id, output: result });
-        } else {
-          toolResults.push({ type: "function_call_output", call_id: call.call_id, output: JSON.stringify({ error: `Unknown tool: ${call.name}` }) });
+          const usage = extractTokenUsage(response);
+          generation.end({ output: response, usage });
+
+          const toolCalls = extractToolCalls(response);
+          const text = extractText(response);
+
+          if (text) {
+            conversation.push({ role: "assistant", content: text });
+            finalOutput = text;
+          }
+
+          if (toolCalls && toolCalls.length > 0) {
+            const toolResults = [];
+            for (const call of toolCalls) {
+              const handler = (handlers as any)[call.name];
+              if (handler) {
+                const args = JSON.parse(call.arguments);
+                const result = await handler(args);
+                toolResults.push({ type: "function_call_output", call_id: call.call_id, output: result });
+              } else {
+                toolResults.push({ type: "function_call_output", call_id: call.call_id, output: JSON.stringify({ error: `Unknown tool: ${call.name}` }) });
+              }
+            }
+
+            conversation = [
+              ...conversation,
+              ...toolCalls.map(c => ({ ...c })),
+              ...toolResults
+            ];
+          } else {
+            if (text) return text;
+            break;
+          }
+        } catch (error: any) {
+          generation.error(error);
+          throw error;
         }
       }
 
-      conversation = [
-        ...conversation,
-        ...toolCalls.map(c => ({ ...c })),
-        ...toolResults
-      ];
-    } else {
-      if (text) return text;
-      break;
-    }
-  }
-
-  return finalOutput;
+      return finalOutput;
+    });
+  });
 }

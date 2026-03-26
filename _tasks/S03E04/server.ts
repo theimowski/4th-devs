@@ -1,5 +1,8 @@
 
 import { handleCitiesQuery } from "./cities.ts";
+import { initTracing, flush } from "../utils/langfuse.js";
+
+initTracing("S03E04-CityFinder");
 
 const server = Bun.serve({
   port: 3000,
@@ -23,6 +26,8 @@ const server = Bun.serve({
           console.log(`[cities] Query: ${userQuery}`);
 
           const finalOutput = await handleCitiesQuery(userQuery);
+
+          await flush(); // Ensure Langfuse gets the data
 
           return Response.json({ output: finalOutput });
         } catch (e: any) {

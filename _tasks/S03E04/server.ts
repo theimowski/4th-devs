@@ -15,6 +15,11 @@ const server = Bun.serve({
         try {
           const body = await req.json();
           const userQuery = body.params;
+          
+          if (typeof userQuery !== "string") {
+            return new Response(JSON.stringify({ error: "params must be a string" }), { status: 400 });
+          }
+
           console.log(`[items] Query: ${userQuery}`);
 
           const finalOutput = await handleItemsQuery(userQuery);
@@ -32,6 +37,11 @@ const server = Bun.serve({
         try {
           const body = await req.json();
           const userQuery = body.params;
+
+          if (typeof userQuery !== "string") {
+            return new Response(JSON.stringify({ error: "params must be a string" }), { status: 400 });
+          }
+
           console.log(`[cities] Query: ${userQuery}`);
 
           const finalOutput = await handleCitiesQuery(userQuery);

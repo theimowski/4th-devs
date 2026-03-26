@@ -20,7 +20,11 @@ Your goal is to answer the user's query by searching for items in the inventory.
 
 You have access to an 'items' tool which literally calls the 'grep' program on the 'items.csv' file. 
 Use this tool with appropriate search patterns to find what the user is looking for.
-Note: The 'items' tool already calls grep with the '-i' (case-insensitive) flag, so do NOT use inline regex flags like '(?i)'. Use simple search strings or standard regex patterns.
+Note: 
+- The inventory is in POLISH language. Use only POLISH words for your search patterns.
+- The 'items' tool calls 'grep' with the '-Ei' flags (Extended Regex, case-insensitive).
+- You can use extended regex patterns like 'akumulator|bateria' to search for multiple terms at once.
+- Do NOT use inline flags like '(?i)'.
 
 Logic:
 - Extract item names from the user query.
@@ -38,13 +42,13 @@ const tools = [
   {
     type: "function",
     name: "items",
-    description: "Search for items in the inventory by calling 'grep' on the CSV file. Returns up to 20 matches.",
+    description: "Search for items in the inventory by calling 'grep -Ei' on the CSV file. Returns up to 20 matches. Use Polish terms.",
     parameters: {
       type: "object",
       properties: {
         pattern: {
           type: "string",
-          description: "The pattern to grep for. Use simple strings or regex as needed."
+          description: "The extended regex pattern to grep for. Use Polish words."
         }
       },
       required: ["pattern"],
@@ -62,20 +66,13 @@ const handlers = {
           return JSON.stringify({ error: "Inventory file not found." });
         }
 
-        // Use grep -i for case-insensitive search
-        // We use a temporary file or pipe to count matches properly if needed, 
-        // but here we just want to get the lines and limit them.
-        // We avoid shell injection by being careful, though in this controlled environment 
-        // we'll just use a simple exec.
-        
         const escapedPattern = pattern.replace(/'/g, "'\\''");
-        const command = `grep -i '${escapedPattern}' '${itemsCsvPath}' | head -n 21`;
+        const command = `grep -Ei '${escapedPattern}' '${itemsCsvPath}' | head -n 21`;
         
         let output = "";
         try {
           output = execSync(command, { encoding: "utf-8" });
         } catch (e: any) {
-          // grep returns non-zero if no matches
           if (e.status === 1) {
             return JSON.stringify({ total_matches: 0, results: [] });
           }

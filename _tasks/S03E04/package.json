@@ -1,0 +1,8 @@
+{
+  "name": "s03e04",
+  "type": "module",
+  "scripts": {
+    "start": "bun --watch server.ts",
+    "client": "bun client.ts"
+  }
+}

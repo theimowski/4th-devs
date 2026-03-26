@@ -1,8 +1,9 @@
 
 import { handleCitiesQuery } from "./cities.ts";
+import { handleItemsQuery } from "./items.ts";
 import { initTracing, flush } from "../utils/langfuse.js";
 
-initTracing("S03E04-CityFinder");
+initTracing("S03E04-LogisticsAssistant");
 
 const server = Bun.serve({
   port: 3000,
@@ -13,9 +14,17 @@ const server = Bun.serve({
       if (url.pathname === "/api/items") {
         try {
           const body = await req.json();
-          return Response.json({ output: body.params });
-        } catch (e) {
-          return new Response(JSON.stringify({ error: "Invalid JSON" }), { status: 400 });
+          const userQuery = body.params;
+          console.log(`[items] Query: ${userQuery}`);
+
+          const finalOutput = await handleItemsQuery(userQuery);
+
+          await flush();
+
+          return Response.json({ output: finalOutput });
+        } catch (e: any) {
+          console.error(`[Error] ${e.message}`);
+          return new Response(JSON.stringify({ error: e.message }), { status: 500 });
         }
       }
 
@@ -27,7 +36,7 @@ const server = Bun.serve({
 
           const finalOutput = await handleCitiesQuery(userQuery);
 
-          await flush(); // Ensure Langfuse gets the data
+          await flush();
 
           return Response.json({ output: finalOutput });
         } catch (e: any) {

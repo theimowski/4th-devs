@@ -103,19 +103,39 @@ export async function runAgent(agentName, userMessage, depth = 0) {
               
               // Handle dynamic tools from toolshed
               if (call.name === 'delegate' && args.agent === 'toolshed') {
+                log(`Processing potential tools from toolshed...`, 'agent', false, debugLogFilePath);
                 try {
-                  const discoveredTools = JSON.parse(output);
+                  // Robust JSON extraction from markdown or raw text
+                  let jsonContent = output.trim();
+                  if (jsonContent.includes('```')) {
+                    const match = jsonContent.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+                    if (match) {
+                      jsonContent = match[1];
+                      log(`Extracted JSON from code block.`, 'agent', false, debugLogFilePath);
+                    }
+                  }
+                  
+                  const discoveredTools = JSON.parse(jsonContent);
                   if (Array.isArray(discoveredTools)) {
+                    let addedCount = 0;
                     for (const newTool of discoveredTools) {
-                      if (!agentTools.find(t => t.name === newTool.name)) {
+                      if (newTool.name && !agentTools.find(t => t.name === newTool.name)) {
                         log(`Adding new tool discovered by toolshed: ${newTool.name}`, 'agent', false, debugLogFilePath);
                         agentTools.push(newTool);
                         handlers[newTool.name] = createHubToolHandler(newTool.name);
+                        addedCount++;
+                      } else if (newTool.name) {
+                        log(`Tool already exists, skipping: ${newTool.name}`, 'agent', false, debugLogFilePath);
                       }
                     }
+                    if (addedCount === 0) {
+                      log(`No new tools were added (either empty list or all were duplicates).`, 'agent', false, debugLogFilePath);
+                    }
+                  } else {
+                    log(`Toolshed returned something that is not an array of tools.`, 'agent', false, debugLogFilePath);
                   }
                 } catch (e) {
-                  // Not a JSON array, just a regular delegation result
+                  log(`Failed to parse tools from toolshed output. Error: ${e.message}. Output was: ${output.substring(0, 100)}...`, 'agent', false, debugLogFilePath);
                 }
               }
 

@@ -56,7 +56,7 @@ export async function runAgent(agentName, userMessage, depth = 0) {
   if (depth > 5) return "Error: Max delegation depth exceeded";
   
   const agent = parseAgent(agentName);
-  const maxSteps = agentName === 'toolshed' ? 5 : 15;
+  const maxSteps = agentName === 'toolshed' ? 5 : 25;
   
   log(`Starting agent: ${agentName} (depth: ${depth})`, 'agent', false, debugLogFilePath);
 
@@ -169,7 +169,7 @@ async function main() {
   try {
     const sessionId = `explore-${Date.now()}`;
     const result = await withTrace({ name: `S03E05 Explorer Main`, sessionId }, async () => {
-      return runAgent('player', 'Explore the environment and summarize map and vehicles.');
+      return runAgent('player', 'Explore the environment, solve the navigation from S to G (Skolwin), and provide the final path as a JSON string array of actions (moves and vehicle choices).');
     });
     console.log(`\nFinal Result:\n${result}`);
   } catch (error) {

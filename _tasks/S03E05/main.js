@@ -56,7 +56,7 @@ export async function runAgent(agentName, userMessage, depth = 0) {
   if (depth > 5) return "Error: Max delegation depth exceeded";
   
   const agent = parseAgent(agentName);
-  const maxSteps = agentName === 'toolshed' ? 5 : 10;
+  const maxSteps = agentName === 'toolshed' ? 5 : 15;
   
   log(`Starting agent: ${agentName} (depth: ${depth})`, 'agent', false, debugLogFilePath);
 

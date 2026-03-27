@@ -70,17 +70,19 @@ export async function runAgent(agentName, userMessage, depth = 0) {
   const agentLogic = async () => {
     for (let step = 0; step < maxSteps; step++) {
       advanceTurn();
-      log(`Step ${step + 1}/${maxSteps} for ${agentName}`, 'agent', false, debugLogFilePath);
+      log(`--- Step ${step + 1}/${maxSteps} for ${agentName} ---`, 'agent', false, debugLogFilePath);
 
       const generation = startGeneration({ model: agent.model, input: conversation });
       
       try {
+        log(`Calling chat API for ${agentName}...`, 'agent', false, debugLogFilePath);
         const data = await chat({
           model: agent.model,
           input: conversation,
           tools: agentTools.length > 0 ? agentTools : undefined,
           instructions: agent.systemPrompt
         });
+        log(`Chat API response received for ${agentName}.`, 'agent', false, debugLogFilePath);
 
         const usage = extractTokenUsage(data);
         generation.end({ output: data, usage });
@@ -94,11 +96,20 @@ export async function runAgent(agentName, userMessage, depth = 0) {
         }
 
         if (toolCalls && toolCalls.length > 0) {
+          log(`${agentName} requested ${toolCalls.length} tool call(s).`, 'agent', false, debugLogFilePath);
           const toolResults = [];
           for (const call of toolCalls) {
             const handler = handlers[call.name];
             if (handler) {
-              const args = JSON.parse(call.arguments);
+              let args = {};
+              try {
+                args = call.arguments ? JSON.parse(call.arguments) : {};
+              } catch (parseError) {
+                log(`Failed to parse tool arguments for ${call.name}: ${call.arguments}. Error: ${parseError.message}`, 'error', false, debugLogFilePath);
+                toolResults.push({ type: "function_call_output", call_id: call.call_id, output: JSON.stringify({ error: `Invalid JSON in tool arguments: ${parseError.message}` }) });
+                continue;
+              }
+              
               const output = await handler(args);
               
               // Handle dynamic tools from toolshed

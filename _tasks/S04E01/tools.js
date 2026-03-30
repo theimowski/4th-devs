@@ -13,7 +13,7 @@ export const operatorTools = [
         agent: {
           type: 'string',
           description: 'The name of the agent to delegate to.',
-          enum: ['crawler']
+          enum: ['crawler', 'hacker']
         },
         task: {
           type: 'string',
@@ -21,6 +21,28 @@ export const operatorTools = [
         }
       },
       required: ['agent', 'task']
+    }
+  }
+];
+
+export const hackerTools = [
+  {
+    type: 'function',
+    name: 'dry_run',
+    description: 'Simulate an API call without executing it. Prints the intended action and parameters to console.',
+    parameters: {
+      type: 'object',
+      properties: {
+        action: {
+          type: 'string',
+          description: 'The API action to perform (e.g. reconfigure, setstatus, save, done).'
+        },
+        params: {
+          type: 'object',
+          description: 'The parameters for the action (e.g. { route, value }).'
+        }
+      },
+      required: ['action', 'params']
     }
   }
 ];
@@ -65,6 +87,14 @@ export function createNativeHandlers(agentName, runAgentFn, debugLogFilePath) {
         log(`[${agentName}] Delegating to ${agent}: ${task}`, 'tool', false, debugLogFilePath);
         const result = await runAgentFn(agent, task);
         return result;
+      });
+    },
+    dry_run: async ({ action, params }) => {
+      return withTool({ name: 'dry_run', input: { action, params } }, async () => {
+        const formatted = `[DRY RUN] action=${action} params=${JSON.stringify(params, null, 2)}`;
+        console.log(formatted);
+        log(formatted, 'tool', false, debugLogFilePath);
+        return JSON.stringify({ status: 'dry_run_executed', action, params });
       });
     }
   };

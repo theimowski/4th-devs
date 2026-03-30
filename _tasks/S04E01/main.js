@@ -13,7 +13,7 @@ import {
   advanceTurn
 } from '../utils/langfuse.js';
 import { launch, close } from './browser.js';
-import { operatorTools, crawlerTools, createNativeHandlers, createBrowserHandlers } from './tools.js';
+import { operatorTools, crawlerTools, hackerTools, createNativeHandlers, createBrowserHandlers } from './tools.js';
 import { existsSync } from 'node:fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -33,6 +33,10 @@ if (existsSync(envPath)) {
 clearLog(debugLogFilePath);
 initTracing('S04E01-MultiAgent-OKO');
 
+const hackerApiDoc = fs.readFileSync(
+  path.join(__dirname, '../../_tasks/S01E05/help.json'), 'utf8'
+);
+
 function parseAgent(agentName) {
   const filePath = path.join(__dirname, 'agents', `${agentName}.agent.md`);
   if (!existsSync(filePath)) throw new Error(`Agent file not found: ${agentName}`);
@@ -46,13 +50,21 @@ function parseAgent(agentName) {
 
   const modelMatch = frontmatter.match(/model:\s*(.*)/);
   const toolsMatch = frontmatter.match(/tools:\n([\s\S]*?)(?=\n\w+:|$)/);
+  const taskMatch = frontmatter.match(/task:\s*\|\n([\s\S]*?)(?=\n\w+:|$)/);
 
   const model = modelMatch ? modelMatch[1].trim() : 'openai/gpt-4.1-mini';
   const toolNames = toolsMatch
     ? toolsMatch[1].split('\n').map(l => l.replace(/^\s*-\s*/, '').trim()).filter(Boolean)
     : [];
+  const task = taskMatch
+    ? taskMatch[1].replace(/^  /mg, '').trim().replace(/\$\{(\w+)\}/g, (_, k) => process.env[k] ?? '')
+    : null;
 
-  return { name: agentName, model, toolNames, systemPrompt };
+  const finalPrompt = agentName === 'hacker'
+    ? `${systemPrompt}\n\n## Backdoor API Reference\n\n${hackerApiDoc}`
+    : systemPrompt;
+
+  return { name: agentName, model, toolNames, systemPrompt: finalPrompt, task };
 }
 
 export async function runAgent(agentName, userMessage, depth = 0) {
@@ -63,7 +75,8 @@ export async function runAgent(agentName, userMessage, depth = 0) {
 
   log(`Starting agent: ${agentName} (depth: ${depth})`, 'agent', false, debugLogFilePath);
 
-  const allTools = agentName === 'operator' ? operatorTools : crawlerTools;
+  const toolsByAgent = { operator: operatorTools, crawler: crawlerTools, hacker: hackerTools };
+  const allTools = toolsByAgent[agentName] ?? crawlerTools;
   const agentTools = allTools.filter(t => agent.toolNames.includes(t.name));
 
   const handlers = {
@@ -146,19 +159,10 @@ export async function runAgent(agentName, userMessage, depth = 0) {
 async function main() {
   await launch(true);
   try {
-    const username = process.env.OKO_USERNAME;
-    const password = process.env.OKO_PASSWORD;
-    const okoKey = process.env.OKO_KEY;
-
     const sessionId = `s04e01-${Date.now()}`;
     const result = await withTrace({ name: 'S04E01 OKO Explorer', sessionId }, async () => {
-      return runAgent(
-        'operator',
-        `Investigate the OKO control system at https://oko.ag3nts.org/. ` +
-        `Credentials for the crawler — username: "${username}", password: "${password}", API key: "${okoKey}". ` +
-        `Ask the crawler to log in and explore all available sections of the system, ` +
-        `then summarize what the system contains and how it works.`
-      );
+      const operator = parseAgent('operator');
+      return runAgent('operator', operator.task);
     });
     console.log(`\nFinal Result:\n${result}`);
   } catch (error) {

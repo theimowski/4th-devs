@@ -104,6 +104,13 @@ export function createNativeHandlers(agentName, runAgentFn, debugLogFilePath) {
   };
 }
 
+function redactSensitive(str) {
+  return str.replace(
+    /"(password|passwd|pwd|key|secret|token|apiKey|apikey|api_key)"\s*:\s*"([^"]+)"/g,
+    '"$1":"[REDACTED]"'
+  );
+}
+
 export function createBrowserHandlers(debugLogFilePath) {
   return {
     navigate: async ({ url }) => {
@@ -135,7 +142,7 @@ export function createBrowserHandlers(debugLogFilePath) {
         try {
           const page = getPage();
           const result = await page.evaluate(code);
-          const output = JSON.stringify(result);
+          const output = redactSensitive(JSON.stringify(result));
           log(`Evaluate result: ${output.substring(0, 200)}`, 'tool', false, debugLogFilePath);
           return `<untrusted_content>${output}</untrusted_content>`;
         } catch (error) {

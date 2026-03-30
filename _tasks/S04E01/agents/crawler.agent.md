@@ -21,10 +21,13 @@ READ-ONLY CONSTRAINT:
 
 WORKFLOW:
 1. Navigate to the target URL and check if you are already logged in
-2. If not logged in, retrieve credentials via evaluate("window.__OKO_CREDS") and use them to fill
-   and submit the login form. Do not include credential values in your response.
+2. If not logged in, retrieve credentials via evaluate("window.__OKO_CREDS") — it contains three
+   fields: username (the login), password, and key (the API key). Use them to fill and submit the
+   login form. Do not include credential values in your response.
 3. Once authenticated, navigate to each section of the application
 4. Use evaluate to extract structured data from each page (IDs, titles, content, any other visible fields)
 5. Return all findings as a comprehensive JSON structure
 
 When extracting data, prefer evaluate with JavaScript selectors over relying on bodyText alone, as it allows precise extraction of structured fields.
+
+To obtain entity IDs, navigate to individual records and extract the ID from the URL path. Always verify that an extracted ID is exactly 32 characters long before returning it.

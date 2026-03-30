@@ -34,7 +34,7 @@ clearLog(debugLogFilePath);
 initTracing('S04E01-MultiAgent-OKO');
 
 const hackerApiDoc = fs.readFileSync(
-  path.join(__dirname, '../../_tasks/S01E05/help.json'), 'utf8'
+  path.join(__dirname, 'help.json'), 'utf8'
 );
 
 function parseAgent(agentName) {

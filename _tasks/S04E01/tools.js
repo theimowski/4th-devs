@@ -28,21 +28,26 @@ export const operatorTools = [
 export const hackerTools = [
   {
     type: 'function',
-    name: 'dry_run',
-    description: 'Simulate an API call without executing it. Prints the intended action and parameters to console.',
+    name: 'hack',
+    description: 'Execute an OKO Editor API action. Returns HTTP status code and response body. Follow the API documentation strictly: adhere to the syntax.answer structure, respect required/optional fields, and follow all rules.',
     parameters: {
       type: 'object',
       properties: {
-        action: {
-          type: 'string',
-          description: 'The API action to perform (e.g. reconfigure, setstatus, save, done).'
-        },
-        params: {
+        answer: {
           type: 'object',
-          description: 'The parameters for the action (e.g. { route, value }).'
+          description: 'The answer object as per the OKO Editor API documentation.',
+          properties: {
+            action: { type: 'string', enum: ['update', 'done', 'help'], description: 'The API action.' },
+            page: { type: 'string', enum: ['incydenty', 'notatki', 'zadania'], description: 'Required for update.' },
+            id: { type: 'string', description: 'Record ID (32-char hex). Required for update.' },
+            content: { type: 'string', description: 'New description text (optional for update).' },
+            title: { type: 'string', description: 'New title (optional for update).' },
+            done: { type: 'string', enum: ['YES', 'NO'], description: 'Only for page zadania (optional).' }
+          },
+          required: ['action']
         }
       },
-      required: ['action', 'params']
+      required: ['answer']
     }
   }
 ];
@@ -89,12 +94,20 @@ export function createNativeHandlers(agentName, runAgentFn, debugLogFilePath) {
         return result;
       });
     },
-    dry_run: async ({ action, params }) => {
-      return withTool({ name: 'dry_run', input: { action, params } }, async () => {
-        const formatted = `[DRY RUN] action=${action} params=${JSON.stringify(params, null, 2)}`;
-        console.log(formatted);
-        log(formatted, 'tool', false, debugLogFilePath);
-        return JSON.stringify({ status: 'dry_run_executed', action, params });
+    hack: async ({ answer }) => {
+      return withTool({ name: 'hack', input: { answer } }, async () => {
+        log(`HACK: ${JSON.stringify(answer)}`, 'tool', false, debugLogFilePath);
+        try {
+          const { verify } = await import('../utils/utils.js');
+          const response = await verify('okoeditor', answer);
+          const status = response.status;
+          const body = await response.json();
+          log(`HACK response: ${status} ${JSON.stringify(body)}`, 'tool', false, debugLogFilePath);
+          return JSON.stringify({ status, body });
+        } catch (error) {
+          log(`HACK failed: ${error.message}`, 'error', false, debugLogFilePath);
+          return JSON.stringify({ error: error.message });
+        }
       });
     }
   };

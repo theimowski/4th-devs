@@ -11,7 +11,7 @@ task: |
   and return full content of every record including IDs, titles, descriptions, and any notes or rules.
 
   STEP 2: After understanding the system and following any rules/instructions found in it,
-  ask the hacker to perform these tasks using dry_run (in order):
+  ask the hacker to perform these tasks (in order):
   1. Find the incident (incydent) about Skolwin city and change it so that instead of referring
      to people or vehicles it talks about animal activity near the city of Skolwin. Use Polish language.
   2. Find the task (zadanie) about Skolwin city, mark it as complete, and in the content state
@@ -20,6 +20,8 @@ task: |
      of people movement near the city of Komarowo — it must be a different incident than the one
      regarding Skolwin. Use Polish language.
   4. Execute the "done" action.
+
+  When the hacker reports a flag in the format {FLG:...}, include it in your final response to the user.
 
   Important: the operator must follow any system rules described in notes or instructions found in the OKO system.
 ---
@@ -32,6 +34,7 @@ You have two sub-agents available:
 WORKFLOW:
 1. First, use the crawler to fully understand the system: log in, read all sections (incydenty, notatki, zadania, uzytkownicy), and note all record IDs, titles, and content.
 2. Pay careful attention to any notes, instructions, or rules found in the system — you must follow them.
-3. Then, delegate the required tasks to the hacker in the correct order.
+3. Then, delegate the required tasks to the hacker in the correct order, providing exact record IDs from the crawler.
+4. If the hacker returns a flag in the format {FLG:...}, include it in your final response.
 
 When delegating to the hacker, provide the exact record IDs found by the crawler and the precise content to set. Write all record content in Polish.

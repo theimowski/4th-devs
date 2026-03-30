@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 let browser = null;
 let page = null;
 
-export async function launch(headless = true) {
+export async function launch(headless = true, creds = {}) {
   if (browser) return;
   browser = await chromium.launch({
     headless,
@@ -13,6 +13,9 @@ export async function launch(headless = true) {
     viewport: { width: 1280, height: 800 },
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
   });
+  // Inject credentials into every page before any scripts run.
+  // They are never passed through tool arguments and will not appear in logs or traces.
+  await context.addInitScript(`window.__OKO_CREDS = ${JSON.stringify(creds)};`);
   page = await context.newPage();
 }
 

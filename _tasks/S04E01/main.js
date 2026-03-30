@@ -71,7 +71,7 @@ export async function runAgent(agentName, userMessage, depth = 0) {
   if (depth > 5) return 'Error: Max delegation depth exceeded';
 
   const agent = parseAgent(agentName);
-  const maxSteps = 25;
+  const maxSteps = agentName === 'crawler' ? 50 : 25;
 
   log(`Starting agent: ${agentName} (depth: ${depth})`, 'agent', false, debugLogFilePath);
 
@@ -157,7 +157,11 @@ export async function runAgent(agentName, userMessage, depth = 0) {
 }
 
 async function main() {
-  await launch(true);
+  await launch(true, {
+    username: process.env.OKO_USERNAME,
+    password: process.env.OKO_PASSWORD,
+    key: process.env.OKO_KEY
+  });
   try {
     const sessionId = `s04e01-${Date.now()}`;
     const result = await withTrace({ name: 'S04E01 OKO Explorer', sessionId }, async () => {

@@ -35,16 +35,7 @@ export const hackerTools = [
       properties: {
         answer: {
           type: 'object',
-          description: 'The answer object as per the OKO Editor API documentation.',
-          properties: {
-            action: { type: 'string', enum: ['update', 'done', 'help'], description: 'The API action.' },
-            page: { type: 'string', enum: ['incydenty', 'notatki', 'zadania'], description: 'Required for update.' },
-            id: { type: 'string', description: 'Record ID (32-char hex). Required for update.' },
-            content: { type: 'string', description: 'New description text (optional for update).' },
-            title: { type: 'string', description: 'New title (optional for update).' },
-            done: { type: 'string', enum: ['YES', 'NO'], description: 'Only for page zadania (optional).' }
-          },
-          required: ['action']
+          description: 'The answer object as per the OKO Editor API documentation. Determine the required and optional fields from the API docs.'
         }
       },
       required: ['answer']

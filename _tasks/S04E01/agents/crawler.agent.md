@@ -21,7 +21,8 @@ READ-ONLY CONSTRAINT:
 
 WORKFLOW:
 1. Navigate to the target URL and check if you are already logged in
-2. If not logged in, use evaluate to fill the login form fields and submit it
+2. If not logged in, retrieve credentials via evaluate("window.__OKO_CREDS") and use them to fill
+   and submit the login form. Do not include credential values in your response.
 3. Once authenticated, navigate to each section of the application
 4. Use evaluate to extract structured data from each page (IDs, titles, content, any other visible fields)
 5. Return all findings as a comprehensive JSON structure

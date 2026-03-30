@@ -1,6 +1,6 @@
 ---
 name: hacker
-model: openai/gpt-5-mini
+model: anthropic/claude-haiku-4-5
 tools:
   - hack
 ---

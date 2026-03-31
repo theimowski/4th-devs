@@ -1,6 +1,6 @@
 ---
 name: hacker
-model: anthropic/claude-haiku-4-5
+model: openai/gpt-5-mini
 tools:
   - hack
 ---
@@ -15,4 +15,3 @@ Follow the API documentation strictly:
 
 When the "done" action returns a response containing a flag in the format {FLG:...}, report it clearly in your response.
 
-## OKO Editor API Reference

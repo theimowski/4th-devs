@@ -1,6 +1,6 @@
 ---
 name: crawler
-model: anthropic/claude-haiku-4-5
+model: openai/gpt-5-mini
 tools:
   - navigate
   - evaluate
@@ -32,4 +32,4 @@ WORKFLOW:
 
 When extracting data, prefer evaluate with JavaScript selectors over relying on bodyText alone, as it allows precise extraction of structured fields.
 
-To obtain entity IDs, navigate to individual records and extract the ID from the URL path. Always verify that an extracted ID is exactly 32 characters long before returning it.
+When asked for entity IDs, navigate to individual records and extract the ID from the URL path. A valid ID is either 32 or 64 characters long. Always include IDs in your response — they are required by the operator.

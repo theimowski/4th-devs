@@ -33,7 +33,7 @@ if (existsSync(envPath)) {
 clearLog(debugLogFilePath);
 initTracing('S04E01-MultiAgent-OKO');
 
-const hackerApiDoc = fs.readFileSync(
+const okoApiDoc = fs.readFileSync(
   path.join(__dirname, 'help.json'), 'utf8'
 );
 
@@ -60,8 +60,8 @@ function parseAgent(agentName) {
     ? taskMatch[1].replace(/^  /mg, '').trim().replace(/\$\{(\w+)\}/g, (_, k) => process.env[k] ?? '')
     : null;
 
-  const finalPrompt = agentName === 'hacker'
-    ? `${systemPrompt}\n\n## Backdoor API Reference\n\n${hackerApiDoc}`
+  const finalPrompt = ['hacker', 'operator'].includes(agentName)
+    ? `${systemPrompt}\n\n## OKO Editor API Reference\n\n${okoApiDoc}`
     : systemPrompt;
 
   return { name: agentName, model, toolNames, systemPrompt: finalPrompt, task };
@@ -71,11 +71,11 @@ export async function runAgent(agentName, userMessage, depth = 0) {
   if (depth > 5) return 'Error: Max delegation depth exceeded';
 
   const agent = parseAgent(agentName);
-  const maxSteps = agentName === 'crawler' ? 50 : 25;
+  const maxSteps = agentName === 'operator' || agentName === 'crawler' ? 50 : 25;
 
   log(`Starting agent: ${agentName} (depth: ${depth})`, 'agent', false, debugLogFilePath);
 
-  const toolsByAgent = { operator: operatorTools, crawler: crawlerTools, hacker: hackerTools };
+  const toolsByAgent = { operator: [...operatorTools, ...hackerTools], crawler: crawlerTools, hacker: hackerTools };
   const allTools = toolsByAgent[agentName] ?? crawlerTools;
   const agentTools = allTools.filter(t => agent.toolNames.includes(t.name));
 
@@ -166,7 +166,9 @@ async function main() {
     const sessionId = `s04e01-${Date.now()}`;
     const result = await withTrace({ name: 'S04E01 OKO Explorer', sessionId }, async () => {
       const operator = parseAgent('operator');
-      return runAgent('operator', operator.task);
+      const crawlData = fs.readFileSync(path.join(__dirname, 'crawl.json'), 'utf8');
+      const task = `${operator.task}\n## Current system state\n\`\`\`json\n${crawlData}\n\`\`\``;
+      return runAgent('operator', task);
     });
     console.log(`\nFinal Result:\n${result}`);
   } catch (error) {

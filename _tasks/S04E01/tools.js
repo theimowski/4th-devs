@@ -13,7 +13,7 @@ export const operatorTools = [
         agent: {
           type: 'string',
           description: 'The name of the agent to delegate to.',
-          enum: ['crawler', 'hacker']
+          enum: ['crawler']
         },
         task: {
           type: 'string',
@@ -35,7 +35,7 @@ export const hackerTools = [
       properties: {
         answer: {
           type: 'object',
-          description: 'The answer object as per the OKO Editor API documentation. Determine the required and optional fields from the API docs.'
+          description: 'The answer object sent to the OKO Editor API. Determine the full structure from the API help response. Must include at minimum: action, page, and id.'
         }
       },
       required: ['answer']

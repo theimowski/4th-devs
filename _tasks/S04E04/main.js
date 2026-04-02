@@ -1,10 +1,8 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { chat, extractToolCalls, extractText } from '../../01_02_tool_use/src/api.js';
-import { log, clearLog, extractTokenUsage } from '../utils/utils.js';
+import { log, clearLog, extractTokenUsage, verify as verifyUtil } from '../utils/utils.js';
 import {
   initTracing,
   withTrace,
@@ -29,84 +27,94 @@ if (existsSync(envPath)) {
 clearLog(debugLogFilePath);
 initTracing('S04E04-Natan');
 
-// --- MCP client helpers ---
+// --- Load Natan's notes and API help ---
 
-async function connectMcp() {
-  const mcpConfig = JSON.parse(readFileSync(path.join(__dirname, 'mcp.json'), 'utf-8'));
-  const clients = {};
-  for (const [name, config] of Object.entries(mcpConfig.mcpServers)) {
-    const client = new Client({ name: `s04e04-${name}`, version: '1.0.0' }, { capabilities: {} });
-    const transport = new StdioClientTransport({
-      command: config.command,
-      args: config.args,
-      env: { PATH: process.env.PATH, HOME: process.env.HOME, ...config.env },
-      cwd: __dirname,
-      stderr: 'inherit',
-    });
-    await client.connect(transport);
-    clients[name] = client;
-  }
-  return clients;
+function loadNotes() {
+  const notesDir = path.join(__dirname, 'workspace', 'natan_notes');
+  const files = ['README.md', 'rozmowy.txt', 'ogłoszenia.txt', 'transakcje.txt'];
+  return files.map(f => {
+    const content = readFileSync(path.join(notesDir, f), 'utf-8');
+    return `=== ${f} ===\n${content}`;
+  }).join('\n\n');
 }
 
-async function listMcpTools(clients) {
-  const tools = [];
-  for (const [server, client] of Object.entries(clients)) {
-    const { tools: serverTools } = await client.listTools();
-    for (const tool of serverTools) {
-      tools.push({
-        type: 'function',
-        name: `${server}__${tool.name}`,
-        description: tool.description,
-        parameters: tool.inputSchema,
-      });
+const notes = loadNotes();
+const helpJson = readFileSync(path.join(__dirname, 'help.json'), 'utf-8');
+
+// --- Tool definition ---
+
+const tools = [
+  {
+    type: 'function',
+    name: 'verify',
+    description: 'Call the filesystem API. Pass an array of actions for batch mode, or a single action object.',
+    parameters: {
+      type: 'object',
+      properties: {
+        answer: {
+          description: 'A single action object (e.g. {"action":"done"}) or an array of action objects for batch mode.'
+        }
+      },
+      required: ['answer']
     }
   }
-  return tools;
+];
+
+async function verifyHandler({ answer }) {
+  log(`API call: ${JSON.stringify(answer).slice(0, 200)}`, 'tool', false, debugLogFilePath);
+  const res = await verifyUtil('filesystem', answer);
+  const data = await res.json();
+  log(`API response: ${JSON.stringify(data)}`, 'tool', false, debugLogFilePath);
+  return JSON.stringify(data);
 }
 
-async function callMcpTool(clients, prefixedName, args) {
-  const [server, ...parts] = prefixedName.split('__');
-  const client = clients[server];
-  if (!client) throw new Error(`Unknown MCP server: ${server}`);
-  const result = await client.callTool({ name: parts.join('__'), arguments: args });
-  const text = result.content.find((c) => c.type === 'text');
-  if (!text) return result;
-  try { return JSON.parse(text.text); } catch { return text.text; }
-}
+// --- System prompt ---
 
-async function closeMcp(clients) {
-  for (const client of Object.values(clients)) {
-    try { await client.close(); } catch {}
-  }
-}
+const SYSTEM_PROMPT = `You are organizing trade notes into a remote virtual filesystem via API.
 
-// --- Agent ---
+TASK: Analyze the notes below, then build the required structure using ONE batch API call, followed immediately by "done".
 
-const SYSTEM_PROMPT = `You are organizing trade notes into a virtual filesystem.
-
-The notes are in the natan_notes/ directory (accessible via fs tools).
-Read all note files first to understand the data, then create the following structure under vfs/:
-
-vfs/miasta/<city_name>   — JSON object: { "<good>": <quantity>, ... }
-                           what the city NEEDS; no units; no Polish characters in keys or values
-vfs/osoby/<person_name>  — person's full name on first line, then a markdown link to their city file
-                           e.g.: Jan Kowalski\n[warszawa](/vfs/miasta/warszawa)
-vfs/towary/<good_name>   — markdown link to the city that SELLS/OFFERS this good
-                           e.g.: [domatowo](/vfs/miasta/domatowo)
-                           good name must be singular nominative, no Polish characters
+Required filesystem structure:
+  /miasta/<city>   content: JSON object { "<good_ascii>": <quantity>, ... }
+                   — what the city NEEDS; no units; no Polish characters in keys or values
+  /osoby/<name>    content: "First Last\\n[cityname](../miasta/<cityname>)"
+                   — exactly ONE person per file with their full name (First + Last) and a relative markdown link
+  /towary/<good>   content: "[cityname](../miasta/<cityname>)"
+                   — the city that SELLS/OFFERS this good; one link per selling city (multiple lines if needed)
+                   — good name = singular nominative, no Polish characters
 
 Rules:
-- No Polish characters anywhere (file names, JSON keys, content)
-- Replace Polish chars: ą→a, ć→c, ę→e, ł→l, ń→n, ó→o, ś→s, ź/ż→z
-- File and directory names: lowercase letters, digits, underscores only
-- Create parent directories before files inside them
-- For goods sold by multiple cities, create one file per unique good name containing all relevant city links`;
+- No Polish characters anywhere: ą→a, ć→c, ę→e, ł→l, ń→n, ó→o, ś→s, ź→z, ż→z
+- File and directory names: lowercase letters, digits, underscores only; max 20 characters
+- Markdown links MUST use relative paths: ../miasta/puck  (NOT /miasta/puck)
+- Each /osoby file must contain exactly one person's FULL name (First name + Surname)
+  - If notes only show a surname, infer a plausible Polish first name from context
+    (e.g. "Rafal oddzwonil...woda dla Brudzewa" → Rafal is the Brudzewo contact → Rafal Kisiel)
+  - If notes show two clues like "krotki sygnal od Konkel" + "Teraz to Lena pilnuje" → Lena Konkel
 
-async function runAgent(clients, tools) {
-  const maxSteps = 60;
+WORKFLOW:
+1. Think through the data: cities and their needs, persons per city, goods sold per city
+2. Make ONE batch verify call with ONLY createDirectory actions (all 3 directories)
+3. Make ONE batch verify call with ONLY createFile actions (all files)
+4. Call verify with {"action":"done"}
+5. Return the full API response — report the flag {FLG:...} if present, or describe what went wrong
+
+--- API REFERENCE ---
+
+${helpJson}
+
+--- NATAN'S NOTES ---
+
+${notes}
+
+--- END OF NOTES ---`;
+
+// --- Agent loop ---
+
+async function runAgent() {
+  const maxSteps = 20;
   const model = 'openai/gpt-5.2';
-  const userMessage = 'Organize Natan\'s trade notes into the virtual filesystem.';
+  const userMessage = "Organize Natan's trade notes into the remote virtual filesystem.";
 
   let conversation = [{ role: 'user', content: userMessage }];
 
@@ -121,7 +129,7 @@ async function runAgent(clients, tools) {
         const data = await chat({
           model,
           input: conversation,
-          tools: tools.length > 0 ? tools : undefined,
+          tools,
           instructions: SYSTEM_PROMPT,
         });
 
@@ -151,16 +159,10 @@ async function runAgent(clients, tools) {
               });
               continue;
             }
-            log(`Tool call: ${call.name}(${JSON.stringify(args)})`, 'tool', false, debugLogFilePath);
-            const output = await callMcpTool(clients, call.name, args);
-            log(`Tool result: ${JSON.stringify(output)}`, 'tool', false, debugLogFilePath);
-            toolResults.push({
-              type: 'function_call_output',
-              call_id: call.call_id,
-              output: typeof output === 'string' ? output : JSON.stringify(output),
-            });
+            const output = await verifyHandler(args);
+            toolResults.push({ type: 'function_call_output', call_id: call.call_id, output });
           }
-          conversation = [...conversation, ...toolCalls.map((c) => ({ ...c })), ...toolResults];
+          conversation = [...conversation, ...toolCalls.map(c => ({ ...c })), ...toolResults];
         } else {
           if (text) return text;
         }
@@ -177,21 +179,15 @@ async function runAgent(clients, tools) {
 }
 
 async function main() {
-  let clients;
   try {
-    clients = await connectMcp();
-    const tools = await listMcpTools(clients);
-    log(`Connected to MCP, ${tools.length} tools available.`, 'agent', false, debugLogFilePath);
-
     const sessionId = `s04e04-${Date.now()}`;
     const result = await withTrace({ name: 'S04E04 Natan', sessionId }, async () => {
-      return runAgent(clients, tools);
+      return runAgent();
     });
     console.log(`\nFinal Result:\n${result}`);
   } catch (error) {
     console.error(`Fatal error: ${error.message}`);
   } finally {
-    if (clients) await closeMcp(clients);
     await flush();
     await shutdownTracing();
   }

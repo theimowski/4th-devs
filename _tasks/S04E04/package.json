@@ -1,7 +1,4 @@
 {
   "name": "s04e04",
-  "type": "module",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.1"
-  }
+  "type": "module"
 }

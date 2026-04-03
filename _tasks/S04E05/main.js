@@ -129,7 +129,7 @@ async function runDbReader(message) {
     toolDefs: dbReaderToolDefs,
     handlers,
     userMessage: message,
-    maxSteps: 15,
+    maxSteps: 50,
   });
 }
 
@@ -150,7 +150,7 @@ async function runOperator() {
     toolDefs: operatorToolDefs,
     handlers,
     userMessage: 'Execute the foodwarehouse task: read the database, create all required orders, and call done.',
-    maxSteps: 40,
+    maxSteps: 50,
   });
 }
 

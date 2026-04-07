@@ -401,6 +401,7 @@ Run individual example queries by number (1-7):
 npm run lesson19:examples -- 1
 ```
 
+
 ## Lesson 20
 
 | Example | Run | Description |
@@ -429,3 +430,51 @@ npm run lesson20:review
 ```
 
 Both examples read the shared repo-level `.env` through the workspace `config.js`, so they can run with either `OPENAI_API_KEY` or `OPENROUTER_API_KEY`.
+
+
+## Lesson 21
+
+| Example | Run | Description |
+|---------|-----|-------------|
+| `05_01_agent_graph` | `npm run lesson21:agent_graph` | Multi-agent graph with orchestrator, task delegation, artifact writing, and a live Cytoscape dashboard |
+
+Install dependencies:
+
+```bash
+npm run lesson21:install
+```
+
+`05_01_agent_graph` reads the shared repo-level `.env` through the workspace `config.js`, so it can run with either `OPENAI_API_KEY` or `OPENROUTER_API_KEY`.
+
+Pass a custom task as the first argument (defaults to a TypeScript 5.0 blog post):
+
+```bash
+cd 05_01_agent_graph && npm start "Research and summarise the latest advances in WebAssembly"
+```
+
+The dashboard opens automatically in the browser at `http://127.0.0.1:3001` (or the next available port). All session data is persisted to `.data/` and cleared on each run.
+
+## Lesson 22
+
+| Example | Run | Description |
+|---------|-----|-------------|
+| `05_02_ui` | `npm run lesson22:ui` | Svelte 5 streaming chat UI with SSE, tool cards, artifact previews, and virtual long-history rendering |
+| `05_02_voice` | `npm run lesson22:voice` | LiveKit voice agent with Gemini Realtime, OpenAI, or ElevenLabs TTS and MCP tool access |
+
+Install dependencies:
+
+```bash
+npm run lesson22:install
+```
+
+`05_02_ui` reads the shared repo-level `.env` through its own server-side config, so it supports both `OPENAI_API_KEY` and `OPENROUTER_API_KEY`. The default model is `gpt-4.1`, overridable via `LIVE_UI_MODEL`. Dev mode starts the Bun API server on `http://localhost:3300` and the Vite UI on `http://localhost:5173`.
+
+`05_02_voice` requires a [LiveKit Cloud](https://cloud.livekit.io) account (or self-hosted instance) and the following env vars:
+
+```bash
+LIVEKIT_URL=wss://your-project.livekit.cloud
+LIVEKIT_API_KEY=your_api_key
+LIVEKIT_API_SECRET=your_api_secret
+```
+
+Voice stack is resolved automatically from available keys: `GOOGLE_API_KEY` / `GEMINI_API_KEY` → Gemini Realtime; `ELEVEN_API_KEY` + `OPENAI_API_KEY` → OpenAI LLM + ElevenLabs TTS; `OPENAI_API_KEY` alone → full OpenAI stack.

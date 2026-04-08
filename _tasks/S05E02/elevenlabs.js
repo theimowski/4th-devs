@@ -1,7 +1,7 @@
 import { AI_API_KEY, EXTRA_API_HEADERS, CHAT_API_BASE_URL } from '../../config.js';
 
-const VOICE_ID = 'JBFqnCBsd6RMkjVDRZzb';
-const TTS_MODEL = 'eleven_flash_v2_5';
+const VOICE_ID = '04BD7Fenyf9Ysq983wrd';
+const TTS_MODEL = 'eleven_v3';
 const STT_LLM_MODEL = 'google/gemini-3.1-flash-lite-preview-20260303';
 
 // TTS via ElevenLabs REST API

@@ -31,6 +31,13 @@ export async function hubApi(path, params = {}) {
   return response;
 }
 
+export async function hubApiGet(path, queryParams = {}) {
+  const apikey = process.env.HUB_AG3NTS_KEY;
+  const params = new URLSearchParams({ key: apikey, ...queryParams });
+  const response = await fetch(`https://hub.ag3nts.org/api/${path}?${params}`);
+  return response;
+}
+
 export async function fetchHubFile(filename, targetDir) {
   const apikey = process.env.HUB_AG3NTS_KEY;
   const url = `https://hub.ag3nts.org/data/${apikey}/${filename}`;
